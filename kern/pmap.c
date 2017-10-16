@@ -350,7 +350,21 @@ page_decref(struct PageInfo* pp)
 pte_t *
 pgdir_walk(pde_t *pgdir, const void *va, int create)
 {
-	// Fill this function in
+	pde_t pd_entry = (pde_t)pgdir[PDX(va)];
+	if (pd_entry) {
+		pte_t* pt_base = KADDR(PTE_ADDR(pd_entry));
+		return pt_base + PTX(va);
+	}
+	else if (create) {
+		struct PageInfo *new_pt = page_alloc(0);
+		if (new_pt) {
+			void* content = page2kva(new_pt);
+			memset(content, 0, PGSIZE);
+			new_pt->pp_ref++;
+			pgdir[PDX(va)] = PADDR(content) | 0x1FF; // Set all permissions.
+			return (pte_t*) content + PTX(va);
+		}
+	}
 	return NULL;
 }
 
@@ -368,7 +382,10 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 static void
 boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm)
 {
-	// Fill this function in
+	pte_t *page_entry = pgdir_walk(pgdir, (void*) va, 1);
+	size_t i, size0;
+	for (i = 0, size0 = 0; size0 < size; i++, size0 = i * PGSIZE)
+		*(page_entry + i) = (pa + size0) | perm | PTE_P;
 }
 
 //
@@ -399,7 +416,13 @@ boot_map_region(pde_t *pgdir, uintptr_t va, size_t size, physaddr_t pa, int perm
 int
 page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 {
-	// Fill this function in
+	pte_t *page_entry = pgdir_walk(pgdir, (void*) va, 1);
+	if (!page_entry)
+		return -E_NO_MEM;  // Has no page table AND cannot be allocated
+	pp->pp_ref++;
+	if (*page_entry) 
+		page_remove(pgdir, va);
+	*page_entry = page2pa(pp) | perm | PTE_P;
 	return 0;
 }
 
@@ -417,8 +440,12 @@ page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 struct PageInfo *
 page_lookup(pde_t *pgdir, void *va, pte_t **pte_store)
 {
-	// Fill this function in
-	return NULL;
+	pte_t *page_entry = pgdir_walk(pgdir, (void*) va, 0);
+	if (!page_entry || !*page_entry)
+		return NULL;
+	if (pte_store)
+		*pte_store = page_entry;
+	return pa2page(PTE_ADDR(*page_entry));
 }
 
 //
@@ -439,7 +466,14 @@ page_lookup(pde_t *pgdir, void *va, pte_t **pte_store)
 void
 page_remove(pde_t *pgdir, void *va)
 {
-	// Fill this function in
+	pte_t *pte_store;
+	struct PageInfo *pp = page_lookup(pgdir, va, &pte_store);
+	if (!pp)
+		return;
+	pp->pp_ref--;
+	*pte_store = 0;
+	if (!pp->pp_ref)
+		page_free(pp);
 }
 
 //
@@ -616,7 +650,7 @@ check_kern_pgdir(void)
 
 	// check pages array
 	n = ROUNDUP(npages*sizeof(struct PageInfo), PGSIZE);
-	for (i = 0; i < n; i += PGSIZE)
+	for (i = 0; i < n; i += PGSIZE) 
 		assert(check_va2pa(pgdir, UPAGES + i) == PADDR(pages) + i);
 
 
