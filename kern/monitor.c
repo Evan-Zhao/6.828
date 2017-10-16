@@ -10,6 +10,7 @@
 #include <kern/console.h>
 #include <kern/monitor.h>
 #include <kern/kdebug.h>
+#include <kern/pmap.h>		// for showmapping
 
 #define CMDBUF_SIZE	80	// enough for one VGA text line
 
@@ -24,6 +25,7 @@ struct Command {
 static struct Command commands[] = {
 	{ "help", "Display this list of commands", mon_help },
 	{ "kerninfo", "Display information about the kernel", mon_kerninfo },
+	{ "showmap", "Display page mapping and permission bits in range", mon_showmap }
 };
 
 /***** Implementations of basic kernel monitor commands *****/
@@ -76,7 +78,28 @@ mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 	return 0;
 }
 
-
+int 
+mon_showmap(int argc, char **argv, struct Trapframe *tf) {
+	if (argc <= 2) {
+		cprintf("Expecting a virtual addr range [l, r]\n");
+		return 0;
+	}
+	uintptr_t l = strtoul(argv[1], NULL, 0), 
+		 	  r = strtoul(argv[2], NULL, 0); // In string.h
+	if (l < 0 || r < 0 || l > r) {
+		cprintf("Invalid range; aborting.\n");
+		return 0;
+	}
+	for (uintptr_t sz = ROUNDUP(l, PGSIZE); sz <= ROUNDDOWN(r, PGSIZE); sz += PGSIZE) {
+		pte_t* pte = pgdir_walk(kern_pgdir, (void*) sz, 0);
+		if (pte == NULL || !*pte)
+			cprintf("0x%08x -> ----------; perm = ---\n", sz);
+		else 
+			cprintf("0x%08x -> 0x%08x; perm = 0x%03x\n", 
+					sz, PTE_ADDR(*pte), *pte & 0xFFF);
+	}
+	return 0;
+}
 
 /***** Kernel monitor command interpreter *****/
 

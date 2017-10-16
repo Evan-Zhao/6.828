@@ -21,5 +21,5 @@ int	memcmp(const void *s1, const void *s2, size_t len);
 void *	memfind(const void *s, int c, size_t len);
 
 long	strtol(const char *s, char **endptr, int base);
-
+unsigned long	strtoul(const char *s, char **endptr, int base);
 #endif /* not JOS_INC_STRING_H */

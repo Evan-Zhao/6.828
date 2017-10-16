@@ -360,13 +360,12 @@ pgdir_walk(pde_t *pgdir, const void *va, int create)
 		return pt_base + PTX(va);
 	}
 	else if (create) {
-		// cprintf("Here %x @ %d th.\n", va, PDX(va));
 		struct PageInfo *new_pt = page_alloc(0);
 		if (new_pt) {
 			void* content = page2kva(new_pt);
 			memset(content, 0, PGSIZE);
 			new_pt->pp_ref++;
-			pgdir[PDX(va)] = PADDR(content) | 0x1FF; // Set all permissions.
+			pgdir[PDX(va)] = PADDR(content) | 0xF; // Set all permissions.
 			return (pte_t*) content + PTX(va);
 		}
 	}
@@ -429,7 +428,6 @@ page_insert(pde_t *pgdir, struct PageInfo *pp, void *va, int perm)
 	if (*page_entry) 
 		page_remove(pgdir, va);
 	*page_entry = page2pa(pp) | perm | PTE_P;
-	//cprintf("orig = %x, new = %x\n", *(int*)page2pa(pp), *(int*)va);
 	return 0;
 }
 
@@ -703,10 +701,8 @@ check_va2pa(pde_t *pgdir, uintptr_t va)
 	pte_t *p;
 
 	pgdir = &pgdir[PDX(va)];
-	if (!(*pgdir & PTE_P)) {
-		//cprintf("Here at %d th\n", PDX(va));
+	if (!(*pgdir & PTE_P))
 		return ~0;
-	}
 	p = (pte_t*) KADDR(PTE_ADDR(*pgdir));
 	if (!(p[PTX(va)] & PTE_P))
 		return ~0;
