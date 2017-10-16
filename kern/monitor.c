@@ -25,7 +25,8 @@ struct Command {
 static struct Command commands[] = {
 	{ "help", "Display this list of commands", mon_help },
 	{ "kerninfo", "Display information about the kernel", mon_kerninfo },
-	{ "showmap", "Display page mapping and permission bits in range", mon_showmap }
+	{ "showmap", "Display page mapping and permission bits in range", mon_showmap }, 
+	{ "chmod", "Change permission for a given page or range", mon_chmod }
 };
 
 /***** Implementations of basic kernel monitor commands *****/
@@ -86,7 +87,7 @@ mon_showmap(int argc, char **argv, struct Trapframe *tf) {
 	}
 	uintptr_t l = strtoul(argv[1], NULL, 0), 
 		 	  r = strtoul(argv[2], NULL, 0); // In string.h
-	if (l < 0 || r < 0 || l > r) {
+	if (l > r) {
 		cprintf("Invalid range; aborting.\n");
 		return 0;
 	}
@@ -101,6 +102,43 @@ mon_showmap(int argc, char **argv, struct Trapframe *tf) {
 	return 0;
 }
 
+int
+mon_chmod(int argc, char **argv, struct Trapframe *tf) {
+	if (argc <= 2) {
+		cprintf("Usage: chmod mod l [r] [-v]\n");
+		return 0;
+	}
+	uintptr_t mod = strtoul(argv[1], NULL, 0),  
+			  l = strtoul(argv[2], NULL, 0), 
+			  r = argc >= 4 ? strtoul(argv[3], NULL, 0) : l;
+	int verbose = (argc >= 4 && !strcmp(argv[3], "-v"));
+	if (mod > 0xFFF) {
+		cprintf("Permission exceeds 0xfff; aborting.\n");
+		return 0;
+	}
+	if (l > r) {
+		cprintf("Invalid range; aborting.\n");
+		return 0;
+	}
+	if (!(mod & PTE_P)) {
+		cprintf("Warning: PTE_P flag is not provided; added automatically.");
+		mod |= PTE_P;
+	}
+	for (uintptr_t sz = ROUNDUP(l, PGSIZE); sz <= ROUNDDOWN(r, PGSIZE); sz += PGSIZE) {
+		pte_t* pte = pgdir_walk(kern_pgdir, (void*) sz, 0);
+		if (pte == NULL || !*pte) {
+			if (verbose)
+				cprintf("Page va = 0x%08x is not mapped; skipping.\n", sz);
+		}
+		else {
+			if (verbose) 
+				cprintf("Page va = 0x%08x perm = 0x%03x changed to 0x%03x\n", 
+						sz, *pte & 0xFFF, mod);
+			*pte = PTE_ADDR(*pte) | mod;
+		}
+	}
+	return 0;
+}
 /***** Kernel monitor command interpreter *****/
 
 #define WHITESPACE "\t\r\n "
