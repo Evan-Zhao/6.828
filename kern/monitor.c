@@ -26,7 +26,8 @@ static struct Command commands[] = {
 	{ "help", "Display this list of commands", mon_help },
 	{ "kerninfo", "Display information about the kernel", mon_kerninfo },
 	{ "showmap", "Display page mapping and permission bits in range", mon_showmap }, 
-	{ "chmod", "Change permission for a given page or range", mon_chmod }
+	{ "chmod", "Change permission for a given page or range", mon_chmod },  
+	{ "dump", "Dump memory contents for a range", mon_dump }
 };
 
 /***** Implementations of basic kernel monitor commands *****/
@@ -82,7 +83,7 @@ mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 int 
 mon_showmap(int argc, char **argv, struct Trapframe *tf) {
 	if (argc <= 2) {
-		cprintf("Expecting a virtual addr range [l, r]\n");
+		cprintf("Usage: showmap l r\n");
 		return 0;
 	}
 	uintptr_t l = strtoul(argv[1], NULL, 0), 
@@ -139,6 +140,49 @@ mon_chmod(int argc, char **argv, struct Trapframe *tf) {
 	}
 	return 0;
 }
+
+int
+mon_dump(int argc, char **argv, struct Trapframe *tf) {
+	if (argc <= 2 || argc > 4) {
+		cprintf("Usage: dump l r [-v/-p]\n");
+		return 0;
+	}
+	unsigned long l = strtoul(argv[1], NULL, 0),
+			  	  r = strtoul(argv[2], NULL, 0);
+	int virtual;  // If 0 then physical
+	if (argc <= 3)
+		cprintf("Defaulting to virtual address.\n");
+	else if (!strcmp(argv[3], "-p"))
+		l = (unsigned long)KADDR(l), r = (unsigned long)KADDR(r);
+	else if (strcmp(argv[3], "-v")) {
+		cprintf("Unknown flag %s at position 3; aborting.\n", argv[3]);
+		return 0;
+	}
+	uintptr_t ptr;
+	for (ptr = ROUNDDOWN(l, 16); ptr <= r; ptr += 16) {
+		cprintf("%08x  ", ptr);
+		for (int i = 0; i < 16; i++) {
+			if (ptr + i <= r)
+				cprintf("%02x ", *(unsigned char*)(ptr + i));
+			else 
+				cprintf("   ");
+		}
+		cprintf(" |");
+		for (int i = 0; i < 16; i++) {
+			if (ptr + i <= r) {
+				char ch = *(char*)(ptr + i);
+				cprintf("%c", (ch >= ' ' && ch <= '~') ? ch : '.');
+			}
+			else 
+				cprintf(" ");
+		}
+		cprintf("|\n");
+	}
+	if (ROUNDDOWN(r, 16) != r)
+		cprintf("%08x  \n", r);
+	return 0;
+}
+
 /***** Kernel monitor command interpreter *****/
 
 #define WHITESPACE "\t\r\n "
