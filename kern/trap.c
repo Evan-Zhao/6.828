@@ -64,8 +64,31 @@ trap_init(void)
 {
 	extern struct Segdesc gdt[];
 
-	// LAB 3: Your code here.
-
+	// These are traps
+	// Why extern reference cannot be void*? I'm confused.
+	// Anyway, it's char[].
+	extern char H_DIVIDE[], H_DEBUG[], H_NMI[],    H_BRKPT[],  H_OFLOW[],
+				H_BOUND[],  H_ILLOP[], H_DEVICE[], H_DBLFLT[], H_TSS[],
+				H_SEGNP[],  H_STACK[], H_GPFLT[],  H_PGFLT[],  H_FPERR[],
+				H_ALIGN[],  H_MCHK[],  H_SIMDERR[];
+	SETGATE(idt[T_DIVIDE] , 1, GD_KT, (void*)H_DIVIDE ,0);   
+	SETGATE(idt[T_DEBUG]  , 1, GD_KT, (void*)H_DEBUG  ,0);  
+	SETGATE(idt[T_NMI]    , 1, GD_KT, (void*)H_NMI    ,0);
+	SETGATE(idt[T_BRKPT]  , 1, GD_KT, (void*)H_BRKPT  ,0);  
+	SETGATE(idt[T_OFLOW]  , 1, GD_KT, (void*)H_OFLOW  ,0);  
+	SETGATE(idt[T_BOUND]  , 1, GD_KT, (void*)H_BOUND  ,0);  
+	SETGATE(idt[T_ILLOP]  , 1, GD_KT, (void*)H_ILLOP  ,0);  
+	SETGATE(idt[T_DEVICE] , 1, GD_KT, (void*)H_DEVICE ,0);   
+	SETGATE(idt[T_DBLFLT] , 1, GD_KT, (void*)H_DBLFLT ,0);   
+	SETGATE(idt[T_TSS]    , 1, GD_KT, (void*)H_TSS    ,0);
+	SETGATE(idt[T_SEGNP]  , 1, GD_KT, (void*)H_SEGNP  ,0);  
+	SETGATE(idt[T_STACK]  , 1, GD_KT, (void*)H_STACK  ,0);  
+	SETGATE(idt[T_GPFLT]  , 1, GD_KT, (void*)H_GPFLT  ,0);  
+	SETGATE(idt[T_PGFLT]  , 1, GD_KT, (void*)H_PGFLT  ,0);  
+	SETGATE(idt[T_FPERR]  , 1, GD_KT, (void*)H_FPERR  ,0);  
+	SETGATE(idt[T_ALIGN]  , 1, GD_KT, (void*)H_ALIGN  ,0);  
+	SETGATE(idt[T_MCHK]   , 1, GD_KT, (void*)H_MCHK   ,0); 
+	SETGATE(idt[T_SIMDERR], 1, GD_KT, (void*)H_SIMDERR,0);    
 	// Per-CPU setup 
 	trap_init_percpu();
 }

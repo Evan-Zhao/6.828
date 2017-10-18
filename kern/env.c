@@ -486,9 +486,6 @@ env_destroy(struct Env *e)
 void
 env_pop_tf(struct Trapframe *tf)
 {
-	cprintf("tf->tf_eip = %x\n", tf->tf_eip);
-	cprintf("tf->tf_cs = %x\n", tf->tf_cs);
-	cprintf("First line = %x\n", *(int*)(0x800020));
 	asm volatile(
 		"\tmovl %0,%%esp\n"
 		"\tpopal\n"
