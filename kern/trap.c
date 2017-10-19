@@ -74,7 +74,7 @@ trap_init(void)
 	SETGATE(idt[T_DIVIDE] , 1, GD_KT, (void*)H_DIVIDE ,0);   
 	SETGATE(idt[T_DEBUG]  , 1, GD_KT, (void*)H_DEBUG  ,0);  
 	SETGATE(idt[T_NMI]    , 1, GD_KT, (void*)H_NMI    ,0);
-	SETGATE(idt[T_BRKPT]  , 1, GD_KT, (void*)H_BRKPT  ,0);  
+	SETGATE(idt[T_BRKPT]  , 1, GD_KT, (void*)H_BRKPT  ,3);  // User level previlege (3)
 	SETGATE(idt[T_OFLOW]  , 1, GD_KT, (void*)H_OFLOW  ,0);  
 	SETGATE(idt[T_BOUND]  , 1, GD_KT, (void*)H_BOUND  ,0);  
 	SETGATE(idt[T_ILLOP]  , 1, GD_KT, (void*)H_ILLOP  ,0);  
@@ -166,7 +166,16 @@ static void
 trap_dispatch(struct Trapframe *tf)
 {
 	// Handle processor exceptions.
-	// LAB 3: Your code here.
+	switch(tf->tf_trapno){
+	case T_BRKPT: {
+		print_trapframe(tf);
+		while (1) 
+			monitor(NULL);
+	}
+	case T_PGFLT:
+		page_fault_handler(tf);
+		break;
+	}
 
 	// Unexpected trap: The user process or the kernel has a bug.
 	print_trapframe(tf);
