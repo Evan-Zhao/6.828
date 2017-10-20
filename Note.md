@@ -115,10 +115,28 @@ LAPIC lives at `0xFE000000`. We'll map that to a lower address `MMIOLIM`.
 
 ### Indirect Call of `mp_main` 
 
-At `mpentry.S`, line 77. We moved the addr of the main function into `%eax` before jumping there.
+At `mpentry.S`, line 77. We moved the addr of the main function into `%eax` before jumping there. **Why?**
 
-### Q: Link Address
+### Exercise 7: `sys_page_alloc`
 
-Why the macro `MPBOOTPHYS` in file `kern/mpentry.S` is necessary?
+In user space, if `page_insert` fails we'll need to free the page allocated. The other way around: in kernel we did not do this because, if `page_insert` fails anyway the kernel will panic.
 
-* The AP kernel code is not specially linked. It's linked at high address, but when AP CPU starts, it runs in low address. The macro transfers link addr to load addr.
+### Questions
+
+1. Why the macro `MPBOOTPHYS` in file `kern/mpentry.S` is necessary?
+
+    * The AP kernel code is not specially linked. It's linked at high address, but when AP CPU starts, it runs in low address. The macro transfers link addr to load addr.
+
+1. It seems that using the big kernel lock guarantees that only one CPU can run the kernel code at a time. Why do we still need separate kernel stacks for each CPU?
+
+    
+
+1. Why can the pointer e be dereferenced both before and after the addressing switch?
+
+    * Because the mapping space is identical above `UTOP` in all pgdirs, where `Env e` locates at.
+
+1. Whenever the kernel switches from one environment to another, it must ensure the old environment's registers are saved so they can be restored properly later. Why? Where does this happen?
+
+    * Because this paused environment may be continued later after some envs have been executing on this CPU, for example, if it pauses by `sys_yield`.
+
+    * This happens in `kern/trapentry.S`, when the CPU already pushed a part of registers on stack on detection of a interrupt, and we were asked to done the rest (using `pushal`).
