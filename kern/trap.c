@@ -1,6 +1,7 @@
 #include <inc/mmu.h>
 #include <inc/x86.h>
 #include <inc/assert.h>
+#include <inc/error.h>
 
 #include <kern/pmap.h>
 #include <kern/trap.h>
@@ -71,8 +72,33 @@ trap_init(void)
 {
 	extern struct Segdesc gdt[];
 
-	// LAB 3: Your code here.
-
+	// These are traps
+	// Why extern reference cannot be void*? I'm confused.
+	// Anyway, it's char[].
+	extern char H_DIVIDE[], H_DEBUG[], H_NMI[],     H_BRKPT[],  H_OFLOW[],
+				H_BOUND[],  H_ILLOP[], H_DEVICE[],  H_DBLFLT[], H_TSS[],
+				H_SEGNP[],  H_STACK[], H_GPFLT[],   H_PGFLT[],  H_FPERR[],
+				H_ALIGN[],  H_MCHK[],  H_SIMDERR[], H_SYSCALL[];
+	SETGATE(idt[T_DIVIDE] , 1, GD_KT, (void*)H_DIVIDE ,0);   
+	SETGATE(idt[T_DEBUG]  , 1, GD_KT, (void*)H_DEBUG  ,0);  
+	SETGATE(idt[T_NMI]    , 1, GD_KT, (void*)H_NMI    ,0);
+	SETGATE(idt[T_BRKPT]  , 1, GD_KT, (void*)H_BRKPT  ,3);  // User level previlege (3)
+	SETGATE(idt[T_OFLOW]  , 1, GD_KT, (void*)H_OFLOW  ,0);  
+	SETGATE(idt[T_BOUND]  , 1, GD_KT, (void*)H_BOUND  ,0);  
+	SETGATE(idt[T_ILLOP]  , 1, GD_KT, (void*)H_ILLOP  ,0);  
+	SETGATE(idt[T_DEVICE] , 1, GD_KT, (void*)H_DEVICE ,0);   
+	SETGATE(idt[T_DBLFLT] , 1, GD_KT, (void*)H_DBLFLT ,0);   
+	SETGATE(idt[T_TSS]    , 1, GD_KT, (void*)H_TSS    ,0);
+	SETGATE(idt[T_SEGNP]  , 1, GD_KT, (void*)H_SEGNP  ,0);  
+	SETGATE(idt[T_STACK]  , 1, GD_KT, (void*)H_STACK  ,0);  
+	SETGATE(idt[T_GPFLT]  , 1, GD_KT, (void*)H_GPFLT  ,0);  
+	SETGATE(idt[T_PGFLT]  , 1, GD_KT, (void*)H_PGFLT  ,0);  
+	SETGATE(idt[T_FPERR]  , 1, GD_KT, (void*)H_FPERR  ,0);  
+	SETGATE(idt[T_ALIGN]  , 1, GD_KT, (void*)H_ALIGN  ,0);  
+	SETGATE(idt[T_MCHK]   , 1, GD_KT, (void*)H_MCHK   ,0); 
+	SETGATE(idt[T_SIMDERR], 1, GD_KT, (void*)H_SIMDERR,0);  
+	
+	SETGATE(idt[T_SYSCALL], 1, GD_KT, (void*)H_SYSCALL,3);  // System call
 	// Per-CPU setup 
 	trap_init_percpu();
 }
@@ -175,7 +201,27 @@ static void
 trap_dispatch(struct Trapframe *tf)
 {
 	// Handle processor exceptions.
-	// LAB 3: Your code here.
+	int32_t syscall_ret;
+	//cprintf("Trap no = %d\n", tf->tf_trapno);
+	switch(tf->tf_trapno){
+	case T_BRKPT:
+		print_trapframe(tf);
+		while (1) 
+			monitor(NULL);
+		return;
+	case T_PGFLT:
+		page_fault_handler(tf);
+		return;
+	case T_SYSCALL: // System call
+		tf->tf_regs.reg_eax = syscall(
+			tf->tf_regs.reg_eax,	// Use register value from trapframe
+			tf->tf_regs.reg_edx, 
+			tf->tf_regs.reg_ecx, 
+			tf->tf_regs.reg_ebx, 
+			tf->tf_regs.reg_edi, 
+			tf->tf_regs.reg_esi);
+		return;
+	}
 
 	// Handle spurious interrupts
 	// The hardware sometimes raises these because of noise on the
@@ -268,9 +314,9 @@ page_fault_handler(struct Trapframe *tf)
 	// Read processor's CR2 register to find the faulting address
 	fault_va = rcr2();
 
-	// Handle kernel-mode page faults.
-
-	// LAB 3: Your code here.
+	uint16_t cs = tf->tf_cs;
+	if ((cs & 0xFF) == GD_KT) // code segment descriptor is kernel
+		panic("Page fault in kernel mode!");
 
 	// We've already handled kernel-mode exceptions, so if we get here,
 	// the page fault happened in user mode.

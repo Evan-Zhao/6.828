@@ -44,13 +44,36 @@
 
 .text
 
-/*
- * Lab 3: Your code here for generating entry points for the different traps.
- */
+TRAPHANDLER_NOEC(H_DIVIDE , T_DIVIDE)
+TRAPHANDLER_NOEC(H_DEBUG  , T_DEBUG)
+TRAPHANDLER_NOEC(H_NMI    , T_NMI)
+TRAPHANDLER_NOEC(H_BRKPT  , T_BRKPT)
+TRAPHANDLER_NOEC(H_OFLOW  , T_OFLOW)
+TRAPHANDLER_NOEC(H_BOUND  , T_BOUND)
+TRAPHANDLER_NOEC(H_ILLOP  , T_ILLOP)
+TRAPHANDLER_NOEC(H_DEVICE , T_DEVICE)
+TRAPHANDLER     (H_DBLFLT , T_DBLFLT)	// Error Code const 0
+TRAPHANDLER     (H_TSS    , T_TSS)
+TRAPHANDLER     (H_SEGNP  , T_SEGNP)
+TRAPHANDLER     (H_STACK  , T_STACK)
+TRAPHANDLER     (H_GPFLT  , T_GPFLT)
+TRAPHANDLER     (H_PGFLT  , T_PGFLT)
+TRAPHANDLER_NOEC(H_FPERR  , T_FPERR)
+TRAPHANDLER_NOEC(H_ALIGN  , T_ALIGN)
+TRAPHANDLER_NOEC(H_MCHK   , T_MCHK)
+TRAPHANDLER_NOEC(H_SIMDERR, T_SIMDERR)
 
+TRAPHANDLER_NOEC(H_SYSCALL, T_SYSCALL)  // System call.
 
-
-/*
- * Lab 3: Your code here for _alltraps
- */
+_alltraps:
+/* Processor has pushed ss, esp, eflags, cs, eip, and [error] */
+/* TRAPHANDLER did [error] and trapno */
+	pushl  %ds;
+	pushl  %es;
+	pushal;
+	movw   $GD_KD, %ax;
+	movw   %ax   , %ds;
+	movw   %ax   , %es;
+	pushl  %esp;
+	call   trap
 
