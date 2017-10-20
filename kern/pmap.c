@@ -270,7 +270,11 @@ mem_init_mp(void)
 	//             Known as a "guard page".
 	//     Permissions: kernel RW, user NONE
 	//
-	// LAB 4: Your code here:
+	for (size_t i = 0; i < NCPU; i++) { // `ncpu` is not set yet, we just use NCPU = 8.
+		uintptr_t kstacktop_i = KSTACKTOP - i * (KSTKSIZE + KSTKGAP);
+		boot_map_region(kern_pgdir, kstacktop_i - KSTKSIZE, KSTKSIZE, 
+						PADDR(percpu_kstacks[i]), PTE_W);;
+	}
 
 }
 
@@ -310,10 +314,15 @@ page_init(void)
 	// Change the code to reflect this.
 	// NB: DO NOT actually touch the physical memory corresponding to
 	// free pages!
-	size_t i;
+	size_t i, len;
 	physaddr_t free = (physaddr_t) PADDR(boot_alloc(0));
-	for (i = 1; i < npages; i++) {
-		if (i >= npages_basemem && i * PGSIZE < free)
+	extern unsigned char mpentry_start[], mpentry_end[];
+	size_t core_code_end = MPENTRY_PADDR + mpentry_end - mpentry_start;
+
+	for (i = 1, len = PGSIZE; i < npages; i++, len += PGSIZE) {
+		if (len >= MPENTRY_PADDR && len < core_code_end) // We're in multicore code
+			continue;
+		if (i >= npages_basemem && len < free)
 			continue;
 		pages[i].pp_ref = 0;
 		pages[i].pp_link = page_free_list;
@@ -569,9 +578,13 @@ mmio_map_region(physaddr_t pa, size_t size)
 	// okay to simply panic if this happens).
 	//
 	// Hint: The staff solution uses boot_map_region.
-	//
-	// Your code here:
-	panic("mmio_map_region not implemented");
+	
+	size_t size_up = ROUNDUP(size, PGSIZE);
+	if (base >= MMIOLIM)
+		panic("MMIO overflowed!");
+	boot_map_region(kern_pgdir, base, size_up, pa, PTE_PCD|PTE_PWT|PTE_W);
+	base += size_up;
+	return (void*)base - size_up;
 }
 
 static uintptr_t user_mem_check_addr;

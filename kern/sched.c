@@ -28,8 +28,30 @@ sched_yield(void)
 	// no runnable environments, simply drop through to the code
 	// below to halt the cpu.
 
-	// LAB 4: Your code here.
-
+	if (!curenv) { 
+		// If we never had an env running, search from beginning.
+		// and don't deref curenv at all.
+		for (idle = envs; idle < envs + NENV; idle++)
+			if (idle->env_status == ENV_RUNNABLE)
+				env_run(idle); // Will not return
+	}
+	else {
+		// Search the right of curenv (as the order in envs)
+		for (idle = curenv + 1; idle < envs + NENV; idle++)
+			if (idle->env_status == ENV_RUNNABLE)
+				env_run(idle); 
+	
+		// If we get here, we had no luck on right side
+		for (idle = envs; idle < curenv ; idle++)
+			if (idle->env_status == ENV_RUNNABLE)
+				env_run(idle);
+	
+		// If here then found nothing on left side, either.
+		// Then, if the original env is running, just fallback there.
+		if (curenv->env_status == ENV_RUNNING)
+			env_run(curenv);
+	}
+	
 	// sched_halt never returns
 	sched_halt();
 }

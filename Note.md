@@ -90,3 +90,35 @@ What is the maximum amount of physical memory that this operating system can sup
    In sum, space overhead for memory management is ~12MB if we have 4GB memory.
 
 1. We manually jumped (using `jmp`) to high linear address after the simple linear table has been set up. We have some instructions continue executing at a low EIP after we enable paging, because the simple table mapped `[KERNBASE, KERNBASE+4MB)` *and* `[0, 4MB)` both to physical `[0, 4MB)`. 
+
+## Lab 4
+
+### SMP
+
+Symmetric multiprocessing: processors are symmetric in previleges / resources / function.
+
+1 CPU <-> 1 logic APIC unit. Useful for:
+
+* Getting CPU id (APIC ID)
+
+* Bringing up a CPU
+
+* Triggering clock interrupts
+
+### IO Holes
+
+Parts of physical memory that are hardwired to certain I/O devices. 
+
+E.g.: VGA buffer (at 640K). We did not map that part of memory at all.
+
+LAPIC lives at `0xFE000000`. We'll map that to a lower address `MMIOLIM`.
+
+### Indirect Call of `mp_main` 
+
+At `mpentry.S`, line 77. We moved the addr of the main function into `%eax` before jumping there.
+
+### Q: Link Address
+
+Why the macro `MPBOOTPHYS` in file `kern/mpentry.S` is necessary?
+
+* The AP kernel code is not specially linked. It's linked at high address, but when AP CPU starts, it runs in low address. The macro transfers link addr to load addr.

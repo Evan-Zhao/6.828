@@ -550,14 +550,22 @@ env_run(struct Env *e)
 	//	and make sure you have set the relevant parts of
 	//	e->env_tf to sensible values.
 
+	// Unset curenv running before going to new env.
 	if (curenv && curenv->env_status == ENV_RUNNING) {
 		curenv->env_status = ENV_RUNNABLE;
 	}
-	// mon_backtrace(0, 0, 0);
+
 	curenv = e;
 	curenv->env_status = ENV_RUNNING;
-	curenv->env_runs++;
+	curenv->env_runs++; // Incremetn run count
+
+	// Jump to user env pgdir
 	lcr3(PADDR(curenv->env_pgdir));
+	
+	// Unlock the kernel if we're heading user mode.
+	unlock_kernel();
+
+	// Do the final work.
 	env_pop_tf(&curenv->env_tf);  // Does not return.
 }
 

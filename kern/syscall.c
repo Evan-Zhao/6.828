@@ -57,7 +57,7 @@ sys_env_destroy(envid_t envid)
 		return r;
 	if (e == curenv)
 		cprintf("[%08x] exiting gracefully\n", curenv->env_id);
-	else
+	else 
 		cprintf("[%08x] destroying %08x\n", curenv->env_id, e->env_id);
 	env_destroy(e);
 	return 0;
@@ -280,6 +280,8 @@ syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, 
 		return sys_getenvid();
 	case SYS_env_destroy:
 		return sys_env_destroy(a1);
+	case SYS_yield:
+		sys_yield();
 	default:
 		return -E_INVAL;
 	}
