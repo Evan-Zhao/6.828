@@ -184,6 +184,7 @@ env_setup_vm(struct Env *e)
 	//	pp_ref for env_free to work correctly.
 	//    - The functions in kern/pmap.h are handy.
 
+	memset(page2kva(p), 0, PGSIZE);
 	p->pp_ref++;
 	e->env_pgdir = page2kva(p);
 	//cprintf("e = %p; e->env_pgdir = %p\n", e, e->env_pgdir);
@@ -275,7 +276,7 @@ region_alloc(struct Env *e, void *va, size_t len)
 {
 	uintptr_t l = ROUNDDOWN((uintptr_t)va, PGSIZE), 
 			  r = ROUNDUP((uintptr_t)(va + len), PGSIZE);
-	for (uintptr_t ptr = l; ptr <= r; ptr += PGSIZE) {
+	for (uintptr_t ptr = l; ptr < r; ptr += PGSIZE) {
 		struct PageInfo *pg = page_alloc(0);
 		if (!pg)
 			panic("No free page for allocation.");
@@ -532,7 +533,5 @@ env_run(struct Env *e)
 	curenv->env_runs++;
 	lcr3(PADDR(curenv->env_pgdir));
 	env_pop_tf(&curenv->env_tf);  // Does not return.
-
-	// panic("env_run not yet implemented");
 }
 

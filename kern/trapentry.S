@@ -62,17 +62,17 @@ TRAPHANDLER_NOEC(H_ALIGN  , T_ALIGN)
 TRAPHANDLER_NOEC(H_MCHK   , T_MCHK)
 TRAPHANDLER_NOEC(H_SIMDERR, T_SIMDERR)
 
-
+TRAPHANDLER_NOEC(H_SYSCALL, T_SYSCALL)  // System call.
 
 _alltraps:
 /* Processor has pushed ss, esp, eflags, cs, eip, and [error] */
 /* TRAPHANDLER did [error] and trapno */
 	pushl  %ds;
 	pushl  %es;
+	pushal;
 	movw   $GD_KD, %ax;
 	movw   %ax   , %ds;
 	movw   %ax   , %es;
-	pushal;
 	pushl  %esp;
 	call   trap
 
