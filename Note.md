@@ -129,8 +129,6 @@ In user space, if `page_insert` fails we'll need to free the page allocated. The
 
 1. It seems that using the big kernel lock guarantees that only one CPU can run the kernel code at a time. Why do we still need separate kernel stacks for each CPU?
 
-    
-
 1. Why can the pointer e be dereferenced both before and after the addressing switch?
 
     * Because the mapping space is identical above `UTOP` in all pgdirs, where `Env e` locates at.

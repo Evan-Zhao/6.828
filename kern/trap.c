@@ -351,12 +351,46 @@ page_fault_handler(struct Trapframe *tf)
 	//   To change what the user environment runs, modify 'curenv->env_tf'
 	//   (the 'tf' variable points at 'curenv->env_tf').
 
-	// LAB 4: Your code here.
 
-	// Destroy the environment that caused the fault.
-	cprintf("[%08x] user fault va %08x ip %08x\n",
-		curenv->env_id, fault_va, tf->tf_eip);
-	print_trapframe(tf);
-	env_destroy(curenv);
+	if (!curenv->env_pgfault_upcall) {
+		// If no page fault upcall, 
+		// destroy the environment that caused the fault.
+		cprintf("[%08x] user fault va %08x ip %08x\n",
+				curenv->env_id, fault_va, tf->tf_eip);
+		print_trapframe(tf);
+		env_destroy(curenv);
+	}
+
+	// Backup the current stack pointer.
+	uintptr_t esp = tf->tf_esp;
+	
+	// Get stack point to the right place.
+	// Then, check whether the user can write memory there.
+	// If not, curenv will be destroyed, and things are simpler.
+	if (tf->tf_esp < UXSTACKTOP && tf->tf_esp >= UXSTACKTOP - PGSIZE) {
+		tf->tf_esp -= 4 + sizeof(struct UTrapframe);
+		user_mem_assert(curenv, (void*)tf->tf_esp, 4 + sizeof(struct UTrapframe), PTE_W | PTE_U);
+		// FIXME
+		*((uint32_t*)esp - 1) = 0;  // We also set the int padding to 0.
+	}
+	else {
+		tf->tf_esp = UXSTACKTOP - sizeof(struct UTrapframe);
+		user_mem_assert(curenv, (void*)tf->tf_esp, sizeof(struct UTrapframe), PTE_W | PTE_U);
+	}
+
+	// Fill in UTrapframe data
+	struct UTrapframe* utf = (struct UTrapframe*)tf->tf_esp;
+	utf->utf_fault_va = fault_va;
+	utf->utf_err = tf->tf_err;
+	utf->utf_regs = tf->tf_regs;
+	utf->utf_eip = tf->tf_eip;
+	utf->utf_eflags = tf->tf_eflags;
+	utf->utf_esp = esp;
+
+	// Modify trapframe so that upcall is triggered next.
+	tf->tf_eip = (uintptr_t)curenv->env_pgfault_upcall;
+
+	// and then run the upcall.
+	env_run(curenv);
 }
 
