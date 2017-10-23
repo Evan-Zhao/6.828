@@ -617,15 +617,17 @@ user_mem_check(struct Env *env, const void *va, size_t len, int perm)
 			user_mem_check_addr = (uintptr_t)(l < va ? va : l); 
 			return -E_FAULT;
 		}
+
 		pte_t* pte = pgdir_walk(env->env_pgdir, l, 0);
 		// If there's no such page -- it will pagefault. Just wait.
 		// And, be sure not to create it by mistake.
 		// Okay I know I wrote this, but maybe kernel will pagefault, 
 		// because this may be on the path to syscall. 
 		// So we should still be responsible.
-		
-		if (!pte) 
+		if (!pte) {
+			user_mem_check_addr = (uintptr_t)(l < va ? va : l); 
 			return -E_FAULT;
+		}
 		uint32_t given_perm = *pte & 0xFFF;
 		if ((given_perm | perm) > given_perm) {
 			user_mem_check_addr = (uintptr_t)(l < va ? va : l); 
