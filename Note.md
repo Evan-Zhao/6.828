@@ -138,3 +138,7 @@ In user space, if `page_insert` fails we'll need to free the page allocated. The
     * Because this paused environment may be continued later after some envs have been executing on this CPU, for example, if it pauses by `sys_yield`.
 
     * This happens in `kern/trapentry.S`, when the CPU already pushed a part of registers on stack on detection of a interrupt, and we were asked to done the rest (using `pushal`).
+
+### What Happened at UVPT
+
+Do you remember what we did at the beginning of `pmap.c`, mapping the `PDX(UVPT)` slot onto page dir itself?

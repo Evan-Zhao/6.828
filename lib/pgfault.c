@@ -32,7 +32,7 @@ set_pgfault_handler(void (*handler)(struct UTrapframe *utf))
 		r = sys_page_alloc(0, (void*)UXSTACKTOP - PGSIZE, PTE_W | PTE_U);
 		if (r)
 			panic("Error occurred: %e, when setting up exception stack.", r);
-		r = sys_env_set_pgfault_upcall(0, _pgfault_upcall);;
+		r = sys_env_set_pgfault_upcall(0, _pgfault_upcall);
 		if (r)
 			panic("Error occurred: %e, when setting up pagefault upcall.", r);
 	}

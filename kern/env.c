@@ -561,7 +561,7 @@ env_run(struct Env *e)
 
 	// Jump to user env pgdir
 	lcr3(PADDR(curenv->env_pgdir));
-	
+
 	// Unlock the kernel if we're heading user mode.
 	unlock_kernel();
 

@@ -175,14 +175,18 @@ sys_page_alloc(envid_t envid, void *va, int perm)
 		return r;
 	
 	// then check parameter
-	if ((uintptr_t)va >= UTOP || (uintptr_t)va % PGSIZE)
+	if ((uintptr_t)va >= UTOP || (uintptr_t)va % PGSIZE) {
+		cprintf("2, -3\n", r);
 		return -E_INVAL;
-	if (
-		!((PTE_U | PTE_P) & perm) || // If we don't have perm U or P
-		(~PTE_SYSCALL & perm)		 // or we get some prohibited perms.
-	) 
+	}
+
+	// Check if we got some prohibited perms.
+	if (~PTE_SYSCALL & perm) 
 		return -E_INVAL;
 	
+	// If we don't have perm U or P, just make it up.
+	perm |= PTE_U | PTE_P;
+
 	// Do our things finally.
 	struct PageInfo* pp = page_alloc(1);
 	if (!pp)  // No free memory
@@ -233,12 +237,15 @@ sys_page_map(envid_t srcenvid, void *srcva,
 		((uintptr_t)srcva >= UTOP || (uintptr_t)srcva % PGSIZE) || 
 		((uintptr_t)dstva >= UTOP || (uintptr_t)dstva % PGSIZE))
 		return -E_INVAL;
-	if (
-		!((PTE_U | PTE_P) & perm) || // If we don't have perm U or P
-		(~PTE_SYSCALL & perm)		 // or we get some prohibited perms.
-	) 
-		return -E_INVAL;
 	
+	cprintf("PTE_SYSCALL = %x, perm = %x!\n", PTE_SYSCALL, perm);
+	// Check if we got some prohibited perms.
+	if (~PTE_SYSCALL & perm)
+		return -E_INVAL;
+
+	// If we don't have perm U or P, just make it up.
+	perm |= PTE_U | PTE_P;
+
 	// Lookup the page first, then 
 	// check if perm is stronger than that of src page
 	pte_t* src_pgt;

@@ -18,23 +18,40 @@ pgfault(struct UTrapframe *utf)
 	uint32_t err = utf->utf_err;
 	int r;
 
+	cprintf("We're %x, and we do have reached here.\n", sys_getenvid());
 	// Check that the faulting access was (1) a write, and (2) to a
 	// copy-on-write page.  If not, panic.
 	// Hint:
 	//   Use the read-only page table mappings at uvpt
 	//   (see <inc/memlayout.h>).
 
-	// LAB 4: Your code here.
-
+	pte_t* pte = (pte_t*)(PDX(uvpt) << PTSHIFT | (PDX(addr) << PGSHIFT) | PTX(addr));
+	if (!(*pte & PTE_W) && !(*pte & PTE_COW))
+		panic("Page access violation: %p", addr);
+	
 	// Allocate a new page, map it at a temporary location (PFTEMP),
 	// copy the data from the old page to the new page, then move the new
 	// page to the old page's address.
 	// Hint:
 	//   You should make three system calls.
 
-	// LAB 4: Your code here.
+	// addr must have been page aligned. Just use it.
+	r = sys_page_alloc(0, PFTEMP, PTE_W | PTE_U);
+	if (r)	
+		panic("Pagefault process failed: %e", r);
 
-	panic("pgfault not implemented");
+	// Copy content
+	memmove(addr, (void*)PFTEMP, PGSIZE);
+
+	// Remove old (remapped) page
+	r = sys_page_unmap(0, addr);
+	if (r)	
+	panic("Pagefault process failed: %e", r);
+
+	// Finally, move temp page to dest.
+	r = sys_page_map(0, PFTEMP, 0, addr, PTE_W | PTE_U);
+	if (r)
+		panic("Pagefault process failed: %e", r);
 }
 
 //
@@ -52,10 +69,28 @@ static int
 duppage(envid_t envid, unsigned pn)
 {
 	int r;
+	void* addr = (void*)(pn*PGSIZE);
+	
+	// We used the trick at UVPT again; see instruction.
+	pte_t* pte = (pte_t*)(PDX(uvpt) << PTSHIFT | (PDX(addr) << PGSHIFT) | PTX(addr));
+	uint32_t src_perm = *pte & 0xFFF;
+	
+	if (!pte || !*pte) // No page, nothing to do
+		return 0;
 
-	// LAB 4: Your code here.
-	panic("duppage not implemented");
-	return 0;
+	if ((PTE_W & src_perm) || (PTE_COW & src_perm)) { // writable or copy-on-write
+		// DO NOT make it writable, so we can have a pagefault.
+		r = sys_page_map(0, addr, envid, addr, PTE_COW);
+		cprintf("RW, r = %d, pn = %d\n", r, pn);
+		// Remap self page onto self.
+		r = sys_page_map(0, addr, 0, addr, PTE_COW);
+		cprintf("RW, r = %d, pn = %d, src_perm = %x, *pte = %x\n", r, pn, src_perm, *pte);
+	}
+	else {// Just read-only
+		r = sys_page_map(0, addr, envid, addr, src_perm);
+		cprintf("RO, r = %d, pn = %d, *pte = %x\n", r, pn, *pte);
+	}
+	return r;
 }
 
 //
@@ -77,8 +112,44 @@ duppage(envid_t envid, unsigned pn)
 envid_t
 fork(void)
 {
-	// LAB 4: Your code here.
-	panic("fork not implemented");
+	// Installs pgfault as default handler.
+	// set_pgfault_handler(pgfault);
+	
+	// Syscall fork
+	envid_t id = sys_exofork();
+	cprintf("Ok we got here as %d.\n",  id);
+	if (id < 0) // Something happened.
+		panic("sys_exofork: %e", id);
+	if (id == 0) {
+		// We're the child.
+		// The copied value of the global variable 'thisenv'
+		// is no longer valid (it refers to the parent!).
+		// Fix it and return 0.
+		thisenv = &envs[ENVX(sys_getenvid())];
+		return 0;
+	}
+
+	// We're the parent. Now we copy (remap) pages.
+	int r = 0, pn;
+	for (pn = 2 * NPTENTRIES; pn < (UTOP >> PGSHIFT) && !r; pn++)  {// From TEXT to kernel `end`
+		r = duppage(id, pn);  // map one page each time.
+		cprintf("Map pn = %d\n", pn);
+	}
+	if (r)	return r;
+
+	// We really make a new page for exception stack.
+	r = sys_page_alloc(id, (void*)UXSTACKTOP - PGSIZE, PTE_W | PTE_U);
+	if (r)	return r;
+
+	// Set usr page entrypoint for child
+	r = sys_env_set_pgfault_upcall(id, envs[ENVX(sys_getenvid())].env_pgfault_upcall);
+	if (r)	return r;
+
+	// Ready to run! Mark runnable.
+	r = sys_env_set_status(id, ENV_RUNNABLE);
+	if (r)	return r;
+
+	return id;
 }
 
 // Challenge!
