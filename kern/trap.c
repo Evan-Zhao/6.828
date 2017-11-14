@@ -387,10 +387,13 @@ page_fault_handler(struct Trapframe *tf)
 	utf->utf_eflags = tf->tf_eflags;
 	utf->utf_esp = esp;
 
-	cprintf("We came from text addr %x, the fault addr was %x.\n", tf->tf_eip, fault_va);
+	//cprintf("We came from text addr %x, the fault addr was %x.\n", tf->tf_eip, fault_va);
 	// Modify trapframe so that upcall is triggered next.
 	tf->tf_eip = (uintptr_t)curenv->env_pgfault_upcall;
 
+	//pte_t *pte = pgdir_walk(curenv->env_pgdir, (void*)0xeebfdf54, 0);
+	//cprintf("pte = %p, *pte = %p\n", pte, *pte);
+	// print_trapframe(tf);
 	// and then run the upcall.
 	env_run(curenv);
 }

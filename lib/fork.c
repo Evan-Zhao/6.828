@@ -14,18 +14,23 @@
 static void
 pgfault(struct UTrapframe *utf)
 {
-	void *addr = (void *) utf->utf_fault_va;
+	void *addr = ROUNDDOWN((void *) utf->utf_fault_va, PGSIZE);
 	uint32_t err = utf->utf_err;
 	int r;
 
-	cprintf("We're %x, and we do have reached here.\n", sys_getenvid());
 	// Check that the faulting access was (1) a write, and (2) to a
 	// copy-on-write page.  If not, panic.
 	// Hint:
 	//   Use the read-only page table mappings at uvpt
 	//   (see <inc/memlayout.h>).
 
-	pte_t* pte = (pte_t*)(PDX(uvpt) << PTSHIFT | (PDX(addr) << PGSHIFT) | PTX(addr));
+	pte_t* pte = (pte_t*)(
+		(uintptr_t)uvpt | 
+		(PDX(addr) << PGSHIFT) | 
+		(PTX(addr) << 2)
+	);
+	if (!*pte)
+		panic("pgtable entry is empty in pgfault handler; nothing to do!");
 	if (!(*pte & PTE_W) && !(*pte & PTE_COW))
 		panic("Page access violation: %p", addr);
 	
@@ -36,20 +41,20 @@ pgfault(struct UTrapframe *utf)
 	//   You should make three system calls.
 
 	// addr must have been page aligned. Just use it.
-	r = sys_page_alloc(0, PFTEMP, PTE_W | PTE_U);
+	r = sys_page_alloc(0, PFTEMP, PTE_W);
 	if (r)	
 		panic("Pagefault process failed: %e", r);
 
 	// Copy content
-	memmove(addr, (void*)PFTEMP, PGSIZE);
+	memmove((void*)PFTEMP, addr, PGSIZE);
 
 	// Remove old (remapped) page
 	r = sys_page_unmap(0, addr);
-	if (r)	
-	panic("Pagefault process failed: %e", r);
+	if (r)
+		panic("Pagefault process failed: %e", r);
 
 	// Finally, move temp page to dest.
-	r = sys_page_map(0, PFTEMP, 0, addr, PTE_W | PTE_U);
+	r = sys_page_map(0, PFTEMP, 0, addr, PTE_W);
 	if (r)
 		panic("Pagefault process failed: %e", r);
 }
@@ -70,25 +75,44 @@ duppage(envid_t envid, unsigned pn)
 {
 	int r;
 	void* addr = (void*)(pn*PGSIZE);
-	
+
+	// cprintf("pn = %d, pde_idx = %p, pte = %p\n", pn, 
+	// (pde_t*)(
+	// 	(uintptr_t)uvpd | (PDX(addr) << 2)
+	// ), (pte_t*)(
+	// 	(uintptr_t)uvpt        |
+	// 	(PDX(addr) << PGSHIFT) |
+	// 	(PTX(addr) << 2)
+	// )
+	// );
+
 	// We used the trick at UVPT again; see instruction.
-	pte_t* pte = (pte_t*)(PDX(uvpt) << PTSHIFT | (PDX(addr) << PGSHIFT) | PTX(addr));
-	uint32_t src_perm = *pte & 0xFFF;
-	
-	if (!pte || !*pte) // No page, nothing to do
+	pde_t* pde = (pde_t*)(
+		(uintptr_t)uvpd | (PDX(addr) << 2)
+	);
+	if (!*pde) // pgdir entry is empty; nothing to do.
 		return 0;
+
+	pte_t* pte = (pte_t*)(
+		(uintptr_t)uvpt        |
+		(PDX(addr) << PGSHIFT) |
+		(PTX(addr) << 2)
+	);
+	if (!*pte) // Page table entry is empty; nothing to do.
+		return 0;
+	
+	uint32_t src_perm = *pte & PTE_SYSCALL;
 
 	if ((PTE_W & src_perm) || (PTE_COW & src_perm)) { // writable or copy-on-write
 		// DO NOT make it writable, so we can have a pagefault.
 		r = sys_page_map(0, addr, envid, addr, PTE_COW);
-		cprintf("RW, r = %d, pn = %d\n", r, pn);
-		// Remap self page onto self.
+		// Remap self page onto self; remove the writable marker
 		r = sys_page_map(0, addr, 0, addr, PTE_COW);
-		cprintf("RW, r = %d, pn = %d, src_perm = %x, *pte = %x\n", r, pn, src_perm, *pte);
+		// cprintf("RW, r = %d, pn = %d, src_perm = %x, *pte = %x\n", r, pn, src_perm, *pte);
 	}
-	else {// Just read-only
-		r = sys_page_map(0, addr, envid, addr, src_perm);
-		cprintf("RO, r = %d, pn = %d, *pte = %x\n", r, pn, *pte);
+	else { // Just read-only
+		r = sys_page_map(0, addr, envid, addr, 0);
+		// cprintf("RO, r = %d, pn = %d, src_perm = %x, *pte = %x\n", r, pn, src_perm, *pte);
 	}
 	return r;
 }
@@ -113,11 +137,22 @@ envid_t
 fork(void)
 {
 	// Installs pgfault as default handler.
-	// set_pgfault_handler(pgfault);
-	
+	set_pgfault_handler(pgfault);
+
 	// Syscall fork
 	envid_t id = sys_exofork();
-	cprintf("Ok we got here as %d.\n",  id);
+	if (id == 0) {
+		cprintf("1001 has been generated: ");
+		for (char* c = (char*)0xeebfdf82; *c; c++)
+			cprintf("%x ", *(uint8_t*)c);
+		cprintf("   %s\n", (char*)0xeebfdf82);
+	}
+	int i = 0;
+	// cprintf("Hahahahahahaaahahaemm.\n");
+	// for (uint32_t* p = (uint32_t*)((0x3BD<<22)|(0x3BD<<12)); i < 1024; p++, i++) {
+	// 	if (*p)
+	// 		cprintf("No. %d: 0x%x\n", i, *p);
+	// }
 	if (id < 0) // Something happened.
 		panic("sys_exofork: %e", id);
 	if (id == 0) {
@@ -133,7 +168,8 @@ fork(void)
 	int r = 0, pn;
 	for (pn = 2 * NPTENTRIES; pn < (UTOP >> PGSHIFT) && !r; pn++)  {// From TEXT to kernel `end`
 		r = duppage(id, pn);  // map one page each time.
-		cprintf("Map pn = %d\n", pn);
+		// if (pn % 1000 == 0)
+		//  	cprintf("Map pn = %d\n", pn);
 	}
 	if (r)	return r;
 

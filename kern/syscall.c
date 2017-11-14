@@ -192,8 +192,10 @@ sys_page_alloc(envid_t envid, void *va, int perm)
 	if (!pp)  // No free memory
 		return -E_NO_MEM;
 	r = page_insert(to_env->env_pgdir, pp, va, perm);
-	if (r)
+	if (r) {
+		cprintf("Something wrong when inserting. Will free.\n");
 		page_free(pp);
+	}
 	return r;
 }
 
@@ -238,7 +240,6 @@ sys_page_map(envid_t srcenvid, void *srcva,
 		((uintptr_t)dstva >= UTOP || (uintptr_t)dstva % PGSIZE))
 		return -E_INVAL;
 	
-	cprintf("PTE_SYSCALL = %x, perm = %x!\n", PTE_SYSCALL, perm);
 	// Check if we got some prohibited perms.
 	if (~PTE_SYSCALL & perm)
 		return -E_INVAL;
@@ -254,7 +255,9 @@ sys_page_map(envid_t srcenvid, void *srcva,
 		return -E_INVAL;
 
 	// Everything seems good, and we insert that page.
+	// cprintf("srcva = %p, pp->pp_ref = %d, ", srcva, pp->pp_ref);
 	r = page_insert(to_env->env_pgdir, pp, dstva, perm);
+	// cprintf("pp->pp_ref = %d. \n", pp->pp_ref);
 	return r;
 }
 

@@ -374,7 +374,7 @@ load_icode(struct Env *e, uint8_t *binary)
 			// Alloc memsz bytes of space.
 			region_alloc(e, (void*)ph0->p_va, ph0->p_memsz);
 			// Copy only filesz bytes, from kernel space to env space.
-			memcpy((void*)ph0->p_va, binary + ph0->p_offset, ph0->p_filesz);
+			memmove((void*)ph0->p_va, binary + ph0->p_offset, ph0->p_filesz);
 			// Memset the rest space.
 			memset((void*)ph0->p_va + ph0->p_filesz, 0, 
 					ph0->p_memsz - ph0->p_filesz);
@@ -462,12 +462,14 @@ env_free(struct Env *e)
 
 		// free the page table itself
 		e->env_pgdir[pdeno] = 0;
+		// cprintf("Going to decref [va = %p], and may free.\n");
 		page_decref(pa2page(pa));
 	}
 
 	// free the page directory
 	pa = PADDR(e->env_pgdir);
 	e->env_pgdir = 0;
+	// cprintf("Going to decref [va = %p], and may free.\n");
 	page_decref(pa2page(pa));
 
 	// return the environment to the free list
