@@ -76,16 +76,6 @@ duppage(envid_t envid, unsigned pn)
 	int r;
 	void* addr = (void*)(pn*PGSIZE);
 
-	// cprintf("pn = %d, pde_idx = %p, pte = %p\n", pn, 
-	// (pde_t*)(
-	// 	(uintptr_t)uvpd | (PDX(addr) << 2)
-	// ), (pte_t*)(
-	// 	(uintptr_t)uvpt        |
-	// 	(PDX(addr) << PGSHIFT) |
-	// 	(PTX(addr) << 2)
-	// )
-	// );
-
 	// We used the trick at UVPT again; see instruction.
 	pde_t* pde = (pde_t*)(
 		(uintptr_t)uvpd | (PDX(addr) << 2)
@@ -108,11 +98,9 @@ duppage(envid_t envid, unsigned pn)
 		r = sys_page_map(0, addr, envid, addr, PTE_COW);
 		// Remap self page onto self; remove the writable marker
 		r = sys_page_map(0, addr, 0, addr, PTE_COW);
-		// cprintf("RW, r = %d, pn = %d, src_perm = %x, *pte = %x\n", r, pn, src_perm, *pte);
 	}
 	else { // Just read-only
 		r = sys_page_map(0, addr, envid, addr, 0);
-		// cprintf("RO, r = %d, pn = %d, src_perm = %x, *pte = %x\n", r, pn, src_perm, *pte);
 	}
 	return r;
 }
@@ -141,18 +129,7 @@ fork(void)
 
 	// Syscall fork
 	envid_t id = sys_exofork();
-	if (id == 0) {
-		cprintf("1001 has been generated: ");
-		for (char* c = (char*)0xeebfdf82; *c; c++)
-			cprintf("%x ", *(uint8_t*)c);
-		cprintf("   %s\n", (char*)0xeebfdf82);
-	}
 	int i = 0;
-	// cprintf("Hahahahahahaaahahaemm.\n");
-	// for (uint32_t* p = (uint32_t*)((0x3BD<<22)|(0x3BD<<12)); i < 1024; p++, i++) {
-	// 	if (*p)
-	// 		cprintf("No. %d: 0x%x\n", i, *p);
-	// }
 	if (id < 0) // Something happened.
 		panic("sys_exofork: %e", id);
 	if (id == 0) {
@@ -166,10 +143,12 @@ fork(void)
 
 	// We're the parent. Now we copy (remap) pages.
 	int r = 0, pn;
-	for (pn = 2 * NPTENTRIES; pn < (UTOP >> PGSHIFT) && !r; pn++)  {// From TEXT to kernel `end`
+	for (pn = 2 * NPTENTRIES; pn < (UTOP >> PGSHIFT) && !r; pn++) { // From TEXT to kernel `end`
+		// DON'T map the exception stack page again.
+		// I've spent alot of time here because of this.
+		if (pn << PGSHIFT == UXSTACKTOP - PGSIZE)
+			continue;
 		r = duppage(id, pn);  // map one page each time.
-		// if (pn % 1000 == 0)
-		//  	cprintf("Map pn = %d\n", pn);
 	}
 	if (r)	return r;
 

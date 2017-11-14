@@ -364,7 +364,6 @@ page_alloc(int alloc_flags)
 void
 page_free(struct PageInfo *pp)
 {
-	// cprintf("Here!");
 	if (pp->pp_ref)
 		panic("Ref count is non-zero");
 	if (pp->pp_link)
@@ -533,10 +532,8 @@ page_remove(pde_t *pgdir, void *va)
 	pp->pp_ref--;
 	*pte_store = 0;
 	tlb_invalidate(pgdir, va);
-	if (!pp->pp_ref) {
-		// cprintf("Releasing va = %p\n", va);
+	if (!pp->pp_ref)
 		page_free(pp);
-	}
 }
 
 //

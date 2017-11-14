@@ -255,9 +255,7 @@ sys_page_map(envid_t srcenvid, void *srcva,
 		return -E_INVAL;
 
 	// Everything seems good, and we insert that page.
-	// cprintf("srcva = %p, pp->pp_ref = %d, ", srcva, pp->pp_ref);
 	r = page_insert(to_env->env_pgdir, pp, dstva, perm);
-	// cprintf("pp->pp_ref = %d. \n", pp->pp_ref);
 	return r;
 }
 

@@ -218,7 +218,6 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 	int32_t generation;
 	int r;
 	struct Env *e;
-	// cprintf("newenv_store = %p\n", newenv_store);
 	if (!(e = env_free_list))
 		return -E_NO_FREE_ENV;
 
@@ -414,10 +413,7 @@ void
 env_create(uint8_t *binary, enum EnvType type)
 {
 	struct Env* newenv;
-	// cprintf("&newenv = %p\n", &newenv);
-	// cprintf("env_free_list = %p\n", env_free_list);
 	int r = env_alloc(&newenv, 0);
-	// cprintf("newenv = %p, envs[0] = %p\n", newenv, envs);
 	if (r)
 		panic("Environment allocation faulted: %e", r);
 	load_icode(newenv, binary);
@@ -462,14 +458,12 @@ env_free(struct Env *e)
 
 		// free the page table itself
 		e->env_pgdir[pdeno] = 0;
-		// cprintf("Going to decref [va = %p], and may free.\n");
 		page_decref(pa2page(pa));
 	}
 
 	// free the page directory
 	pa = PADDR(e->env_pgdir);
 	e->env_pgdir = 0;
-	// cprintf("Going to decref [va = %p], and may free.\n");
 	page_decref(pa2page(pa));
 
 	// return the environment to the free list
