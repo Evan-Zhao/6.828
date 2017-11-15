@@ -190,12 +190,9 @@ env_setup_vm(struct Env *e)
 	memset(page2kva(p), 0, PGSIZE);
 	p->pp_ref++;
 	e->env_pgdir = page2kva(p);
-	//cprintf("e = %p; e->env_pgdir = %p\n", e, e->env_pgdir);
 	int j = 0;
-	for (size_t pgt = PDX(UTOP); pgt < PGSIZE / sizeof(pde_t); pgt++) {
-		//cprintf("Reached %d steps, pgt = %d\n", j++, pgt);
+	for (size_t pgt = PDX(UTOP); pgt < PGSIZE / sizeof(pde_t); pgt++)
 		e->env_pgdir[pgt] = kern_pgdir[pgt];
-	}
 
 	// UVPT maps the env's own page table read-only.
 	// Permissions: kernel R, user R
@@ -259,7 +256,7 @@ env_alloc(struct Env **newenv_store, envid_t parent_id)
 	// You will set e->env_tf.tf_eip later.
 
 	// Enable interrupts while in user mode.
-	// LAB 4: Your code here.
+	e->env_tf.tf_eflags = FL_IF;  // This is the only flag till now.
 
 	// Clear the page fault handler until user installs one.
 	e->env_pgfault_upcall = 0;
@@ -385,7 +382,7 @@ load_icode(struct Env *e, uint8_t *binary)
 	// Set program entry in the trapframe
 	e->env_tf.tf_eip = elf->e_entry;
 	// and some other registers
-	e->env_tf.tf_eflags = 0;
+	// e->env_tf.tf_eflags = 0;
 
 	// Jump back.
 	lcr3(PADDR(kern_pgdir));

@@ -78,27 +78,54 @@ trap_init(void)
 	extern char H_DIVIDE[], H_DEBUG[], H_NMI[],     H_BRKPT[],  H_OFLOW[],
 				H_BOUND[],  H_ILLOP[], H_DEVICE[],  H_DBLFLT[], H_TSS[],
 				H_SEGNP[],  H_STACK[], H_GPFLT[],   H_PGFLT[],  H_FPERR[],
-				H_ALIGN[],  H_MCHK[],  H_SIMDERR[], H_SYSCALL[];
-	SETGATE(idt[T_DIVIDE] , 1, GD_KT, (void*)H_DIVIDE ,0);   
-	SETGATE(idt[T_DEBUG]  , 1, GD_KT, (void*)H_DEBUG  ,0);  
-	SETGATE(idt[T_NMI]    , 1, GD_KT, (void*)H_NMI    ,0);
-	SETGATE(idt[T_BRKPT]  , 1, GD_KT, (void*)H_BRKPT  ,3);  // User level previlege (3)
-	SETGATE(idt[T_OFLOW]  , 1, GD_KT, (void*)H_OFLOW  ,0);  
-	SETGATE(idt[T_BOUND]  , 1, GD_KT, (void*)H_BOUND  ,0);  
-	SETGATE(idt[T_ILLOP]  , 1, GD_KT, (void*)H_ILLOP  ,0);  
-	SETGATE(idt[T_DEVICE] , 1, GD_KT, (void*)H_DEVICE ,0);   
-	SETGATE(idt[T_DBLFLT] , 1, GD_KT, (void*)H_DBLFLT ,0);   
-	SETGATE(idt[T_TSS]    , 1, GD_KT, (void*)H_TSS    ,0);
-	SETGATE(idt[T_SEGNP]  , 1, GD_KT, (void*)H_SEGNP  ,0);  
-	SETGATE(idt[T_STACK]  , 1, GD_KT, (void*)H_STACK  ,0);  
-	SETGATE(idt[T_GPFLT]  , 1, GD_KT, (void*)H_GPFLT  ,0);  
-	SETGATE(idt[T_PGFLT]  , 1, GD_KT, (void*)H_PGFLT  ,0);  
-	SETGATE(idt[T_FPERR]  , 1, GD_KT, (void*)H_FPERR  ,0);  
-	SETGATE(idt[T_ALIGN]  , 1, GD_KT, (void*)H_ALIGN  ,0);  
-	SETGATE(idt[T_MCHK]   , 1, GD_KT, (void*)H_MCHK   ,0); 
-	SETGATE(idt[T_SIMDERR], 1, GD_KT, (void*)H_SIMDERR,0);  
+				H_ALIGN[],  H_MCHK[],  H_SIMDERR[], H_SYSCALL[], 
+				// IRQs
+				H_TIMER[],  H_KBD[],   H_IRQ2[],    H_IRQ3[],   H_SERIAL[],
+				H_IRQ5[],   H_IRQ6[],  H_SPUR[],    H_IRQ8[],   H_IRQ9[],
+				H_IRQ10[],  H_IRQ11[], H_IRQ12[],   H_IRQ13[],  H_IDE[],
+				H_IRQ15[];
+
+	// Setting all "istrap" to 0 (not-a-trap), to always disable interrupt in kernel.
+	// WATCH: This may have problem.
+	SETGATE(idt[T_DIVIDE],  0, GD_KT, (void*)H_DIVIDE, 0);   
+	SETGATE(idt[T_DEBUG],   0, GD_KT, (void*)H_DEBUG,  0);  
+	SETGATE(idt[T_NMI],     0, GD_KT, (void*)H_NMI,    0);
+	SETGATE(idt[T_BRKPT],   0, GD_KT, (void*)H_BRKPT,  3);  // User level previlege (3)
+	SETGATE(idt[T_OFLOW],   0, GD_KT, (void*)H_OFLOW,  0);  
+	SETGATE(idt[T_BOUND],   0, GD_KT, (void*)H_BOUND,  0);  
+	SETGATE(idt[T_ILLOP],   0, GD_KT, (void*)H_ILLOP,  0);  
+	SETGATE(idt[T_DEVICE],  0, GD_KT, (void*)H_DEVICE, 0);   
+	SETGATE(idt[T_DBLFLT],  0, GD_KT, (void*)H_DBLFLT, 0);   
+	SETGATE(idt[T_TSS],     0, GD_KT, (void*)H_TSS,    0);
+	SETGATE(idt[T_SEGNP],   0, GD_KT, (void*)H_SEGNP,  0);  
+	SETGATE(idt[T_STACK],   0, GD_KT, (void*)H_STACK,  0);  
+	SETGATE(idt[T_GPFLT],   0, GD_KT, (void*)H_GPFLT,  0);  
+	SETGATE(idt[T_PGFLT],   0, GD_KT, (void*)H_PGFLT,  0);  
+	SETGATE(idt[T_FPERR],   0, GD_KT, (void*)H_FPERR,  0);  
+	SETGATE(idt[T_ALIGN],   0, GD_KT, (void*)H_ALIGN,  0);  
+	SETGATE(idt[T_MCHK],    0, GD_KT, (void*)H_MCHK,   0); 
+	SETGATE(idt[T_SIMDERR], 0, GD_KT, (void*)H_SIMDERR,0);  
 	
-	SETGATE(idt[T_SYSCALL], 1, GD_KT, (void*)H_SYSCALL,3);  // System call
+	SETGATE(idt[T_SYSCALL], 0, GD_KT, (void*)H_SYSCALL,3);  // System call
+
+	// IRQs. 
+	SETGATE(idt[IRQ_OFFSET + IRQ_TIMER],    0, GD_KT, (void*)H_TIMER,  0);
+	SETGATE(idt[IRQ_OFFSET + IRQ_KBD],      0, GD_KT, (void*)H_KBD,    0);
+	SETGATE(idt[IRQ_OFFSET + 2],            0, GD_KT, (void*)H_IRQ2,   0);
+	SETGATE(idt[IRQ_OFFSET + 3],            0, GD_KT, (void*)H_IRQ3,   0);
+	SETGATE(idt[IRQ_OFFSET + IRQ_SERIAL],   0, GD_KT, (void*)H_SERIAL, 0);
+	SETGATE(idt[IRQ_OFFSET + 5],            0, GD_KT, (void*)H_IRQ5,   0);
+	SETGATE(idt[IRQ_OFFSET + 6],            0, GD_KT, (void*)H_IRQ6,   0);
+	SETGATE(idt[IRQ_OFFSET + IRQ_SPURIOUS], 0, GD_KT, (void*)H_SPUR,   0);
+	SETGATE(idt[IRQ_OFFSET + 8],            0, GD_KT, (void*)H_IRQ8,   0);
+	SETGATE(idt[IRQ_OFFSET + 9],            0, GD_KT, (void*)H_IRQ9,   0);
+	SETGATE(idt[IRQ_OFFSET + 10],           0, GD_KT, (void*)H_IRQ10,  0);
+	SETGATE(idt[IRQ_OFFSET + 11],           0, GD_KT, (void*)H_IRQ11,  0);
+	SETGATE(idt[IRQ_OFFSET + 12],           0, GD_KT, (void*)H_IRQ12,  0);
+	SETGATE(idt[IRQ_OFFSET + 13],           0, GD_KT, (void*)H_IRQ13,  0);
+	SETGATE(idt[IRQ_OFFSET + IRQ_IDE],      0, GD_KT, (void*)H_IDE,    0);
+	SETGATE(idt[IRQ_OFFSET + 15],           0, GD_KT, (void*)H_IRQ15,  0);
+	
 	// Per-CPU setup 
 	trap_init_percpu();
 }
@@ -201,7 +228,6 @@ trap_dispatch(struct Trapframe *tf)
 {
 	// Handle processor exceptions.
 	int32_t syscall_ret;
-	//cprintf("Trap no = %d\n", tf->tf_trapno);
 	switch(tf->tf_trapno){
 	case T_BRKPT:
 		print_trapframe(tf);
@@ -387,13 +413,9 @@ page_fault_handler(struct Trapframe *tf)
 	utf->utf_eflags = tf->tf_eflags;
 	utf->utf_esp = esp;
 
-	//cprintf("We came from text addr %x, the fault addr was %x.\n", tf->tf_eip, fault_va);
 	// Modify trapframe so that upcall is triggered next.
 	tf->tf_eip = (uintptr_t)curenv->env_pgfault_upcall;
 
-	//pte_t *pte = pgdir_walk(curenv->env_pgdir, (void*)0xeebfdf54, 0);
-	//cprintf("pte = %p, *pte = %p\n", pte, *pte);
-	// print_trapframe(tf);
 	// and then run the upcall.
 	env_run(curenv);
 }
