@@ -65,7 +65,7 @@ sys_exofork(void)
 	envid_t ret;
 	asm volatile("int %2"
 		     : "=a" (ret)
-		     : "a" (SYS_exofork), "i" (T_SYSCALL));
+			 : "a" (SYS_exofork), "i" (T_SYSCALL));
 	return ret;
 }
 
