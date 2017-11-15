@@ -175,10 +175,8 @@ sys_page_alloc(envid_t envid, void *va, int perm)
 		return r;
 	
 	// then check parameter
-	if ((uintptr_t)va >= UTOP || (uintptr_t)va % PGSIZE) {
-		cprintf("2, -3\n", r);
+	if ((uintptr_t)va >= UTOP || (uintptr_t)va % PGSIZE)
 		return -E_INVAL;
-	}
 
 	// Check if we got some prohibited perms.
 	if (~PTE_SYSCALL & perm) 
@@ -192,10 +190,8 @@ sys_page_alloc(envid_t envid, void *va, int perm)
 	if (!pp)  // No free memory
 		return -E_NO_MEM;
 	r = page_insert(to_env->env_pgdir, pp, va, perm);
-	if (r) {
-		cprintf("Something wrong when inserting. Will free.\n");
+	if (r) 
 		page_free(pp);
-	}
 	return r;
 }
 
@@ -325,8 +321,55 @@ sys_page_unmap(envid_t envid, void *va)
 static int
 sys_ipc_try_send(envid_t envid, uint32_t value, void *srcva, unsigned perm)
 {
-	// LAB 4: Your code here.
-	panic("sys_ipc_try_send not implemented");
+	struct Env* target_env;
+	int r;
+
+	r = envid2env(envid, &target_env, 0);  // 0 - don't check perm
+	if (r)	return r;
+
+	if (!target_env->env_ipc_recving)  // target is not willing to receive
+		return -E_IPC_NOT_RECV;
+	
+	// Write down our id first.
+	target_env->env_ipc_from = curenv->env_id; 
+	// also render target not-receiving
+	target_env->env_ipc_recving = false;
+
+	if ((uintptr_t)srcva >= UTOP || // No page to map
+		(uintptr_t)target_env->env_ipc_dstva >= UTOP // or target will not receive page
+	)
+		target_env->env_ipc_value = value;
+	else {
+		// Below is basically a copy of 
+		// 'syscall_page_map', 
+		// but we cannot call it instead since it checks for permission.
+
+		if ((uintptr_t)srcva % PGSIZE || 	// check addr aligned
+			~PTE_SYSCALL & perm 			// check no forbidden perm
+		)
+			return -E_INVAL;
+
+		// If we don't have perm U or P, just make it up.
+		perm |= PTE_U | PTE_P;
+
+		// Lookup the page first, then 
+		// check if perm is stronger than that of src page
+		pte_t* src_pgt;
+		struct PageInfo* pp = page_lookup(curenv->env_pgdir, srcva, &src_pgt);
+		if ((~*src_pgt & PTE_W) && (perm & PTE_W))
+			return -E_INVAL;
+
+		// Everything seems good, and we insert that page.
+		r = page_insert(target_env->env_pgdir, pp, target_env->env_ipc_dstva, perm);
+		if (r)	return r;
+
+		target_env->env_ipc_perm = perm;  // tell the permission
+	}
+
+	// Finally everything went well.
+	// We set awake the target env.
+	target_env->env_status = ENV_RUNNABLE;
+	return 0;
 }
 
 // Block until a value is ready.  Record that you want to receive
@@ -340,11 +383,27 @@ sys_ipc_try_send(envid_t envid, uint32_t value, void *srcva, unsigned perm)
 // return 0 on success.
 // Return < 0 on error.  Errors are:
 //	-E_INVAL if dstva < UTOP but dstva is not page-aligned.
-static int
+int
 sys_ipc_recv(void *dstva)
 {
-	// LAB 4: Your code here.
-	panic("sys_ipc_recv not implemented");
+	// Willing to receive information.
+	curenv->env_ipc_recving = true; 
+
+	// If willing to receive page but not aligned
+	if ((uintptr_t)dstva < UTOP && (uintptr_t)dstva % PGSIZE) 
+		return -E_INVAL;
+	// No matter we want to get page or not, 
+	// this statement is ok.
+	curenv->env_ipc_dstva = dstva; 
+
+	// Mark not-runnable. Don't run until we receive something.
+	curenv->env_status = ENV_NOT_RUNNABLE;
+
+	// There used to be a yield here, which is wrong.
+	// When the env is continued, it will (surely) not be running 
+	// from here, since this is kernel code. 
+	// sched_yield();
+
 	return 0;
 }
 
@@ -378,10 +437,13 @@ syscall(uint32_t syscallno, uint32_t a1, uint32_t a2, uint32_t a3, uint32_t a4, 
 	case SYS_env_set_pgfault_upcall:
 		return sys_env_set_pgfault_upcall(a1, (void*)a2);
 	case SYS_yield:
-		sys_yield();  // Should not return...
+		sys_yield();
 		return 0;
+	case SYS_ipc_try_send:
+		return sys_ipc_try_send(a1, a2, (void*)a3, a4);
+	case SYS_ipc_recv:
+		return sys_ipc_recv((void*)a1);
 	default:
 		return -E_INVAL;
 	}
 }
-
