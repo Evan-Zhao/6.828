@@ -301,7 +301,35 @@ map_segment(envid_t child, uintptr_t va, size_t memsz,
 static int
 copy_shared_pages(envid_t child)
 {
-	// LAB 5: Your code here.
+	uintptr_t pn;
+	void* addr;
+
+	for (pn = 2 * NPTENTRIES, addr = (void*)(pn * PGSIZE); 
+		 pn < (UTOP >> PGSHIFT); 
+		 pn++, addr += PGSIZE) { // From TEXT to kernel `end`
+		pde_t* pde = (pde_t*)(
+			(uintptr_t)uvpd | (PDX(addr) << 2)
+		);
+		if (!*pde) // pgdir entry is empty; nothing to do.
+			continue;
+
+		pte_t* pte = (pte_t*)(
+			(uintptr_t)uvpt        |
+			(PDX(addr) << PGSHIFT) |
+			(PTX(addr) << 2)
+		);
+		if (!*pte) // Page table entry is empty; nothing to do.
+			continue;
+		
+		uint32_t src_perm = *pte & PTE_SYSCALL;
+
+		if (src_perm & PTE_SHARE) { // If this page needs sharing
+			int r = sys_page_map(0, addr, child, addr, src_perm);  // simply map this page there.
+			if (r < 0)
+				return r;
+		}
+	}
+
 	return 0;
 }
 

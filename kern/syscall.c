@@ -142,16 +142,14 @@ sys_env_set_trapframe(envid_t envid, struct Trapframe *tf)
 
 	// If tf is null, just return.
 	if (!tf)	return -E_INVAL;
-	// Otherwise sanitize some values in tf, 
-	// and then write them in env.
-	tf->tf_cs |= 3;  // Code protection level 3.
-	
-	cprintf("tf_eflags (before) = %x\n", tf->tf_eflags);
+	// Otherwise write them in env
+	// and sanitize some values there.
+	env->env_tf = *tf;
 
-	tf->tf_eflags |= FL_IF;  // Interrupt flag.
-	// tf->tf_eflags &= ~FL_IOPL_MASK | FL_IOPL_0;  // Set IO level to 0.
+	env->env_tf.tf_cs |= 3;  // Code protection level 3.
+	env->env_tf.tf_eflags |= FL_IF;  // Interrupt flag.
+	env->env_tf.tf_eflags &= ~FL_IOPL_MASK | FL_IOPL_0;  // Set IO level to 0.
 
-	cprintf("tf_eflags = %x\n", tf->tf_eflags);
 	return 0;
 }
 

@@ -93,7 +93,10 @@ duppage(envid_t envid, unsigned pn)
 	
 	uint32_t src_perm = *pte & PTE_SYSCALL;
 
-	if ((PTE_W & src_perm) || (PTE_COW & src_perm)) { // writable or copy-on-write
+	if (src_perm & PTE_SHARE) { // If this page needs sharing
+		r = sys_page_map(0, addr, envid, addr, src_perm);  // simply map this page there.
+	}
+	else if ((PTE_W & src_perm) || (PTE_COW & src_perm)) { // writable or copy-on-write
 		// DO NOT make it writable, so we can have a pagefault.
 		r = sys_page_map(0, addr, envid, addr, PTE_COW);
 		// Remap self page onto self; remove the writable marker
