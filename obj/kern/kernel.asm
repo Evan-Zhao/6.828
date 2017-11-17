@@ -129,7 +129,7 @@ f0100099:	8b 75 10             	mov    0x10(%ebp),%esi
 	va_list ap;
 
 	if (panicstr)
-f010009c:	83 3d 80 5e 2a f0 00 	cmpl   $0x0,0xf02a5e80
+f010009c:	83 3d 80 7e 2a f0 00 	cmpl   $0x0,0xf02a7e80
 f01000a3:	74 0f                	je     f01000b4 <_panic+0x20>
 	va_end(ap);
 
@@ -143,7 +143,7 @@ f01000aa:	e8 89 0d 00 00       	call   f0100e38 <monitor>
 f01000af:	83 c4 10             	add    $0x10,%esp
 f01000b2:	eb f1                	jmp    f01000a5 <_panic+0x11>
 	panicstr = fmt;
-f01000b4:	89 35 80 5e 2a f0    	mov    %esi,0xf02a5e80
+f01000b4:	89 35 80 7e 2a f0    	mov    %esi,0xf02a7e80
 	asm volatile("cli; cld");
 f01000ba:	fa                   	cli    
 f01000bb:	fc                   	cld    
@@ -174,11 +174,11 @@ f01000f1:	89 e5                	mov    %esp,%ebp
 f01000f3:	53                   	push   %ebx
 f01000f4:	83 ec 08             	sub    $0x8,%esp
 	memset(edata, 0, end - edata);
-f01000f7:	b8 08 70 2e f0       	mov    $0xf02e7008,%eax
-f01000fc:	2d 1c 45 2a f0       	sub    $0xf02a451c,%eax
+f01000f7:	b8 08 90 2e f0       	mov    $0xf02e9008,%eax
+f01000fc:	2d 3c 65 2a f0       	sub    $0xf02a653c,%eax
 f0100101:	50                   	push   %eax
 f0100102:	6a 00                	push   $0x0
-f0100104:	68 1c 45 2a f0       	push   $0xf02a451c
+f0100104:	68 3c 65 2a f0       	push   $0xf02a653c
 f0100109:	e8 cb 5e 00 00       	call   f0105fd9 <memset>
 	cons_init();
 f010010e:	e8 09 06 00 00       	call   f010071c <cons_init>
@@ -235,7 +235,7 @@ _kaddr(const char *file, int line, physaddr_t pa)
 {
 	if (PGNUM(pa) >= npages)
 f01001a3:	83 c4 10             	add    $0x10,%esp
-f01001a6:	83 3d 88 5e 2a f0 07 	cmpl   $0x7,0xf02a5e88
+f01001a6:	83 3d 88 7e 2a f0 07 	cmpl   $0x7,0xf02a7e88
 f01001ad:	76 27                	jbe    f01001d6 <i386_init+0xe6>
 	memmove(code, mpentry_start, mpentry_end - mpentry_start);
 f01001af:	83 ec 04             	sub    $0x4,%esp
@@ -247,7 +247,7 @@ f01001c2:	68 00 70 00 f0       	push   $0xf0007000
 f01001c7:	e8 5a 5e 00 00       	call   f0106026 <memmove>
 f01001cc:	83 c4 10             	add    $0x10,%esp
 	for (c = cpus; c < cpus + ncpu; c++) {
-f01001cf:	bb 20 60 2a f0       	mov    $0xf02a6020,%ebx
+f01001cf:	bb 20 80 2a f0       	mov    $0xf02a8020,%ebx
 f01001d4:	eb 19                	jmp    f01001ef <i386_init+0xff>
 		_panic(file, line, "KADDR called with invalid pa %08lx", pa);
 f01001d6:	68 00 70 00 00       	push   $0x7000
@@ -256,13 +256,13 @@ f01001e0:	6a 76                	push   $0x76
 f01001e2:	68 a6 6d 10 f0       	push   $0xf0106da6
 f01001e7:	e8 a8 fe ff ff       	call   f0100094 <_panic>
 f01001ec:	83 c3 74             	add    $0x74,%ebx
-f01001ef:	8b 15 c4 63 2a f0    	mov    0xf02a63c4,%edx
+f01001ef:	8b 15 c4 83 2a f0    	mov    0xf02a83c4,%edx
 f01001f5:	8d 04 12             	lea    (%edx,%edx,1),%eax
 f01001f8:	01 d0                	add    %edx,%eax
 f01001fa:	01 c0                	add    %eax,%eax
 f01001fc:	01 d0                	add    %edx,%eax
 f01001fe:	8d 04 82             	lea    (%edx,%eax,4),%eax
-f0100201:	8d 04 85 20 60 2a f0 	lea    -0xfd59fe0(,%eax,4),%eax
+f0100201:	8d 04 85 20 80 2a f0 	lea    -0xfd57fe0(,%eax,4),%eax
 f0100208:	39 c3                	cmp    %eax,%ebx
 f010020a:	73 6d                	jae    f0100279 <i386_init+0x189>
 		if (c == cpus + cpunum())  // We've started already.
@@ -272,12 +272,12 @@ f0100214:	01 c2                	add    %eax,%edx
 f0100216:	01 d2                	add    %edx,%edx
 f0100218:	01 c2                	add    %eax,%edx
 f010021a:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f010021d:	8d 04 85 20 60 2a f0 	lea    -0xfd59fe0(,%eax,4),%eax
+f010021d:	8d 04 85 20 80 2a f0 	lea    -0xfd57fe0(,%eax,4),%eax
 f0100224:	39 c3                	cmp    %eax,%ebx
 f0100226:	74 c4                	je     f01001ec <i386_init+0xfc>
 		mpentry_kstack = percpu_kstacks[c - cpus] + KSTKSIZE;
 f0100228:	89 d8                	mov    %ebx,%eax
-f010022a:	2d 20 60 2a f0       	sub    $0xf02a6020,%eax
+f010022a:	2d 20 80 2a f0       	sub    $0xf02a8020,%eax
 f010022f:	c1 f8 02             	sar    $0x2,%eax
 f0100232:	89 c2                	mov    %eax,%edx
 f0100234:	c1 e0 07             	shl    $0x7,%eax
@@ -290,8 +290,8 @@ f0100243:	c1 e0 04             	shl    $0x4,%eax
 f0100246:	01 d0                	add    %edx,%eax
 f0100248:	8d 04 80             	lea    (%eax,%eax,4),%eax
 f010024b:	c1 e0 0f             	shl    $0xf,%eax
-f010024e:	05 00 f0 2a f0       	add    $0xf02af000,%eax
-f0100253:	a3 84 5e 2a f0       	mov    %eax,0xf02a5e84
+f010024e:	05 00 10 2b f0       	add    $0xf02b1000,%eax
+f0100253:	a3 84 7e 2a f0       	mov    %eax,0xf02a7e84
 		lapic_startap(c->cpu_id, PADDR(code));
 f0100258:	83 ec 08             	sub    $0x8,%esp
 f010025b:	68 00 70 00 00       	push   $0x7000
@@ -312,7 +312,7 @@ f0100283:	e8 03 36 00 00       	call   f010388b <env_create>
 	ENV_CREATE(TEST, ENV_TYPE_USER);
 f0100288:	83 c4 08             	add    $0x8,%esp
 f010028b:	6a 00                	push   $0x0
-f010028d:	68 7c 7c 22 f0       	push   $0xf0227c7c
+f010028d:	68 c8 fe 22 f0       	push   $0xf022fec8
 f0100292:	e8 f4 35 00 00       	call   f010388b <env_create>
 	kbd_intr();
 f0100297:	e8 24 04 00 00       	call   f01006c0 <kbd_intr>
@@ -325,7 +325,7 @@ f01002a1:	55                   	push   %ebp
 f01002a2:	89 e5                	mov    %esp,%ebp
 f01002a4:	83 ec 08             	sub    $0x8,%esp
 	lcr3(PADDR(kern_pgdir));
-f01002a7:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01002a7:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 	if ((uint32_t)kva < KERNBASE)
 f01002ac:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
 f01002b1:	77 15                	ja     f01002c8 <mp_main+0x27>
@@ -367,7 +367,7 @@ xchg(volatile uint32_t *addr, uint32_t newval)
 	// The + in "+m" denotes a read-modify-write operand.
 	asm volatile("lock; xchgl %0, %1"
 f01002fd:	b8 01 00 00 00       	mov    $0x1,%eax
-f0100302:	f0 87 82 20 60 2a f0 	lock xchg %eax,-0xfd59fe0(%edx)
+f0100302:	f0 87 82 20 80 2a f0 	lock xchg %eax,-0xfd57fe0(%edx)
 f0100309:	c7 04 24 c0 33 12 f0 	movl   $0xf01233c0,(%esp)
 f0100310:	e8 11 66 00 00       	call   f0106926 <spin_lock>
 	sched_yield();
@@ -458,15 +458,15 @@ f0100383:	85 c0                	test   %eax,%eax
 f0100385:	74 f5                	je     f010037c <cons_intr+0x9>
 			continue;
 		cons.buf[cons.wpos++] = c;
-f0100387:	8b 0d 24 52 2a f0    	mov    0xf02a5224,%ecx
+f0100387:	8b 0d 24 72 2a f0    	mov    0xf02a7224,%ecx
 f010038d:	8d 51 01             	lea    0x1(%ecx),%edx
-f0100390:	89 15 24 52 2a f0    	mov    %edx,0xf02a5224
-f0100396:	88 81 20 50 2a f0    	mov    %al,-0xfd5afe0(%ecx)
+f0100390:	89 15 24 72 2a f0    	mov    %edx,0xf02a7224
+f0100396:	88 81 20 70 2a f0    	mov    %al,-0xfd58fe0(%ecx)
 		if (cons.wpos == CONSBUFSIZE)
 f010039c:	81 fa 00 02 00 00    	cmp    $0x200,%edx
 f01003a2:	75 d8                	jne    f010037c <cons_intr+0x9>
 			cons.wpos = 0;
-f01003a4:	c7 05 24 52 2a f0 00 	movl   $0x0,0xf02a5224
+f01003a4:	c7 05 24 72 2a f0 00 	movl   $0x0,0xf02a7224
 f01003ab:	00 00 00 
 f01003ae:	eb cc                	jmp    f010037c <cons_intr+0x9>
 	}
@@ -500,7 +500,7 @@ f01003dd:	0f 84 8a 00 00 00    	je     f010046d <kbd_proc_data+0xb7>
 f01003e3:	84 c0                	test   %al,%al
 f01003e5:	0f 88 95 00 00 00    	js     f0100480 <kbd_proc_data+0xca>
 	} else if (shift & E0ESC) {
-f01003eb:	8b 0d 00 50 2a f0    	mov    0xf02a5000,%ecx
+f01003eb:	8b 0d 00 70 2a f0    	mov    0xf02a7000,%ecx
 f01003f1:	f6 c1 40             	test   $0x40,%cl
 f01003f4:	74 0e                	je     f0100404 <kbd_proc_data+0x4e>
 		data |= 0x80;
@@ -508,15 +508,15 @@ f01003f6:	83 c8 80             	or     $0xffffff80,%eax
 f01003f9:	88 c2                	mov    %al,%dl
 		shift &= ~E0ESC;
 f01003fb:	83 e1 bf             	and    $0xffffffbf,%ecx
-f01003fe:	89 0d 00 50 2a f0    	mov    %ecx,0xf02a5000
+f01003fe:	89 0d 00 70 2a f0    	mov    %ecx,0xf02a7000
 	shift |= shiftcode[data];
 f0100404:	0f b6 d2             	movzbl %dl,%edx
 f0100407:	0f b6 82 e0 6f 10 f0 	movzbl -0xfef9020(%edx),%eax
-f010040e:	0b 05 00 50 2a f0    	or     0xf02a5000,%eax
+f010040e:	0b 05 00 70 2a f0    	or     0xf02a7000,%eax
 	shift ^= togglecode[data];
 f0100414:	0f b6 8a e0 6e 10 f0 	movzbl -0xfef9120(%edx),%ecx
 f010041b:	31 c8                	xor    %ecx,%eax
-f010041d:	a3 00 50 2a f0       	mov    %eax,0xf02a5000
+f010041d:	a3 00 70 2a f0       	mov    %eax,0xf02a7000
 	c = charcode[shift & (CTL | SHIFT)][data];
 f0100422:	89 c1                	mov    %eax,%ecx
 f0100424:	83 e1 03             	and    $0x3,%ecx
@@ -550,7 +550,7 @@ f0100467:	ee                   	out    %al,(%dx)
 f0100468:	83 c4 10             	add    $0x10,%esp
 f010046b:	eb 0c                	jmp    f0100479 <kbd_proc_data+0xc3>
 		shift |= E0ESC;
-f010046d:	83 0d 00 50 2a f0 40 	orl    $0x40,0xf02a5000
+f010046d:	83 0d 00 70 2a f0 40 	orl    $0x40,0xf02a7000
 		return 0;
 f0100474:	bb 00 00 00 00       	mov    $0x0,%ebx
 }
@@ -559,7 +559,7 @@ f010047b:	8b 5d fc             	mov    -0x4(%ebp),%ebx
 f010047e:	c9                   	leave  
 f010047f:	c3                   	ret    
 		data = (shift & E0ESC ? data : data & 0x7F);
-f0100480:	8b 0d 00 50 2a f0    	mov    0xf02a5000,%ecx
+f0100480:	8b 0d 00 70 2a f0    	mov    0xf02a7000,%ecx
 f0100486:	f6 c1 40             	test   $0x40,%cl
 f0100489:	75 05                	jne    f0100490 <kbd_proc_data+0xda>
 f010048b:	83 e0 7f             	and    $0x7f,%eax
@@ -571,7 +571,7 @@ f0100499:	83 c8 40             	or     $0x40,%eax
 f010049c:	0f b6 c0             	movzbl %al,%eax
 f010049f:	f7 d0                	not    %eax
 f01004a1:	21 c8                	and    %ecx,%eax
-f01004a3:	a3 00 50 2a f0       	mov    %eax,0xf02a5000
+f01004a3:	a3 00 70 2a f0       	mov    %eax,0xf02a7000
 		return 0;
 f01004a8:	bb 00 00 00 00       	mov    $0x0,%ebx
 f01004ad:	eb ca                	jmp    f0100479 <kbd_proc_data+0xc3>
@@ -670,32 +670,32 @@ f010055a:	0f 84 96 00 00 00    	je     f01005f6 <cons_putc+0x12c>
 f0100560:	83 f8 0d             	cmp    $0xd,%eax
 f0100563:	0f 85 d1 00 00 00    	jne    f010063a <cons_putc+0x170>
 		crt_pos -= (crt_pos % CRT_COLS);
-f0100569:	66 8b 0d 28 52 2a f0 	mov    0xf02a5228,%cx
+f0100569:	66 8b 0d 28 72 2a f0 	mov    0xf02a7228,%cx
 f0100570:	bb 50 00 00 00       	mov    $0x50,%ebx
 f0100575:	89 c8                	mov    %ecx,%eax
 f0100577:	ba 00 00 00 00       	mov    $0x0,%edx
 f010057c:	66 f7 f3             	div    %bx
 f010057f:	29 d1                	sub    %edx,%ecx
-f0100581:	66 89 0d 28 52 2a f0 	mov    %cx,0xf02a5228
+f0100581:	66 89 0d 28 72 2a f0 	mov    %cx,0xf02a7228
 	if (crt_pos >= CRT_SIZE) {
-f0100588:	66 81 3d 28 52 2a f0 	cmpw   $0x7cf,0xf02a5228
+f0100588:	66 81 3d 28 72 2a f0 	cmpw   $0x7cf,0xf02a7228
 f010058f:	cf 07 
 f0100591:	0f 87 c5 00 00 00    	ja     f010065c <cons_putc+0x192>
 	outb(addr_6845, 14);
-f0100597:	8b 0d 30 52 2a f0    	mov    0xf02a5230,%ecx
+f0100597:	8b 0d 30 72 2a f0    	mov    0xf02a7230,%ecx
 f010059d:	b0 0e                	mov    $0xe,%al
 f010059f:	89 ca                	mov    %ecx,%edx
 f01005a1:	ee                   	out    %al,(%dx)
 	outb(addr_6845 + 1, crt_pos >> 8);
 f01005a2:	8d 59 01             	lea    0x1(%ecx),%ebx
-f01005a5:	66 a1 28 52 2a f0    	mov    0xf02a5228,%ax
+f01005a5:	66 a1 28 72 2a f0    	mov    0xf02a7228,%ax
 f01005ab:	66 c1 e8 08          	shr    $0x8,%ax
 f01005af:	89 da                	mov    %ebx,%edx
 f01005b1:	ee                   	out    %al,(%dx)
 f01005b2:	b0 0f                	mov    $0xf,%al
 f01005b4:	89 ca                	mov    %ecx,%edx
 f01005b6:	ee                   	out    %al,(%dx)
-f01005b7:	a0 28 52 2a f0       	mov    0xf02a5228,%al
+f01005b7:	a0 28 72 2a f0       	mov    0xf02a7228,%al
 f01005bc:	89 da                	mov    %ebx,%edx
 f01005be:	ee                   	out    %al,(%dx)
 	serial_putc(c);
@@ -712,21 +712,21 @@ f01005c6:	c3                   	ret
 f01005c7:	83 f8 08             	cmp    $0x8,%eax
 f01005ca:	75 6e                	jne    f010063a <cons_putc+0x170>
 		if (crt_pos > 0) {
-f01005cc:	66 a1 28 52 2a f0    	mov    0xf02a5228,%ax
+f01005cc:	66 a1 28 72 2a f0    	mov    0xf02a7228,%ax
 f01005d2:	66 85 c0             	test   %ax,%ax
 f01005d5:	74 c0                	je     f0100597 <cons_putc+0xcd>
 			crt_pos--;
 f01005d7:	48                   	dec    %eax
-f01005d8:	66 a3 28 52 2a f0    	mov    %ax,0xf02a5228
+f01005d8:	66 a3 28 72 2a f0    	mov    %ax,0xf02a7228
 			crt_buf[crt_pos] = (c & ~0xff) | ' ';
 f01005de:	0f b7 c0             	movzwl %ax,%eax
 f01005e1:	81 e7 00 ff ff ff    	and    $0xffffff00,%edi
 f01005e7:	83 cf 20             	or     $0x20,%edi
-f01005ea:	8b 15 2c 52 2a f0    	mov    0xf02a522c,%edx
+f01005ea:	8b 15 2c 72 2a f0    	mov    0xf02a722c,%edx
 f01005f0:	66 89 3c 42          	mov    %di,(%edx,%eax,2)
 f01005f4:	eb 92                	jmp    f0100588 <cons_putc+0xbe>
 		crt_pos += CRT_COLS;
-f01005f6:	66 83 05 28 52 2a f0 	addw   $0x50,0xf02a5228
+f01005f6:	66 83 05 28 72 2a f0 	addw   $0x50,0xf02a7228
 f01005fd:	50 
 f01005fe:	e9 66 ff ff ff       	jmp    f0100569 <cons_putc+0x9f>
 		cons_putc(' ');
@@ -746,15 +746,15 @@ f010062b:	b8 20 00 00 00       	mov    $0x20,%eax
 f0100630:	e8 95 fe ff ff       	call   f01004ca <cons_putc>
 f0100635:	e9 4e ff ff ff       	jmp    f0100588 <cons_putc+0xbe>
 		crt_buf[crt_pos++] = c;		/* write the character */
-f010063a:	66 a1 28 52 2a f0    	mov    0xf02a5228,%ax
+f010063a:	66 a1 28 72 2a f0    	mov    0xf02a7228,%ax
 f0100640:	8d 50 01             	lea    0x1(%eax),%edx
-f0100643:	66 89 15 28 52 2a f0 	mov    %dx,0xf02a5228
+f0100643:	66 89 15 28 72 2a f0 	mov    %dx,0xf02a7228
 f010064a:	0f b7 c0             	movzwl %ax,%eax
-f010064d:	8b 15 2c 52 2a f0    	mov    0xf02a522c,%edx
+f010064d:	8b 15 2c 72 2a f0    	mov    0xf02a722c,%edx
 f0100653:	66 89 3c 42          	mov    %di,(%edx,%eax,2)
 f0100657:	e9 2c ff ff ff       	jmp    f0100588 <cons_putc+0xbe>
 		memmove(crt_buf, crt_buf + CRT_COLS, (CRT_SIZE - CRT_COLS) * sizeof(uint16_t));
-f010065c:	a1 2c 52 2a f0       	mov    0xf02a522c,%eax
+f010065c:	a1 2c 72 2a f0       	mov    0xf02a722c,%eax
 f0100661:	83 ec 04             	sub    $0x4,%esp
 f0100664:	68 00 0f 00 00       	push   $0xf00
 f0100669:	8d 90 a0 00 00 00    	lea    0xa0(%eax),%edx
@@ -762,7 +762,7 @@ f010066f:	52                   	push   %edx
 f0100670:	50                   	push   %eax
 f0100671:	e8 b0 59 00 00       	call   f0106026 <memmove>
 			crt_buf[i] = 0x0700 | ' ';
-f0100676:	8b 15 2c 52 2a f0    	mov    0xf02a522c,%edx
+f0100676:	8b 15 2c 72 2a f0    	mov    0xf02a722c,%edx
 f010067c:	8d 82 00 0f 00 00    	lea    0xf00(%edx),%eax
 f0100682:	81 c2 a0 0f 00 00    	add    $0xfa0,%edx
 f0100688:	83 c4 10             	add    $0x10,%esp
@@ -772,13 +772,13 @@ f0100690:	83 c0 02             	add    $0x2,%eax
 f0100693:	39 d0                	cmp    %edx,%eax
 f0100695:	75 f4                	jne    f010068b <cons_putc+0x1c1>
 		crt_pos -= CRT_COLS;
-f0100697:	66 83 2d 28 52 2a f0 	subw   $0x50,0xf02a5228
+f0100697:	66 83 2d 28 72 2a f0 	subw   $0x50,0xf02a7228
 f010069e:	50 
 f010069f:	e9 f3 fe ff ff       	jmp    f0100597 <cons_putc+0xcd>
 
 f01006a4 <serial_intr>:
 	if (serial_exists)
-f01006a4:	80 3d 34 52 2a f0 00 	cmpb   $0x0,0xf02a5234
+f01006a4:	80 3d 34 72 2a f0 00 	cmpb   $0x0,0xf02a7234
 f01006ab:	75 01                	jne    f01006ae <serial_intr+0xa>
 f01006ad:	c3                   	ret    
 {
@@ -814,13 +814,13 @@ f01006d8:	e8 c7 ff ff ff       	call   f01006a4 <serial_intr>
 	kbd_intr();
 f01006dd:	e8 de ff ff ff       	call   f01006c0 <kbd_intr>
 	if (cons.rpos != cons.wpos) {
-f01006e2:	a1 20 52 2a f0       	mov    0xf02a5220,%eax
-f01006e7:	3b 05 24 52 2a f0    	cmp    0xf02a5224,%eax
+f01006e2:	a1 20 72 2a f0       	mov    0xf02a7220,%eax
+f01006e7:	3b 05 24 72 2a f0    	cmp    0xf02a7224,%eax
 f01006ed:	74 26                	je     f0100715 <cons_getc+0x43>
 		c = cons.buf[cons.rpos++];
 f01006ef:	8d 50 01             	lea    0x1(%eax),%edx
-f01006f2:	89 15 20 52 2a f0    	mov    %edx,0xf02a5220
-f01006f8:	0f b6 80 20 50 2a f0 	movzbl -0xfd5afe0(%eax),%eax
+f01006f2:	89 15 20 72 2a f0    	mov    %edx,0xf02a7220
+f01006f8:	0f b6 80 20 70 2a f0 	movzbl -0xfd58fe0(%eax),%eax
 		if (cons.rpos == CONSBUFSIZE)
 f01006ff:	81 fa 00 02 00 00    	cmp    $0x200,%edx
 f0100705:	74 02                	je     f0100709 <cons_getc+0x37>
@@ -828,7 +828,7 @@ f0100705:	74 02                	je     f0100709 <cons_getc+0x37>
 f0100707:	c9                   	leave  
 f0100708:	c3                   	ret    
 			cons.rpos = 0;
-f0100709:	c7 05 20 52 2a f0 00 	movl   $0x0,0xf02a5220
+f0100709:	c7 05 20 72 2a f0 00 	movl   $0x0,0xf02a7220
 f0100710:	00 00 00 
 f0100713:	eb f2                	jmp    f0100707 <cons_getc+0x35>
 	return 0;
@@ -857,12 +857,12 @@ f0100735:	66 a1 00 80 0b f0    	mov    0xf00b8000,%ax
 f010073b:	66 3d 5a a5          	cmp    $0xa55a,%ax
 f010073f:	0f 84 c8 00 00 00    	je     f010080d <cons_init+0xf1>
 		addr_6845 = MONO_BASE;
-f0100745:	c7 05 30 52 2a f0 b4 	movl   $0x3b4,0xf02a5230
+f0100745:	c7 05 30 72 2a f0 b4 	movl   $0x3b4,0xf02a7230
 f010074c:	03 00 00 
 		cp = (uint16_t*) (KERNBASE + MONO_BUF);
 f010074f:	be 00 00 0b f0       	mov    $0xf00b0000,%esi
 	outb(addr_6845, 14);
-f0100754:	8b 3d 30 52 2a f0    	mov    0xf02a5230,%edi
+f0100754:	8b 3d 30 72 2a f0    	mov    0xf02a7230,%edi
 f010075a:	b0 0e                	mov    $0xe,%al
 f010075c:	89 fa                	mov    %edi,%edx
 f010075e:	ee                   	out    %al,(%dx)
@@ -882,12 +882,12 @@ f0100771:	ee                   	out    %al,(%dx)
 f0100772:	89 ca                	mov    %ecx,%edx
 f0100774:	ec                   	in     (%dx),%al
 	crt_buf = (uint16_t*) cp;
-f0100775:	89 35 2c 52 2a f0    	mov    %esi,0xf02a522c
+f0100775:	89 35 2c 72 2a f0    	mov    %esi,0xf02a722c
 	pos |= inb(addr_6845 + 1);
 f010077b:	0f b6 c0             	movzbl %al,%eax
 f010077e:	09 d8                	or     %ebx,%eax
 	crt_pos = pos;
-f0100780:	66 a3 28 52 2a f0    	mov    %ax,0xf02a5228
+f0100780:	66 a3 28 72 2a f0    	mov    %ax,0xf02a7228
 	kbd_intr();
 f0100786:	e8 35 ff ff ff       	call   f01006c0 <kbd_intr>
 	irq_setmask_8259A(irq_mask_8259A & ~(1<<IRQ_KBD));
@@ -929,7 +929,7 @@ f01007df:	88 c1                	mov    %al,%cl
 	serial_exists = (inb(COM1+COM_LSR) != 0xFF);
 f01007e1:	83 c4 10             	add    $0x10,%esp
 f01007e4:	3c ff                	cmp    $0xff,%al
-f01007e6:	0f 95 05 34 52 2a f0 	setne  0xf02a5234
+f01007e6:	0f 95 05 34 72 2a f0 	setne  0xf02a7234
 f01007ed:	89 da                	mov    %ebx,%edx
 f01007ef:	ec                   	in     (%dx),%al
 f01007f0:	ba f8 03 00 00       	mov    $0x3f8,%edx
@@ -952,7 +952,7 @@ f010080b:	eb 3b                	jmp    f0100848 <cons_init+0x12c>
 		*cp = was;
 f010080d:	66 89 15 00 80 0b f0 	mov    %dx,0xf00b8000
 		addr_6845 = CGA_BASE;
-f0100814:	c7 05 30 52 2a f0 d4 	movl   $0x3d4,0xf02a5230
+f0100814:	c7 05 30 72 2a f0 d4 	movl   $0x3d4,0xf02a7230
 f010081b:	03 00 00 
 	cp = (uint16_t*) (KERNBASE + CGA_BUF);
 f010081e:	be 00 80 0b f0       	mov    $0xf00b8000,%esi
@@ -965,7 +965,7 @@ f0100836:	50                   	push   %eax
 f0100837:	e8 fe 35 00 00       	call   f0103e3a <irq_setmask_8259A>
 	if (!serial_exists)
 f010083c:	83 c4 10             	add    $0x10,%esp
-f010083f:	80 3d 34 52 2a f0 00 	cmpb   $0x0,0xf02a5234
+f010083f:	80 3d 34 72 2a f0 00 	cmpb   $0x0,0xf02a7234
 f0100846:	74 b3                	je     f01007fb <cons_init+0xdf>
 }
 f0100848:	8d 65 f4             	lea    -0xc(%ebp),%esp
@@ -1091,20 +1091,20 @@ f01008fb:	68 8c 72 10 f0       	push   $0xf010728c
 f0100900:	e8 7a 36 00 00       	call   f0103f7f <cprintf>
 	cprintf("  edata  %08x (virt)  %08x (phys)\n", edata, edata - KERNBASE);
 f0100905:	83 c4 0c             	add    $0xc,%esp
-f0100908:	68 1c 45 2a 00       	push   $0x2a451c
-f010090d:	68 1c 45 2a f0       	push   $0xf02a451c
+f0100908:	68 3c 65 2a 00       	push   $0x2a653c
+f010090d:	68 3c 65 2a f0       	push   $0xf02a653c
 f0100912:	68 b0 72 10 f0       	push   $0xf01072b0
 f0100917:	e8 63 36 00 00       	call   f0103f7f <cprintf>
 	cprintf("  end    %08x (virt)  %08x (phys)\n", end, end - KERNBASE);
 f010091c:	83 c4 0c             	add    $0xc,%esp
-f010091f:	68 08 70 2e 00       	push   $0x2e7008
-f0100924:	68 08 70 2e f0       	push   $0xf02e7008
+f010091f:	68 08 90 2e 00       	push   $0x2e9008
+f0100924:	68 08 90 2e f0       	push   $0xf02e9008
 f0100929:	68 d4 72 10 f0       	push   $0xf01072d4
 f010092e:	e8 4c 36 00 00       	call   f0103f7f <cprintf>
 	cprintf("Kernel executable memory footprint: %dKB\n",
 f0100933:	83 c4 08             	add    $0x8,%esp
 		ROUNDUP(end - entry, 1024) / 1024);
-f0100936:	b8 07 74 2e f0       	mov    $0xf02e7407,%eax
+f0100936:	b8 07 94 2e f0       	mov    $0xf02e9407,%eax
 f010093b:	2d 0c 00 10 f0       	sub    $0xf010000c,%eax
 	cprintf("Kernel executable memory footprint: %dKB\n",
 f0100940:	c1 f8 0a             	sar    $0xa,%eax
@@ -1200,7 +1200,7 @@ f01009e6:	77 c7                	ja     f01009af <mon_showmap+0x5a>
 f01009e8:	83 ec 04             	sub    $0x4,%esp
 f01009eb:	6a 00                	push   $0x0
 f01009ed:	53                   	push   %ebx
-f01009ee:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01009ee:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01009f4:	e8 ed 0a 00 00       	call   f01014e6 <pgdir_walk>
 		if (pte == NULL || !*pte)
 f01009f9:	83 c4 10             	add    $0x10,%esp
@@ -1357,7 +1357,7 @@ f0100b42:	0f 87 66 ff ff ff    	ja     f0100aae <mon_chmod+0x89>
 f0100b48:	83 ec 04             	sub    $0x4,%esp
 f0100b4b:	6a 00                	push   $0x0
 f0100b4d:	53                   	push   %ebx
-f0100b4e:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0100b4e:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0100b54:	e8 8d 09 00 00       	call   f01014e6 <pgdir_walk>
 f0100b59:	89 c6                	mov    %eax,%esi
 		if (pte == NULL || !*pte) {
@@ -1465,7 +1465,7 @@ f0100c32:	83 c4 10             	add    $0x10,%esp
 f0100c35:	85 c0                	test   %eax,%eax
 f0100c37:	75 4f                	jne    f0100c88 <mon_dump+0xe2>
 	if (PGNUM(pa) >= npages)
-f0100c39:	a1 88 5e 2a f0       	mov    0xf02a5e88,%eax
+f0100c39:	a1 88 7e 2a f0       	mov    0xf02a7e88,%eax
 f0100c3e:	89 f2                	mov    %esi,%edx
 f0100c40:	c1 ea 0c             	shr    $0xc,%edx
 f0100c43:	39 c2                	cmp    %eax,%edx
@@ -1835,7 +1835,7 @@ f0100f7c:	89 e5                	mov    %esp,%ebp
 	// the first virtual address that the linker did *not* assign
 	// to any kernel code or global variables.
 	if (!nextfree) {
-f0100f7e:	83 3d 38 52 2a f0 00 	cmpl   $0x0,0xf02a5238
+f0100f7e:	83 3d 38 72 2a f0 00 	cmpl   $0x0,0xf02a7238
 f0100f85:	74 1f                	je     f0100fa6 <boot_alloc+0x2b>
 	}
 
@@ -1848,11 +1848,11 @@ f0100f89:	74 2e                	je     f0100fb9 <boot_alloc+0x3e>
 		return (void*)nextfree;
 	else {
 		result = nextfree;
-f0100f8b:	8b 15 38 52 2a f0    	mov    0xf02a5238,%edx
+f0100f8b:	8b 15 38 72 2a f0    	mov    0xf02a7238,%edx
 		nextfree = ROUNDUP(nextfree + n, PGSIZE);
 f0100f91:	8d 84 02 ff 0f 00 00 	lea    0xfff(%edx,%eax,1),%eax
 f0100f98:	25 00 f0 ff ff       	and    $0xfffff000,%eax
-f0100f9d:	a3 38 52 2a f0       	mov    %eax,0xf02a5238
+f0100f9d:	a3 38 72 2a f0       	mov    %eax,0xf02a7238
 		return (void*)result;
 	}
 }
@@ -1860,12 +1860,12 @@ f0100fa2:	89 d0                	mov    %edx,%eax
 f0100fa4:	5d                   	pop    %ebp
 f0100fa5:	c3                   	ret    
 		nextfree = ROUNDUP((char *) end, PGSIZE);
-f0100fa6:	ba 07 80 2e f0       	mov    $0xf02e8007,%edx
+f0100fa6:	ba 07 a0 2e f0       	mov    $0xf02ea007,%edx
 f0100fab:	81 e2 00 f0 ff ff    	and    $0xfffff000,%edx
-f0100fb1:	89 15 38 52 2a f0    	mov    %edx,0xf02a5238
+f0100fb1:	89 15 38 72 2a f0    	mov    %edx,0xf02a7238
 f0100fb7:	eb ce                	jmp    f0100f87 <boot_alloc+0xc>
 		return (void*)nextfree;
-f0100fb9:	8b 15 38 52 2a f0    	mov    0xf02a5238,%edx
+f0100fb9:	8b 15 38 72 2a f0    	mov    0xf02a7238,%edx
 f0100fbf:	eb e1                	jmp    f0100fa2 <boot_alloc+0x27>
 
 f0100fc1 <nvram_read>:
@@ -1911,7 +1911,7 @@ f0100ff4:	25 00 f0 ff ff       	and    $0xfffff000,%eax
 	if (PGNUM(pa) >= npages)
 f0100ff9:	89 c1                	mov    %eax,%ecx
 f0100ffb:	c1 e9 0c             	shr    $0xc,%ecx
-f0100ffe:	3b 0d 88 5e 2a f0    	cmp    0xf02a5e88,%ecx
+f0100ffe:	3b 0d 88 7e 2a f0    	cmp    0xf02a7e88,%ecx
 f0101004:	73 1a                	jae    f0101020 <check_va2pa+0x38>
 	if (!(p[PTX(va)] & PTE_P))
 f0101006:	c1 ea 0c             	shr    $0xc,%edx
@@ -1953,7 +1953,7 @@ f010104d:	83 ec 2c             	sub    $0x2c,%esp
 f0101050:	84 c0                	test   %al,%al
 f0101052:	0f 85 80 02 00 00    	jne    f01012d8 <check_page_free_list+0x291>
 	if (!page_free_list)
-f0101058:	83 3d 40 52 2a f0 00 	cmpl   $0x0,0xf02a5240
+f0101058:	83 3d 40 72 2a f0 00 	cmpl   $0x0,0xf02a7240
 f010105f:	74 0a                	je     f010106b <check_page_free_list+0x24>
 	unsigned pdx_limit = only_low_memory ? 1 : NPDENTRIES;
 f0101061:	be 00 04 00 00       	mov    $0x400,%esi
@@ -1980,7 +1980,7 @@ page2pa(struct PageInfo *pp)
 {
 	return (pp - pages) << PGSHIFT;
 f010109a:	89 d8                	mov    %ebx,%eax
-f010109c:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f010109c:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f01010a2:	c1 f8 03             	sar    $0x3,%eax
 f01010a5:	c1 e0 0c             	shl    $0xc,%eax
 		if (PDX(page2pa(pp)) < pdx_limit)
@@ -1991,7 +1991,7 @@ f01010af:	73 e3                	jae    f0101094 <check_page_free_list+0x4d>
 	if (PGNUM(pa) >= npages)
 f01010b1:	89 c2                	mov    %eax,%edx
 f01010b3:	c1 ea 0c             	shr    $0xc,%edx
-f01010b6:	3b 15 88 5e 2a f0    	cmp    0xf02a5e88,%edx
+f01010b6:	3b 15 88 7e 2a f0    	cmp    0xf02a7e88,%edx
 f01010bc:	73 c4                	jae    f0101082 <check_page_free_list+0x3b>
 			memset(page2kva(pp), 0x97, 128);
 f01010be:	83 ec 04             	sub    $0x4,%esp
@@ -2008,11 +2008,11 @@ f01010db:	b8 00 00 00 00       	mov    $0x0,%eax
 f01010e0:	e8 96 fe ff ff       	call   f0100f7b <boot_alloc>
 f01010e5:	89 45 c8             	mov    %eax,-0x38(%ebp)
 	for (pp = page_free_list; pp; pp = pp->pp_link) {
-f01010e8:	8b 15 40 52 2a f0    	mov    0xf02a5240,%edx
+f01010e8:	8b 15 40 72 2a f0    	mov    0xf02a7240,%edx
 		assert(pp >= pages);
-f01010ee:	8b 0d 90 5e 2a f0    	mov    0xf02a5e90,%ecx
+f01010ee:	8b 0d 90 7e 2a f0    	mov    0xf02a7e90,%ecx
 		assert(pp < pages + npages);
-f01010f4:	a1 88 5e 2a f0       	mov    0xf02a5e88,%eax
+f01010f4:	a1 88 7e 2a f0       	mov    0xf02a7e88,%eax
 f01010f9:	89 45 cc             	mov    %eax,-0x34(%ebp)
 f01010fc:	8d 04 c1             	lea    (%ecx,%eax,8),%eax
 f01010ff:	89 45 d4             	mov    %eax,-0x2c(%ebp)
@@ -2164,7 +2164,7 @@ f01012c9:	68 d0 02 00 00       	push   $0x2d0
 f01012ce:	68 1d 7f 10 f0       	push   $0xf0107f1d
 f01012d3:	e8 bc ed ff ff       	call   f0100094 <_panic>
 	if (!page_free_list)
-f01012d8:	a1 40 52 2a f0       	mov    0xf02a5240,%eax
+f01012d8:	a1 40 72 2a f0       	mov    0xf02a7240,%eax
 f01012dd:	85 c0                	test   %eax,%eax
 f01012df:	0f 84 86 fd ff ff    	je     f010106b <check_page_free_list+0x24>
 		struct PageInfo **tp[2] = { &pp1, &pp2 };
@@ -2173,7 +2173,7 @@ f01012e8:	89 55 e0             	mov    %edx,-0x20(%ebp)
 f01012eb:	8d 55 dc             	lea    -0x24(%ebp),%edx
 f01012ee:	89 55 e4             	mov    %edx,-0x1c(%ebp)
 f01012f1:	89 c2                	mov    %eax,%edx
-f01012f3:	2b 15 90 5e 2a f0    	sub    0xf02a5e90,%edx
+f01012f3:	2b 15 90 7e 2a f0    	sub    0xf02a7e90,%edx
 			int pagetype = PDX(page2pa(pp)) >= pdx_limit; 
 f01012f9:	f7 c2 00 e0 7f 00    	test   $0x7fe000,%edx
 f01012ff:	0f 95 c2             	setne  %dl
@@ -2196,11 +2196,11 @@ f0101321:	8b 45 e0             	mov    -0x20(%ebp),%eax
 f0101324:	89 10                	mov    %edx,(%eax)
 		page_free_list = pp1;
 f0101326:	8b 45 d8             	mov    -0x28(%ebp),%eax
-f0101329:	a3 40 52 2a f0       	mov    %eax,0xf02a5240
+f0101329:	a3 40 72 2a f0       	mov    %eax,0xf02a7240
 	unsigned pdx_limit = only_low_memory ? 1 : NPDENTRIES;
 f010132e:	be 01 00 00 00       	mov    $0x1,%esi
 	for (pp = page_free_list; pp; pp = pp->pp_link)
-f0101333:	8b 1d 40 52 2a f0    	mov    0xf02a5240,%ebx
+f0101333:	8b 1d 40 72 2a f0    	mov    0xf02a7240,%ebx
 f0101339:	e9 58 fd ff ff       	jmp    f0101096 <check_page_free_list+0x4f>
 
 f010133e <page_init>:
@@ -2225,8 +2225,8 @@ f0101360:	b8 02 d3 10 f0       	mov    $0xf010d302,%eax
 f0101365:	2d 88 62 10 f0       	sub    $0xf0106288,%eax
 f010136a:	89 45 e4             	mov    %eax,-0x1c(%ebp)
 		if (i >= npages_basemem && len < free)
-f010136d:	8b 1d 44 52 2a f0    	mov    0xf02a5244,%ebx
-f0101373:	8b 0d 40 52 2a f0    	mov    0xf02a5240,%ecx
+f010136d:	8b 1d 44 72 2a f0    	mov    0xf02a7244,%ebx
+f0101373:	8b 0d 40 72 2a f0    	mov    0xf02a7240,%ecx
 	for (i = 1, len = PGSIZE; i < npages; i++, len += PGSIZE) {
 f0101379:	bf 00 00 00 00       	mov    $0x0,%edi
 f010137e:	b8 01 00 00 00       	mov    $0x1,%eax
@@ -2243,17 +2243,17 @@ f010139a:	e8 f5 ec ff ff       	call   f0100094 <_panic>
 		pages[i].pp_ref = 0;
 f010139f:	8d 14 c5 00 00 00 00 	lea    0x0(,%eax,8),%edx
 f01013a6:	89 d7                	mov    %edx,%edi
-f01013a8:	03 3d 90 5e 2a f0    	add    0xf02a5e90,%edi
+f01013a8:	03 3d 90 7e 2a f0    	add    0xf02a7e90,%edi
 f01013ae:	66 c7 47 04 00 00    	movw   $0x0,0x4(%edi)
 		pages[i].pp_link = page_free_list;
 f01013b4:	89 0f                	mov    %ecx,(%edi)
 		page_free_list = &pages[i];
 f01013b6:	89 d1                	mov    %edx,%ecx
-f01013b8:	03 0d 90 5e 2a f0    	add    0xf02a5e90,%ecx
+f01013b8:	03 0d 90 7e 2a f0    	add    0xf02a7e90,%ecx
 f01013be:	89 f7                	mov    %esi,%edi
 	for (i = 1, len = PGSIZE; i < npages; i++, len += PGSIZE) {
 f01013c0:	40                   	inc    %eax
-f01013c1:	39 05 88 5e 2a f0    	cmp    %eax,0xf02a5e88
+f01013c1:	39 05 88 7e 2a f0    	cmp    %eax,0xf02a7e88
 f01013c7:	76 1d                	jbe    f01013e6 <page_init+0xa8>
 f01013c9:	89 c2                	mov    %eax,%edx
 f01013cb:	c1 e2 0c             	shl    $0xc,%edx
@@ -2278,7 +2278,7 @@ f01013f0:	5e                   	pop    %esi
 f01013f1:	5f                   	pop    %edi
 f01013f2:	5d                   	pop    %ebp
 f01013f3:	c3                   	ret    
-f01013f4:	89 0d 40 52 2a f0    	mov    %ecx,0xf02a5240
+f01013f4:	89 0d 40 72 2a f0    	mov    %ecx,0xf02a7240
 f01013fa:	eb f0                	jmp    f01013ec <page_init+0xae>
 
 f01013fc <page_alloc>:
@@ -2288,13 +2288,13 @@ f01013fd:	89 e5                	mov    %esp,%ebp
 f01013ff:	53                   	push   %ebx
 f0101400:	83 ec 04             	sub    $0x4,%esp
 	struct PageInfo* next = page_free_list;
-f0101403:	8b 1d 40 52 2a f0    	mov    0xf02a5240,%ebx
+f0101403:	8b 1d 40 72 2a f0    	mov    0xf02a7240,%ebx
 	if (!next)
 f0101409:	85 db                	test   %ebx,%ebx
 f010140b:	74 13                	je     f0101420 <page_alloc+0x24>
 	page_free_list = page_free_list->pp_link;
 f010140d:	8b 03                	mov    (%ebx),%eax
-f010140f:	a3 40 52 2a f0       	mov    %eax,0xf02a5240
+f010140f:	a3 40 72 2a f0       	mov    %eax,0xf02a7240
 	next->pp_link = NULL;
 f0101414:	c7 03 00 00 00 00    	movl   $0x0,(%ebx)
 	if (alloc_flags & ALLOC_ZERO) {
@@ -2307,13 +2307,13 @@ f0101425:	c9                   	leave
 f0101426:	c3                   	ret    
 	return (pp - pages) << PGSHIFT;
 f0101427:	89 d8                	mov    %ebx,%eax
-f0101429:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f0101429:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f010142f:	c1 f8 03             	sar    $0x3,%eax
 f0101432:	c1 e0 0c             	shl    $0xc,%eax
 	if (PGNUM(pa) >= npages)
 f0101435:	89 c2                	mov    %eax,%edx
 f0101437:	c1 ea 0c             	shr    $0xc,%edx
-f010143a:	3b 15 88 5e 2a f0    	cmp    0xf02a5e88,%edx
+f010143a:	3b 15 88 7e 2a f0    	cmp    0xf02a7e88,%edx
 f0101440:	73 1a                	jae    f010145c <page_alloc+0x60>
 		memset(content, 0, PGSIZE);
 f0101442:	83 ec 04             	sub    $0x4,%esp
@@ -2345,10 +2345,10 @@ f010147c:	75 14                	jne    f0101492 <page_free+0x24>
 f010147e:	83 38 00             	cmpl   $0x0,(%eax)
 f0101481:	75 26                	jne    f01014a9 <page_free+0x3b>
 	pp->pp_link = page_free_list;
-f0101483:	8b 15 40 52 2a f0    	mov    0xf02a5240,%edx
+f0101483:	8b 15 40 72 2a f0    	mov    0xf02a7240,%edx
 f0101489:	89 10                	mov    %edx,(%eax)
 	page_free_list = pp;
-f010148b:	a3 40 52 2a f0       	mov    %eax,0xf02a5240
+f010148b:	a3 40 72 2a f0       	mov    %eax,0xf02a7240
 }
 f0101490:	c9                   	leave  
 f0101491:	c3                   	ret    
@@ -2410,7 +2410,7 @@ f0101501:	25 00 f0 ff ff       	and    $0xfffff000,%eax
 	if (PGNUM(pa) >= npages)
 f0101506:	89 c2                	mov    %eax,%edx
 f0101508:	c1 ea 0c             	shr    $0xc,%edx
-f010150b:	39 15 88 5e 2a f0    	cmp    %edx,0xf02a5e88
+f010150b:	39 15 88 7e 2a f0    	cmp    %edx,0xf02a7e88
 f0101511:	76 1b                	jbe    f010152e <pgdir_walk+0x48>
 		return pt_base + PTX(va);
 f0101513:	8b 55 0c             	mov    0xc(%ebp),%edx
@@ -2443,13 +2443,13 @@ f0101559:	83 c4 10             	add    $0x10,%esp
 f010155c:	85 c0                	test   %eax,%eax
 f010155e:	0f 84 8f 00 00 00    	je     f01015f3 <pgdir_walk+0x10d>
 	return (pp - pages) << PGSHIFT;
-f0101564:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f0101564:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f010156a:	c1 f8 03             	sar    $0x3,%eax
 f010156d:	c1 e0 0c             	shl    $0xc,%eax
 f0101570:	89 45 e4             	mov    %eax,-0x1c(%ebp)
 	if (PGNUM(pa) >= npages)
 f0101573:	c1 e8 0c             	shr    $0xc,%eax
-f0101576:	3b 05 88 5e 2a f0    	cmp    0xf02a5e88,%eax
+f0101576:	3b 05 88 7e 2a f0    	cmp    0xf02a7e88,%eax
 f010157c:	73 42                	jae    f01015c0 <pgdir_walk+0xda>
 	return (void *)(pa + KERNBASE);
 f010157e:	8b 45 e4             	mov    -0x1c(%ebp),%eax
@@ -2569,11 +2569,11 @@ static inline struct PageInfo*
 pa2page(physaddr_t pa)
 {
 	if (PGNUM(pa) >= npages)
-f010167a:	39 05 88 5e 2a f0    	cmp    %eax,0xf02a5e88
+f010167a:	39 05 88 7e 2a f0    	cmp    %eax,0xf02a7e88
 f0101680:	76 0e                	jbe    f0101690 <page_lookup+0x44>
 		panic("pa2page called with invalid pa");
 	return &pages[PGNUM(pa)];
-f0101682:	8b 15 90 5e 2a f0    	mov    0xf02a5e90,%edx
+f0101682:	8b 15 90 7e 2a f0    	mov    0xf02a7e90,%edx
 f0101688:	8d 04 c2             	lea    (%edx,%eax,8),%eax
 }
 f010168b:	8b 5d fc             	mov    -0x4(%ebp),%ebx
@@ -2603,7 +2603,7 @@ f01016c0:	01 c2                	add    %eax,%edx
 f01016c2:	01 d2                	add    %edx,%edx
 f01016c4:	01 c2                	add    %eax,%edx
 f01016c6:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f01016c9:	83 3c 85 28 60 2a f0 	cmpl   $0x0,-0xfd59fd8(,%eax,4)
+f01016c9:	83 3c 85 28 80 2a f0 	cmpl   $0x0,-0xfd57fd8(,%eax,4)
 f01016d0:	00 
 f01016d1:	74 20                	je     f01016f3 <tlb_invalidate+0x41>
 f01016d3:	e8 da 4f 00 00       	call   f01066b2 <cpunum>
@@ -2612,7 +2612,7 @@ f01016db:	01 c2                	add    %eax,%edx
 f01016dd:	01 d2                	add    %edx,%edx
 f01016df:	01 c2                	add    %eax,%edx
 f01016e1:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f01016e4:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f01016e4:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f01016eb:	8b 4d 08             	mov    0x8(%ebp),%ecx
 f01016ee:	39 48 60             	cmp    %ecx,0x60(%eax)
 f01016f1:	75 06                	jne    f01016f9 <tlb_invalidate+0x47>
@@ -2698,7 +2698,7 @@ f0101778:	66 ff 43 04          	incw   0x4(%ebx)
 f010177c:	83 38 00             	cmpl   $0x0,(%eax)
 f010177f:	75 23                	jne    f01017a4 <page_insert+0x4f>
 	return (pp - pages) << PGSHIFT;
-f0101781:	2b 1d 90 5e 2a f0    	sub    0xf02a5e90,%ebx
+f0101781:	2b 1d 90 7e 2a f0    	sub    0xf02a7e90,%ebx
 f0101787:	c1 fb 03             	sar    $0x3,%ebx
 f010178a:	c1 e3 0c             	shl    $0xc,%ebx
 	*page_entry = page2pa(pp) | perm | PTE_P;
@@ -2745,7 +2745,7 @@ f01017e0:	83 ec 08             	sub    $0x8,%esp
 f01017e3:	6a 1a                	push   $0x1a
 f01017e5:	ff 75 08             	pushl  0x8(%ebp)
 f01017e8:	89 d9                	mov    %ebx,%ecx
-f01017ea:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01017ea:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f01017ef:	e8 09 fe ff ff       	call   f01015fd <boot_map_region>
 	base += size_up;
 f01017f4:	a1 00 33 12 f0       	mov    0xf0123300,%eax
@@ -2795,11 +2795,11 @@ f010185d:	05 00 40 00 00       	add    $0x4000,%eax
 	npages = totalmem / (PGSIZE / 1024);
 f0101862:	89 c2                	mov    %eax,%edx
 f0101864:	c1 ea 02             	shr    $0x2,%edx
-f0101867:	89 15 88 5e 2a f0    	mov    %edx,0xf02a5e88
+f0101867:	89 15 88 7e 2a f0    	mov    %edx,0xf02a7e88
 	npages_basemem = basemem / (PGSIZE / 1024);
 f010186d:	89 f2                	mov    %esi,%edx
 f010186f:	c1 ea 02             	shr    $0x2,%edx
-f0101872:	89 15 44 52 2a f0    	mov    %edx,0xf02a5244
+f0101872:	89 15 44 72 2a f0    	mov    %edx,0xf02a7244
 	cprintf("Physical memory: %uK available, base = %uK, extended = %uK\n",
 f0101878:	89 c2                	mov    %eax,%edx
 f010187a:	29 f2                	sub    %esi,%edx
@@ -2811,7 +2811,7 @@ f0101884:	e8 f6 26 00 00       	call   f0103f7f <cprintf>
 	kern_pgdir = (pde_t *) boot_alloc(PGSIZE);
 f0101889:	b8 00 10 00 00       	mov    $0x1000,%eax
 f010188e:	e8 e8 f6 ff ff       	call   f0100f7b <boot_alloc>
-f0101893:	a3 8c 5e 2a f0       	mov    %eax,0xf02a5e8c
+f0101893:	a3 8c 7e 2a f0       	mov    %eax,0xf02a7e8c
 	memset(kern_pgdir, 0, PGSIZE);
 f0101898:	83 c4 0c             	add    $0xc,%esp
 f010189b:	68 00 10 00 00       	push   $0x1000
@@ -2819,7 +2819,7 @@ f01018a0:	6a 00                	push   $0x0
 f01018a2:	50                   	push   %eax
 f01018a3:	e8 31 47 00 00       	call   f0105fd9 <memset>
 	kern_pgdir[PDX(UVPT)] = PADDR(kern_pgdir) | PTE_U | PTE_P;
-f01018a8:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01018a8:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 	if ((uint32_t)kva < KERNBASE)
 f01018ad:	83 c4 10             	add    $0x10,%esp
 f01018b0:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
@@ -2829,13 +2829,13 @@ f01018bb:	8d 90 00 00 00 10    	lea    0x10000000(%eax),%edx
 f01018c1:	83 ca 05             	or     $0x5,%edx
 f01018c4:	89 90 f4 0e 00 00    	mov    %edx,0xef4(%eax)
 	pages = (struct PageInfo *) boot_alloc(sizeof(struct PageInfo)*npages);
-f01018ca:	a1 88 5e 2a f0       	mov    0xf02a5e88,%eax
+f01018ca:	a1 88 7e 2a f0       	mov    0xf02a7e88,%eax
 f01018cf:	c1 e0 03             	shl    $0x3,%eax
 f01018d2:	e8 a4 f6 ff ff       	call   f0100f7b <boot_alloc>
-f01018d7:	a3 90 5e 2a f0       	mov    %eax,0xf02a5e90
+f01018d7:	a3 90 7e 2a f0       	mov    %eax,0xf02a7e90
 	memset(pages, 0, sizeof(struct PageInfo)*npages);
 f01018dc:	83 ec 04             	sub    $0x4,%esp
-f01018df:	8b 0d 88 5e 2a f0    	mov    0xf02a5e88,%ecx
+f01018df:	8b 0d 88 7e 2a f0    	mov    0xf02a7e88,%ecx
 f01018e5:	8d 14 cd 00 00 00 00 	lea    0x0(,%ecx,8),%edx
 f01018ec:	52                   	push   %edx
 f01018ed:	6a 00                	push   $0x0
@@ -2844,7 +2844,7 @@ f01018f0:	e8 e4 46 00 00       	call   f0105fd9 <memset>
 	envs = (struct Env *) boot_alloc(sizeof(struct Env)*NENV);
 f01018f5:	b8 00 f0 01 00       	mov    $0x1f000,%eax
 f01018fa:	e8 7c f6 ff ff       	call   f0100f7b <boot_alloc>
-f01018ff:	a3 48 52 2a f0       	mov    %eax,0xf02a5248
+f01018ff:	a3 48 72 2a f0       	mov    %eax,0xf02a7248
 	memset(envs, 0, sizeof(struct Env)*NENV);
 f0101904:	83 c4 0c             	add    $0xc,%esp
 f0101907:	68 00 f0 01 00       	push   $0x1f000
@@ -2858,10 +2858,10 @@ f0101919:	b8 01 00 00 00       	mov    $0x1,%eax
 f010191e:	e8 24 f7 ff ff       	call   f0101047 <check_page_free_list>
 	if (!pages)
 f0101923:	83 c4 10             	add    $0x10,%esp
-f0101926:	83 3d 90 5e 2a f0 00 	cmpl   $0x0,0xf02a5e90
+f0101926:	83 3d 90 7e 2a f0 00 	cmpl   $0x0,0xf02a7e90
 f010192d:	74 28                	je     f0101957 <mem_init+0x13a>
 	for (pp = page_free_list, nfree = 0; pp; pp = pp->pp_link)
-f010192f:	a1 40 52 2a f0       	mov    0xf02a5240,%eax
+f010192f:	a1 40 72 2a f0       	mov    0xf02a7240,%eax
 f0101934:	bb 00 00 00 00       	mov    $0x0,%ebx
 f0101939:	eb 36                	jmp    f0101971 <mem_init+0x154>
 		totalmem = basemem;
@@ -2919,9 +2919,9 @@ f01019c8:	0f 84 32 02 00 00    	je     f0101c00 <mem_init+0x3e3>
 f01019ce:	39 c7                	cmp    %eax,%edi
 f01019d0:	0f 84 2a 02 00 00    	je     f0101c00 <mem_init+0x3e3>
 	return (pp - pages) << PGSHIFT;
-f01019d6:	8b 0d 90 5e 2a f0    	mov    0xf02a5e90,%ecx
+f01019d6:	8b 0d 90 7e 2a f0    	mov    0xf02a7e90,%ecx
 	assert(page2pa(pp0) < npages*PGSIZE);
-f01019dc:	8b 15 88 5e 2a f0    	mov    0xf02a5e88,%edx
+f01019dc:	8b 15 88 7e 2a f0    	mov    0xf02a7e88,%edx
 f01019e2:	c1 e2 0c             	shl    $0xc,%edx
 f01019e5:	89 f8                	mov    %edi,%eax
 f01019e7:	29 c8                	sub    %ecx,%eax
@@ -2944,10 +2944,10 @@ f0101a11:	c1 e0 0c             	shl    $0xc,%eax
 f0101a14:	39 c2                	cmp    %eax,%edx
 f0101a16:	0f 86 2f 02 00 00    	jbe    f0101c4b <mem_init+0x42e>
 	fl = page_free_list;
-f0101a1c:	a1 40 52 2a f0       	mov    0xf02a5240,%eax
+f0101a1c:	a1 40 72 2a f0       	mov    0xf02a7240,%eax
 f0101a21:	89 45 d0             	mov    %eax,-0x30(%ebp)
 	page_free_list = 0;
-f0101a24:	c7 05 40 52 2a f0 00 	movl   $0x0,0xf02a5240
+f0101a24:	c7 05 40 72 2a f0 00 	movl   $0x0,0xf02a7240
 f0101a2b:	00 00 00 
 	assert(!page_alloc(0));
 f0101a2e:	83 ec 0c             	sub    $0xc,%esp
@@ -3007,13 +3007,13 @@ f0101acc:	83 c4 10             	add    $0x10,%esp
 f0101acf:	85 c0                	test   %eax,%eax
 f0101ad1:	0f 85 23 02 00 00    	jne    f0101cfa <mem_init+0x4dd>
 f0101ad7:	89 f0                	mov    %esi,%eax
-f0101ad9:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f0101ad9:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f0101adf:	c1 f8 03             	sar    $0x3,%eax
 f0101ae2:	c1 e0 0c             	shl    $0xc,%eax
 	if (PGNUM(pa) >= npages)
 f0101ae5:	89 c2                	mov    %eax,%edx
 f0101ae7:	c1 ea 0c             	shr    $0xc,%edx
-f0101aea:	3b 15 88 5e 2a f0    	cmp    0xf02a5e88,%edx
+f0101aea:	3b 15 88 7e 2a f0    	cmp    0xf02a7e88,%edx
 f0101af0:	0f 83 1d 02 00 00    	jae    f0101d13 <mem_init+0x4f6>
 	memset(page2kva(pp0), 1, PGSIZE);
 f0101af6:	83 ec 04             	sub    $0x4,%esp
@@ -3037,13 +3037,13 @@ f0101b2a:	39 c6                	cmp    %eax,%esi
 f0101b2c:	0f 85 0c 02 00 00    	jne    f0101d3e <mem_init+0x521>
 	return (pp - pages) << PGSHIFT;
 f0101b32:	89 f2                	mov    %esi,%edx
-f0101b34:	2b 15 90 5e 2a f0    	sub    0xf02a5e90,%edx
+f0101b34:	2b 15 90 7e 2a f0    	sub    0xf02a7e90,%edx
 f0101b3a:	c1 fa 03             	sar    $0x3,%edx
 f0101b3d:	c1 e2 0c             	shl    $0xc,%edx
 	if (PGNUM(pa) >= npages)
 f0101b40:	89 d0                	mov    %edx,%eax
 f0101b42:	c1 e8 0c             	shr    $0xc,%eax
-f0101b45:	3b 05 88 5e 2a f0    	cmp    0xf02a5e88,%eax
+f0101b45:	3b 05 88 7e 2a f0    	cmp    0xf02a7e88,%eax
 f0101b4b:	0f 83 06 02 00 00    	jae    f0101d57 <mem_init+0x53a>
 	return (void *)(pa + KERNBASE);
 f0101b51:	8d 82 00 00 00 f0    	lea    -0x10000000(%edx),%eax
@@ -3057,7 +3057,7 @@ f0101b67:	39 d0                	cmp    %edx,%eax
 f0101b69:	75 f2                	jne    f0101b5d <mem_init+0x340>
 	page_free_list = fl;
 f0101b6b:	8b 45 d0             	mov    -0x30(%ebp),%eax
-f0101b6e:	a3 40 52 2a f0       	mov    %eax,0xf02a5240
+f0101b6e:	a3 40 72 2a f0       	mov    %eax,0xf02a7240
 	page_free(pp0);
 f0101b73:	83 ec 0c             	sub    $0xc,%esp
 f0101b76:	56                   	push   %esi
@@ -3070,7 +3070,7 @@ f0101b84:	83 c4 04             	add    $0x4,%esp
 f0101b87:	ff 75 d4             	pushl  -0x2c(%ebp)
 f0101b8a:	e8 df f8 ff ff       	call   f010146e <page_free>
 	for (pp = page_free_list; pp; pp = pp->pp_link)
-f0101b8f:	a1 40 52 2a f0       	mov    0xf02a5240,%eax
+f0101b8f:	a1 40 72 2a f0       	mov    0xf02a7240,%eax
 f0101b94:	83 c4 10             	add    $0x10,%esp
 f0101b97:	e9 e9 01 00 00       	jmp    f0101d85 <mem_init+0x568>
 	assert((pp0 = page_alloc(0)));
@@ -3246,10 +3246,10 @@ f0101df7:	0f 84 98 09 00 00    	je     f0102795 <mem_init+0xf78>
 
 	// temporarily steal the rest of the free pages
 	fl = page_free_list;
-f0101dfd:	a1 40 52 2a f0       	mov    0xf02a5240,%eax
+f0101dfd:	a1 40 72 2a f0       	mov    0xf02a7240,%eax
 f0101e02:	89 45 c8             	mov    %eax,-0x38(%ebp)
 	page_free_list = 0;
-f0101e05:	c7 05 40 52 2a f0 00 	movl   $0x0,0xf02a5240
+f0101e05:	c7 05 40 72 2a f0 00 	movl   $0x0,0xf02a7240
 f0101e0c:	00 00 00 
 
 	// should be no free memory
@@ -3267,7 +3267,7 @@ f0101e24:	83 ec 04             	sub    $0x4,%esp
 f0101e27:	8d 45 e4             	lea    -0x1c(%ebp),%eax
 f0101e2a:	50                   	push   %eax
 f0101e2b:	6a 00                	push   $0x0
-f0101e2d:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0101e2d:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0101e33:	e8 14 f8 ff ff       	call   f010164c <page_lookup>
 f0101e38:	83 c4 10             	add    $0x10,%esp
 f0101e3b:	85 c0                	test   %eax,%eax
@@ -3278,7 +3278,7 @@ f0101e3d:	0f 85 84 09 00 00    	jne    f01027c7 <mem_init+0xfaa>
 f0101e43:	6a 02                	push   $0x2
 f0101e45:	6a 00                	push   $0x0
 f0101e47:	53                   	push   %ebx
-f0101e48:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0101e48:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0101e4e:	e8 02 f9 ff ff       	call   f0101755 <page_insert>
 f0101e53:	83 c4 10             	add    $0x10,%esp
 f0101e56:	85 c0                	test   %eax,%eax
@@ -3293,16 +3293,16 @@ f0101e62:	e8 07 f6 ff ff       	call   f010146e <page_free>
 f0101e67:	6a 02                	push   $0x2
 f0101e69:	6a 00                	push   $0x0
 f0101e6b:	53                   	push   %ebx
-f0101e6c:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0101e6c:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0101e72:	e8 de f8 ff ff       	call   f0101755 <page_insert>
 f0101e77:	83 c4 20             	add    $0x20,%esp
 f0101e7a:	85 c0                	test   %eax,%eax
 f0101e7c:	0f 85 77 09 00 00    	jne    f01027f9 <mem_init+0xfdc>
 	assert(PTE_ADDR(kern_pgdir[0]) == page2pa(pp0));
-f0101e82:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0101e82:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0101e87:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 	return (pp - pages) << PGSHIFT;
-f0101e8a:	8b 0d 90 5e 2a f0    	mov    0xf02a5e90,%ecx
+f0101e8a:	8b 0d 90 7e 2a f0    	mov    0xf02a7e90,%ecx
 f0101e90:	89 4d d0             	mov    %ecx,-0x30(%ebp)
 f0101e93:	8b 00                	mov    (%eax),%eax
 f0101e95:	89 45 cc             	mov    %eax,-0x34(%ebp)
@@ -3343,10 +3343,10 @@ f0101efb:	85 c0                	test   %eax,%eax
 f0101efd:	0f 85 73 09 00 00    	jne    f0102876 <mem_init+0x1059>
 	assert(check_va2pa(kern_pgdir, PGSIZE) == page2pa(pp2));
 f0101f03:	ba 00 10 00 00       	mov    $0x1000,%edx
-f0101f08:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0101f08:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0101f0d:	e8 d6 f0 ff ff       	call   f0100fe8 <check_va2pa>
 f0101f12:	89 f2                	mov    %esi,%edx
-f0101f14:	2b 15 90 5e 2a f0    	sub    0xf02a5e90,%edx
+f0101f14:	2b 15 90 7e 2a f0    	sub    0xf02a7e90,%edx
 f0101f1a:	c1 fa 03             	sar    $0x3,%edx
 f0101f1d:	c1 e2 0c             	shl    $0xc,%edx
 f0101f20:	39 d0                	cmp    %edx,%eax
@@ -3369,17 +3369,17 @@ f0101f42:	0f 85 79 09 00 00    	jne    f01028c1 <mem_init+0x10a4>
 f0101f48:	6a 02                	push   $0x2
 f0101f4a:	68 00 10 00 00       	push   $0x1000
 f0101f4f:	56                   	push   %esi
-f0101f50:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0101f50:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0101f56:	e8 fa f7 ff ff       	call   f0101755 <page_insert>
 f0101f5b:	83 c4 10             	add    $0x10,%esp
 f0101f5e:	85 c0                	test   %eax,%eax
 f0101f60:	0f 85 74 09 00 00    	jne    f01028da <mem_init+0x10bd>
 	assert(check_va2pa(kern_pgdir, PGSIZE) == page2pa(pp2));
 f0101f66:	ba 00 10 00 00       	mov    $0x1000,%edx
-f0101f6b:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0101f6b:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0101f70:	e8 73 f0 ff ff       	call   f0100fe8 <check_va2pa>
 f0101f75:	89 f2                	mov    %esi,%edx
-f0101f77:	2b 15 90 5e 2a f0    	sub    0xf02a5e90,%edx
+f0101f77:	2b 15 90 7e 2a f0    	sub    0xf02a7e90,%edx
 f0101f7d:	c1 fa 03             	sar    $0x3,%edx
 f0101f80:	c1 e2 0c             	shl    $0xc,%edx
 f0101f83:	39 d0                	cmp    %edx,%eax
@@ -3400,13 +3400,13 @@ f0101fa5:	0f 85 7a 09 00 00    	jne    f0102925 <mem_init+0x1108>
 
 	// check that pgdir_walk returns a pointer to the pte
 	ptep = (pte_t *) KADDR(PTE_ADDR(kern_pgdir[PDX(PGSIZE)]));
-f0101fab:	8b 15 8c 5e 2a f0    	mov    0xf02a5e8c,%edx
+f0101fab:	8b 15 8c 7e 2a f0    	mov    0xf02a7e8c,%edx
 f0101fb1:	8b 02                	mov    (%edx),%eax
 f0101fb3:	25 00 f0 ff ff       	and    $0xfffff000,%eax
 	if (PGNUM(pa) >= npages)
 f0101fb8:	89 c1                	mov    %eax,%ecx
 f0101fba:	c1 e9 0c             	shr    $0xc,%ecx
-f0101fbd:	3b 0d 88 5e 2a f0    	cmp    0xf02a5e88,%ecx
+f0101fbd:	3b 0d 88 7e 2a f0    	cmp    0xf02a7e88,%ecx
 f0101fc3:	0f 83 75 09 00 00    	jae    f010293e <mem_init+0x1121>
 	return (void *)(pa + KERNBASE);
 f0101fc9:	2d 00 00 00 10       	sub    $0x10000000,%eax
@@ -3428,19 +3428,19 @@ f0101fec:	0f 85 61 09 00 00    	jne    f0102953 <mem_init+0x1136>
 f0101ff2:	6a 06                	push   $0x6
 f0101ff4:	68 00 10 00 00       	push   $0x1000
 f0101ff9:	56                   	push   %esi
-f0101ffa:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0101ffa:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0102000:	e8 50 f7 ff ff       	call   f0101755 <page_insert>
 f0102005:	83 c4 10             	add    $0x10,%esp
 f0102008:	85 c0                	test   %eax,%eax
 f010200a:	0f 85 5c 09 00 00    	jne    f010296c <mem_init+0x114f>
 	assert(check_va2pa(kern_pgdir, PGSIZE) == page2pa(pp2));
-f0102010:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0102010:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0102015:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 f0102018:	ba 00 10 00 00       	mov    $0x1000,%edx
 f010201d:	e8 c6 ef ff ff       	call   f0100fe8 <check_va2pa>
 	return (pp - pages) << PGSHIFT;
 f0102022:	89 f2                	mov    %esi,%edx
-f0102024:	2b 15 90 5e 2a f0    	sub    0xf02a5e90,%edx
+f0102024:	2b 15 90 7e 2a f0    	sub    0xf02a7e90,%edx
 f010202a:	c1 fa 03             	sar    $0x3,%edx
 f010202d:	c1 e2 0c             	shl    $0xc,%edx
 f0102030:	39 d0                	cmp    %edx,%eax
@@ -3458,7 +3458,7 @@ f0102055:	83 c4 10             	add    $0x10,%esp
 f0102058:	f6 00 04             	testb  $0x4,(%eax)
 f010205b:	0f 84 56 09 00 00    	je     f01029b7 <mem_init+0x119a>
 	assert(kern_pgdir[0] & PTE_U);
-f0102061:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0102061:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0102066:	f6 00 04             	testb  $0x4,(%eax)
 f0102069:	0f 84 61 09 00 00    	je     f01029d0 <mem_init+0x11b3>
 
@@ -3476,7 +3476,7 @@ f0102082:	0f 85 61 09 00 00    	jne    f01029e9 <mem_init+0x11cc>
 f0102088:	83 ec 04             	sub    $0x4,%esp
 f010208b:	6a 00                	push   $0x0
 f010208d:	68 00 10 00 00       	push   $0x1000
-f0102092:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0102092:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0102098:	e8 49 f4 ff ff       	call   f01014e6 <pgdir_walk>
 f010209d:	83 c4 10             	add    $0x10,%esp
 f01020a0:	f6 00 02             	testb  $0x2,(%eax)
@@ -3485,7 +3485,7 @@ f01020a3:	0f 84 59 09 00 00    	je     f0102a02 <mem_init+0x11e5>
 f01020a9:	83 ec 04             	sub    $0x4,%esp
 f01020ac:	6a 00                	push   $0x0
 f01020ae:	68 00 10 00 00       	push   $0x1000
-f01020b3:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01020b3:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01020b9:	e8 28 f4 ff ff       	call   f01014e6 <pgdir_walk>
 f01020be:	83 c4 10             	add    $0x10,%esp
 f01020c1:	f6 00 04             	testb  $0x4,(%eax)
@@ -3496,7 +3496,7 @@ f01020c4:	0f 85 51 09 00 00    	jne    f0102a1b <mem_init+0x11fe>
 f01020ca:	6a 02                	push   $0x2
 f01020cc:	68 00 00 40 00       	push   $0x400000
 f01020d1:	57                   	push   %edi
-f01020d2:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01020d2:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01020d8:	e8 78 f6 ff ff       	call   f0101755 <page_insert>
 f01020dd:	83 c4 10             	add    $0x10,%esp
 f01020e0:	85 c0                	test   %eax,%eax
@@ -3507,7 +3507,7 @@ f01020e2:	0f 89 4c 09 00 00    	jns    f0102a34 <mem_init+0x1217>
 f01020e8:	6a 02                	push   $0x2
 f01020ea:	68 00 10 00 00       	push   $0x1000
 f01020ef:	53                   	push   %ebx
-f01020f0:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01020f0:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01020f6:	e8 5a f6 ff ff       	call   f0101755 <page_insert>
 f01020fb:	83 c4 10             	add    $0x10,%esp
 f01020fe:	85 c0                	test   %eax,%eax
@@ -3516,7 +3516,7 @@ f0102100:	0f 85 47 09 00 00    	jne    f0102a4d <mem_init+0x1230>
 f0102106:	83 ec 04             	sub    $0x4,%esp
 f0102109:	6a 00                	push   $0x0
 f010210b:	68 00 10 00 00       	push   $0x1000
-f0102110:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0102110:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0102116:	e8 cb f3 ff ff       	call   f01014e6 <pgdir_walk>
 f010211b:	83 c4 10             	add    $0x10,%esp
 f010211e:	f6 00 04             	testb  $0x4,(%eax)
@@ -3524,14 +3524,14 @@ f0102121:	0f 85 3f 09 00 00    	jne    f0102a66 <mem_init+0x1249>
 
 	// should have pp1 at both 0 and PGSIZE, pp2 nowhere, ...
 	assert(check_va2pa(kern_pgdir, 0) == page2pa(pp1));
-f0102127:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0102127:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f010212c:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 f010212f:	ba 00 00 00 00       	mov    $0x0,%edx
 f0102134:	e8 af ee ff ff       	call   f0100fe8 <check_va2pa>
 f0102139:	89 c1                	mov    %eax,%ecx
 f010213b:	89 45 d0             	mov    %eax,-0x30(%ebp)
 f010213e:	89 d8                	mov    %ebx,%eax
-f0102140:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f0102140:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f0102146:	c1 f8 03             	sar    $0x3,%eax
 f0102149:	c1 e0 0c             	shl    $0xc,%eax
 f010214c:	39 c1                	cmp    %eax,%ecx
@@ -3565,10 +3565,10 @@ f0102197:	0f 85 46 09 00 00    	jne    f0102ae3 <mem_init+0x12c6>
 	page_remove(kern_pgdir, 0x0);
 f010219d:	83 ec 08             	sub    $0x8,%esp
 f01021a0:	6a 00                	push   $0x0
-f01021a2:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01021a2:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01021a8:	e8 4e f5 ff ff       	call   f01016fb <page_remove>
 	assert(check_va2pa(kern_pgdir, 0x0) == ~0);
-f01021ad:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01021ad:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f01021b2:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 f01021b5:	ba 00 00 00 00       	mov    $0x0,%edx
 f01021ba:	e8 29 ee ff ff       	call   f0100fe8 <check_va2pa>
@@ -3580,7 +3580,7 @@ f01021cb:	ba 00 10 00 00       	mov    $0x1000,%edx
 f01021d0:	8b 45 d4             	mov    -0x2c(%ebp),%eax
 f01021d3:	e8 10 ee ff ff       	call   f0100fe8 <check_va2pa>
 f01021d8:	89 da                	mov    %ebx,%edx
-f01021da:	2b 15 90 5e 2a f0    	sub    0xf02a5e90,%edx
+f01021da:	2b 15 90 7e 2a f0    	sub    0xf02a7e90,%edx
 f01021e0:	c1 fa 03             	sar    $0x3,%edx
 f01021e3:	c1 e2 0c             	shl    $0xc,%edx
 f01021e6:	39 d0                	cmp    %edx,%eax
@@ -3613,10 +3613,10 @@ f010222d:	0f 85 5f 09 00 00    	jne    f0102b92 <mem_init+0x1375>
 	page_remove(kern_pgdir, (void*) PGSIZE);
 f0102233:	83 ec 08             	sub    $0x8,%esp
 f0102236:	68 00 10 00 00       	push   $0x1000
-f010223b:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f010223b:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0102241:	e8 b5 f4 ff ff       	call   f01016fb <page_remove>
 	assert(check_va2pa(kern_pgdir, 0x0) == ~0);
-f0102246:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0102246:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f010224b:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 f010224e:	ba 00 00 00 00       	mov    $0x0,%edx
 f0102253:	e8 90 ed ff ff       	call   f0100fe8 <check_va2pa>
@@ -3658,11 +3658,11 @@ f01022bc:	0f 85 66 09 00 00    	jne    f0102c28 <mem_init+0x140b>
 
 	// forcibly take pp0 back
 	assert(PTE_ADDR(kern_pgdir[0]) == page2pa(pp0));
-f01022c2:	8b 0d 8c 5e 2a f0    	mov    0xf02a5e8c,%ecx
+f01022c2:	8b 0d 8c 7e 2a f0    	mov    0xf02a7e8c,%ecx
 f01022c8:	8b 11                	mov    (%ecx),%edx
 f01022ca:	81 e2 00 f0 ff ff    	and    $0xfffff000,%edx
 f01022d0:	89 f8                	mov    %edi,%eax
-f01022d2:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f01022d2:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f01022d8:	c1 f8 03             	sar    $0x3,%eax
 f01022db:	c1 e0 0c             	shl    $0xc,%eax
 f01022de:	39 c2                	cmp    %eax,%edx
@@ -3685,17 +3685,17 @@ f0102301:	e8 68 f1 ff ff       	call   f010146e <page_free>
 f0102306:	83 c4 0c             	add    $0xc,%esp
 f0102309:	6a 01                	push   $0x1
 f010230b:	68 00 10 40 00       	push   $0x401000
-f0102310:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0102310:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0102316:	e8 cb f1 ff ff       	call   f01014e6 <pgdir_walk>
 f010231b:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 f010231e:	89 45 e4             	mov    %eax,-0x1c(%ebp)
 	ptep1 = (pte_t *) KADDR(PTE_ADDR(kern_pgdir[PDX(va)]));
-f0102321:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0102321:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0102326:	89 45 d0             	mov    %eax,-0x30(%ebp)
 f0102329:	8b 50 04             	mov    0x4(%eax),%edx
 f010232c:	81 e2 00 f0 ff ff    	and    $0xfffff000,%edx
 	if (PGNUM(pa) >= npages)
-f0102332:	a1 88 5e 2a f0       	mov    0xf02a5e88,%eax
+f0102332:	a1 88 7e 2a f0       	mov    0xf02a7e88,%eax
 f0102337:	89 45 cc             	mov    %eax,-0x34(%ebp)
 f010233a:	89 d1                	mov    %edx,%ecx
 f010233c:	c1 e9 0c             	shr    $0xc,%ecx
@@ -3713,7 +3713,7 @@ f010235c:	c7 40 04 00 00 00 00 	movl   $0x0,0x4(%eax)
 f0102363:	66 c7 47 04 00 00    	movw   $0x0,0x4(%edi)
 	return (pp - pages) << PGSHIFT;
 f0102369:	89 f8                	mov    %edi,%eax
-f010236b:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f010236b:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f0102371:	c1 f8 03             	sar    $0x3,%eax
 f0102374:	c1 e0 0c             	shl    $0xc,%eax
 	if (PGNUM(pa) >= npages)
@@ -3738,18 +3738,18 @@ f01023a0:	e8 c9 f0 ff ff       	call   f010146e <page_free>
 f01023a5:	83 c4 0c             	add    $0xc,%esp
 f01023a8:	6a 01                	push   $0x1
 f01023aa:	6a 00                	push   $0x0
-f01023ac:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01023ac:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01023b2:	e8 2f f1 ff ff       	call   f01014e6 <pgdir_walk>
 	return (pp - pages) << PGSHIFT;
 f01023b7:	89 fa                	mov    %edi,%edx
-f01023b9:	2b 15 90 5e 2a f0    	sub    0xf02a5e90,%edx
+f01023b9:	2b 15 90 7e 2a f0    	sub    0xf02a7e90,%edx
 f01023bf:	c1 fa 03             	sar    $0x3,%edx
 f01023c2:	c1 e2 0c             	shl    $0xc,%edx
 	if (PGNUM(pa) >= npages)
 f01023c5:	89 d0                	mov    %edx,%eax
 f01023c7:	c1 e8 0c             	shr    $0xc,%eax
 f01023ca:	83 c4 10             	add    $0x10,%esp
-f01023cd:	3b 05 88 5e 2a f0    	cmp    0xf02a5e88,%eax
+f01023cd:	3b 05 88 7e 2a f0    	cmp    0xf02a7e88,%eax
 f01023d3:	0f 83 da 08 00 00    	jae    f0102cb3 <mem_init+0x1496>
 	return (void *)(pa + KERNBASE);
 f01023d9:	8d 82 00 00 00 f0    	lea    -0x10000000(%edx),%eax
@@ -3765,7 +3765,7 @@ f01023f1:	83 c0 04             	add    $0x4,%eax
 f01023f4:	39 d0                	cmp    %edx,%eax
 f01023f6:	75 f0                	jne    f01023e8 <mem_init+0xbcb>
 	kern_pgdir[0] = 0;
-f01023f8:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01023f8:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f01023fd:	c7 00 00 00 00 00    	movl   $0x0,(%eax)
 	pp0->pp_ref = 0;
 f0102403:	66 c7 47 04 00 00    	movw   $0x0,0x4(%edi)
@@ -3773,7 +3773,7 @@ f0102403:	66 c7 47 04 00 00    	movw   $0x0,0x4(%edi)
 	// give free list back
 	page_free_list = fl;
 f0102409:	8b 45 c8             	mov    -0x38(%ebp),%eax
-f010240c:	a3 40 52 2a f0       	mov    %eax,0xf02a5240
+f010240c:	a3 40 72 2a f0       	mov    %eax,0xf02a7240
 
 	// free the pages we took
 	page_free(pp0);
@@ -3826,7 +3826,7 @@ f010249a:	39 c6                	cmp    %eax,%esi
 f010249c:	0f 82 87 08 00 00    	jb     f0102d29 <mem_init+0x150c>
 	// check page mappings
 	assert(check_va2pa(kern_pgdir, mm1) == 0);
-f01024a2:	8b 3d 8c 5e 2a f0    	mov    0xf02a5e8c,%edi
+f01024a2:	8b 3d 8c 7e 2a f0    	mov    0xf02a7e8c,%edi
 f01024a8:	89 da                	mov    %ebx,%edx
 f01024aa:	89 f8                	mov    %edi,%eax
 f01024ac:	e8 37 eb ff ff       	call   f0100fe8 <check_va2pa>
@@ -3866,7 +3866,7 @@ f010250f:	0f 84 91 08 00 00    	je     f0102da6 <mem_init+0x1589>
 f0102515:	83 ec 04             	sub    $0x4,%esp
 f0102518:	6a 00                	push   $0x0
 f010251a:	53                   	push   %ebx
-f010251b:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f010251b:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0102521:	e8 c0 ef ff ff       	call   f01014e6 <pgdir_walk>
 f0102526:	83 c4 10             	add    $0x10,%esp
 f0102529:	f6 00 04             	testb  $0x4,(%eax)
@@ -3876,21 +3876,21 @@ f010252c:	0f 85 8d 08 00 00    	jne    f0102dbf <mem_init+0x15a2>
 f0102532:	83 ec 04             	sub    $0x4,%esp
 f0102535:	6a 00                	push   $0x0
 f0102537:	53                   	push   %ebx
-f0102538:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0102538:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f010253e:	e8 a3 ef ff ff       	call   f01014e6 <pgdir_walk>
 f0102543:	c7 00 00 00 00 00    	movl   $0x0,(%eax)
 	*pgdir_walk(kern_pgdir, (void*) mm1 + PGSIZE, 0) = 0;
 f0102549:	83 c4 0c             	add    $0xc,%esp
 f010254c:	6a 00                	push   $0x0
 f010254e:	ff 75 d4             	pushl  -0x2c(%ebp)
-f0102551:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0102551:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f0102557:	e8 8a ef ff ff       	call   f01014e6 <pgdir_walk>
 f010255c:	c7 00 00 00 00 00    	movl   $0x0,(%eax)
 	*pgdir_walk(kern_pgdir, (void*) mm2, 0) = 0;
 f0102562:	83 c4 0c             	add    $0xc,%esp
 f0102565:	6a 00                	push   $0x0
 f0102567:	56                   	push   %esi
-f0102568:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0102568:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f010256e:	e8 73 ef ff ff       	call   f01014e6 <pgdir_walk>
 f0102573:	c7 00 00 00 00 00    	movl   $0x0,(%eax)
 
@@ -3898,11 +3898,11 @@ f0102573:	c7 00 00 00 00 00    	movl   $0x0,(%eax)
 f0102579:	c7 04 24 22 82 10 f0 	movl   $0xf0108222,(%esp)
 f0102580:	e8 fa 19 00 00       	call   f0103f7f <cprintf>
 	pginfo_sz = ROUNDUP(npages*sizeof(struct PageInfo), PGSIZE);
-f0102585:	a1 88 5e 2a f0       	mov    0xf02a5e88,%eax
+f0102585:	a1 88 7e 2a f0       	mov    0xf02a7e88,%eax
 f010258a:	8d 0c c5 ff 0f 00 00 	lea    0xfff(,%eax,8),%ecx
 f0102591:	81 e1 00 f0 ff ff    	and    $0xfffff000,%ecx
 	boot_map_region(kern_pgdir, UPAGES, pginfo_sz, PADDR(pages), PTE_U | PTE_P);
-f0102597:	a1 90 5e 2a f0       	mov    0xf02a5e90,%eax
+f0102597:	a1 90 7e 2a f0       	mov    0xf02a7e90,%eax
 	if ((uint32_t)kva < KERNBASE)
 f010259c:	83 c4 10             	add    $0x10,%esp
 f010259f:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
@@ -3913,17 +3913,17 @@ f01025ad:	6a 05                	push   $0x5
 f01025af:	05 00 00 00 10       	add    $0x10000000,%eax
 f01025b4:	50                   	push   %eax
 f01025b5:	ba 00 00 00 ef       	mov    $0xef000000,%edx
-f01025ba:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01025ba:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f01025bf:	e8 39 f0 ff ff       	call   f01015fd <boot_map_region>
 	env_sz = ROUNDUP(npages*sizeof(struct Env), PGSIZE);
-f01025c4:	8b 15 88 5e 2a f0    	mov    0xf02a5e88,%edx
+f01025c4:	8b 15 88 7e 2a f0    	mov    0xf02a7e88,%edx
 f01025ca:	89 d0                	mov    %edx,%eax
 f01025cc:	c1 e0 05             	shl    $0x5,%eax
 f01025cf:	29 d0                	sub    %edx,%eax
 f01025d1:	8d 0c 85 ff 0f 00 00 	lea    0xfff(,%eax,4),%ecx
 f01025d8:	81 e1 00 f0 ff ff    	and    $0xfffff000,%ecx
 	boot_map_region(kern_pgdir, UENVS, env_sz, PADDR(envs), PTE_U | PTE_P);
-f01025de:	a1 48 52 2a f0       	mov    0xf02a5248,%eax
+f01025de:	a1 48 72 2a f0       	mov    0xf02a7248,%eax
 	if ((uint32_t)kva < KERNBASE)
 f01025e3:	83 c4 10             	add    $0x10,%esp
 f01025e6:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
@@ -3934,7 +3934,7 @@ f01025f4:	6a 05                	push   $0x5
 f01025f6:	05 00 00 00 10       	add    $0x10000000,%eax
 f01025fb:	50                   	push   %eax
 f01025fc:	ba 00 00 c0 ee       	mov    $0xeec00000,%edx
-f0102601:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0102601:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0102606:	e8 f2 ef ff ff       	call   f01015fd <boot_map_region>
 	if ((uint32_t)kva < KERNBASE)
 f010260b:	83 c4 10             	add    $0x10,%esp
@@ -3947,7 +3947,7 @@ f0102621:	6a 03                	push   $0x3
 f0102623:	68 00 90 11 00       	push   $0x119000
 f0102628:	b9 00 80 00 00       	mov    $0x8000,%ecx
 f010262d:	ba 00 80 ff ef       	mov    $0xefff8000,%edx
-f0102632:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0102632:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0102637:	e8 c1 ef ff ff       	call   f01015fd <boot_map_region>
 	boot_map_region(kern_pgdir, KERNBASE, 1 << 28, // 2^32 - 0xf0000000
 f010263c:	83 c4 08             	add    $0x8,%esp
@@ -3955,12 +3955,12 @@ f010263f:	6a 03                	push   $0x3
 f0102641:	6a 00                	push   $0x0
 f0102643:	b9 00 00 00 10       	mov    $0x10000000,%ecx
 f0102648:	ba 00 00 00 f0       	mov    $0xf0000000,%edx
-f010264d:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f010264d:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0102652:	e8 a6 ef ff ff       	call   f01015fd <boot_map_region>
-f0102657:	c7 45 c8 00 70 2a f0 	movl   $0xf02a7000,-0x38(%ebp)
-f010265e:	be 00 70 2e f0       	mov    $0xf02e7000,%esi
+f0102657:	c7 45 c8 00 90 2a f0 	movl   $0xf02a9000,-0x38(%ebp)
+f010265e:	be 00 90 2e f0       	mov    $0xf02e9000,%esi
 f0102663:	83 c4 10             	add    $0x10,%esp
-f0102666:	bf 00 70 2a f0       	mov    $0xf02a7000,%edi
+f0102666:	bf 00 90 2a f0       	mov    $0xf02a9000,%edi
 f010266b:	bb 00 80 ff ef       	mov    $0xefff8000,%ebx
 f0102670:	81 ff ff ff ff ef    	cmp    $0xefffffff,%edi
 f0102676:	0f 86 9b 07 00 00    	jbe    f0102e17 <mem_init+0x15fa>
@@ -3971,7 +3971,7 @@ f0102681:	8d 87 00 00 00 10    	lea    0x10000000(%edi),%eax
 f0102687:	50                   	push   %eax
 f0102688:	b9 00 80 00 00       	mov    $0x8000,%ecx
 f010268d:	89 da                	mov    %ebx,%edx
-f010268f:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f010268f:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 f0102694:	e8 64 ef ff ff       	call   f01015fd <boot_map_region>
 f0102699:	81 c7 00 80 00 00    	add    $0x8000,%edi
 f010269f:	81 eb 00 00 01 00    	sub    $0x10000,%ebx
@@ -3981,15 +3981,15 @@ f01026a8:	39 f7                	cmp    %esi,%edi
 f01026aa:	75 c4                	jne    f0102670 <mem_init+0xe53>
 f01026ac:	89 7d c4             	mov    %edi,-0x3c(%ebp)
 	pgdir = kern_pgdir;
-f01026af:	8b 3d 8c 5e 2a f0    	mov    0xf02a5e8c,%edi
+f01026af:	8b 3d 8c 7e 2a f0    	mov    0xf02a7e8c,%edi
 	n = ROUNDUP(npages*sizeof(struct PageInfo), PGSIZE);
-f01026b5:	a1 88 5e 2a f0       	mov    0xf02a5e88,%eax
+f01026b5:	a1 88 7e 2a f0       	mov    0xf02a7e88,%eax
 f01026ba:	89 45 cc             	mov    %eax,-0x34(%ebp)
 f01026bd:	8d 04 c5 ff 0f 00 00 	lea    0xfff(,%eax,8),%eax
 f01026c4:	25 00 f0 ff ff       	and    $0xfffff000,%eax
 f01026c9:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 		assert(check_va2pa(pgdir, UPAGES + i) == PADDR(pages) + i);
-f01026cc:	a1 90 5e 2a f0       	mov    0xf02a5e90,%eax
+f01026cc:	a1 90 7e 2a f0       	mov    0xf02a7e90,%eax
 f01026d1:	89 45 c0             	mov    %eax,-0x40(%ebp)
 f01026d4:	89 45 d0             	mov    %eax,-0x30(%ebp)
 	return (physaddr_t)kva - KERNBASE;
@@ -4461,7 +4461,7 @@ f0102e4d:	68 36 03 00 00       	push   $0x336
 f0102e52:	68 1d 7f 10 f0       	push   $0xf0107f1d
 f0102e57:	e8 38 d2 ff ff       	call   f0100094 <_panic>
 		assert(check_va2pa(pgdir, UENVS + i) == PADDR(envs) + i);
-f0102e5c:	a1 48 52 2a f0       	mov    0xf02a5248,%eax
+f0102e5c:	a1 48 72 2a f0       	mov    0xf02a7248,%eax
 f0102e61:	89 45 d0             	mov    %eax,-0x30(%ebp)
 	if ((uint32_t)kva < KERNBASE)
 f0102e64:	89 45 d4             	mov    %eax,-0x2c(%ebp)
@@ -4506,7 +4506,7 @@ f0102ee5:	0f 85 f5 00 00 00    	jne    f0102fe0 <mem_init+0x17c3>
 f0102eeb:	81 c3 00 10 00 00    	add    $0x1000,%ebx
 f0102ef1:	39 f3                	cmp    %esi,%ebx
 f0102ef3:	72 e1                	jb     f0102ed6 <mem_init+0x16b9>
-f0102ef5:	c7 45 d4 00 70 2a f0 	movl   $0xf02a7000,-0x2c(%ebp)
+f0102ef5:	c7 45 d4 00 90 2a f0 	movl   $0xf02a9000,-0x2c(%ebp)
 f0102efc:	c7 45 cc 00 80 ff ef 	movl   $0xefff8000,-0x34(%ebp)
 			assert(check_va2pa(pgdir, base + KSTKGAP + i)
 f0102f03:	8b 45 d4             	mov    -0x2c(%ebp),%eax
@@ -4625,7 +4625,7 @@ f010309e:	83 ec 0c             	sub    $0xc,%esp
 f01030a1:	68 28 7e 10 f0       	push   $0xf0107e28
 f01030a6:	e8 d4 0e 00 00       	call   f0103f7f <cprintf>
 	lcr3(PADDR(kern_pgdir));
-f01030ab:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01030ab:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 	if ((uint32_t)kva < KERNBASE)
 f01030b0:	83 c4 10             	add    $0x10,%esp
 f01030b3:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
@@ -4679,14 +4679,14 @@ f0103126:	53                   	push   %ebx
 f0103127:	e8 42 e3 ff ff       	call   f010146e <page_free>
 	return (pp - pages) << PGSHIFT;
 f010312c:	89 f8                	mov    %edi,%eax
-f010312e:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f010312e:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f0103134:	c1 f8 03             	sar    $0x3,%eax
 f0103137:	c1 e0 0c             	shl    $0xc,%eax
 	if (PGNUM(pa) >= npages)
 f010313a:	89 c2                	mov    %eax,%edx
 f010313c:	c1 ea 0c             	shr    $0xc,%edx
 f010313f:	83 c4 10             	add    $0x10,%esp
-f0103142:	3b 15 88 5e 2a f0    	cmp    0xf02a5e88,%edx
+f0103142:	3b 15 88 7e 2a f0    	cmp    0xf02a7e88,%edx
 f0103148:	0f 83 ce 01 00 00    	jae    f010331c <mem_init+0x1aff>
 	memset(page2kva(pp1), 1, PGSIZE);
 f010314e:	83 ec 04             	sub    $0x4,%esp
@@ -4698,14 +4698,14 @@ f010315d:	50                   	push   %eax
 f010315e:	e8 76 2e 00 00       	call   f0105fd9 <memset>
 	return (pp - pages) << PGSHIFT;
 f0103163:	89 f0                	mov    %esi,%eax
-f0103165:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f0103165:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f010316b:	c1 f8 03             	sar    $0x3,%eax
 f010316e:	c1 e0 0c             	shl    $0xc,%eax
 	if (PGNUM(pa) >= npages)
 f0103171:	89 c2                	mov    %eax,%edx
 f0103173:	c1 ea 0c             	shr    $0xc,%edx
 f0103176:	83 c4 10             	add    $0x10,%esp
-f0103179:	3b 15 88 5e 2a f0    	cmp    0xf02a5e88,%edx
+f0103179:	3b 15 88 7e 2a f0    	cmp    0xf02a7e88,%edx
 f010317f:	0f 83 a9 01 00 00    	jae    f010332e <mem_init+0x1b11>
 	memset(page2kva(pp2), 2, PGSIZE);
 f0103185:	83 ec 04             	sub    $0x4,%esp
@@ -4719,7 +4719,7 @@ f0103195:	e8 3f 2e 00 00       	call   f0105fd9 <memset>
 f010319a:	6a 02                	push   $0x2
 f010319c:	68 00 10 00 00       	push   $0x1000
 f01031a1:	57                   	push   %edi
-f01031a2:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01031a2:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01031a8:	e8 a8 e5 ff ff       	call   f0101755 <page_insert>
 	assert(pp1->pp_ref == 1);
 f01031ad:	83 c4 20             	add    $0x20,%esp
@@ -4733,7 +4733,7 @@ f01031c5:	0f 85 8e 01 00 00    	jne    f0103359 <mem_init+0x1b3c>
 f01031cb:	6a 02                	push   $0x2
 f01031cd:	68 00 10 00 00       	push   $0x1000
 f01031d2:	56                   	push   %esi
-f01031d3:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01031d3:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01031d9:	e8 77 e5 ff ff       	call   f0101755 <page_insert>
 	assert(*(uint32_t *)PGSIZE == 0x02020202U);
 f01031de:	83 c4 10             	add    $0x10,%esp
@@ -4751,13 +4751,13 @@ f0103207:	c7 05 00 10 00 00 03 	movl   $0x3030303,0x1000
 f010320e:	03 03 03 
 	return (pp - pages) << PGSHIFT;
 f0103211:	89 f0                	mov    %esi,%eax
-f0103213:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f0103213:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f0103219:	c1 f8 03             	sar    $0x3,%eax
 f010321c:	c1 e0 0c             	shl    $0xc,%eax
 	if (PGNUM(pa) >= npages)
 f010321f:	89 c2                	mov    %eax,%edx
 f0103221:	c1 ea 0c             	shr    $0xc,%edx
-f0103224:	3b 15 88 5e 2a f0    	cmp    0xf02a5e88,%edx
+f0103224:	3b 15 88 7e 2a f0    	cmp    0xf02a7e88,%edx
 f010322a:	0f 83 8d 01 00 00    	jae    f01033bd <mem_init+0x1ba0>
 	assert(*(uint32_t *)page2kva(pp2) == 0x03030303U);
 f0103230:	81 b8 00 00 00 f0 03 	cmpl   $0x3030303,-0x10000000(%eax)
@@ -4766,7 +4766,7 @@ f010323a:	0f 85 8f 01 00 00    	jne    f01033cf <mem_init+0x1bb2>
 	page_remove(kern_pgdir, (void*) PGSIZE);
 f0103240:	83 ec 08             	sub    $0x8,%esp
 f0103243:	68 00 10 00 00       	push   $0x1000
-f0103248:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f0103248:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f010324e:	e8 a8 e4 ff ff       	call   f01016fb <page_remove>
 	assert(pp2->pp_ref == 0);
 f0103253:	83 c4 10             	add    $0x10,%esp
@@ -4775,12 +4775,12 @@ f010325b:	0f 85 87 01 00 00    	jne    f01033e8 <mem_init+0x1bcb>
 
 	// forcibly take pp0 back
 	assert(PTE_ADDR(kern_pgdir[0]) == page2pa(pp0));
-f0103261:	8b 0d 8c 5e 2a f0    	mov    0xf02a5e8c,%ecx
+f0103261:	8b 0d 8c 7e 2a f0    	mov    0xf02a7e8c,%ecx
 f0103267:	8b 11                	mov    (%ecx),%edx
 f0103269:	81 e2 00 f0 ff ff    	and    $0xfffff000,%edx
 	return (pp - pages) << PGSHIFT;
 f010326f:	89 d8                	mov    %ebx,%eax
-f0103271:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f0103271:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f0103277:	c1 f8 03             	sar    $0x3,%eax
 f010327a:	c1 e0 0c             	shl    $0xc,%eax
 f010327d:	39 c2                	cmp    %eax,%edx
@@ -4958,7 +4958,7 @@ f01034a1:	72 03                	jb     f01034a6 <user_mem_check+0x73>
 f01034a3:	89 5d e0             	mov    %ebx,-0x20(%ebp)
 			user_mem_check_addr = (uintptr_t)(l < va ? va : l); 
 f01034a6:	8b 45 e0             	mov    -0x20(%ebp),%eax
-f01034a9:	a3 3c 52 2a f0       	mov    %eax,0xf02a523c
+f01034a9:	a3 3c 72 2a f0       	mov    %eax,0xf02a723c
 			return -E_FAULT;
 f01034ae:	b8 fa ff ff ff       	mov    $0xfffffffa,%eax
 f01034b3:	eb 39                	jmp    f01034ee <user_mem_check+0xbb>
@@ -4970,7 +4970,7 @@ f01034ba:	8b 45 e4             	mov    -0x1c(%ebp),%eax
 f01034bd:	89 45 e0             	mov    %eax,-0x20(%ebp)
 			user_mem_check_addr = (uintptr_t)(l < va ? va : l); 
 f01034c0:	8b 45 e0             	mov    -0x20(%ebp),%eax
-f01034c3:	a3 3c 52 2a f0       	mov    %eax,0xf02a523c
+f01034c3:	a3 3c 72 2a f0       	mov    %eax,0xf02a723c
 			return -E_FAULT;
 f01034c8:	b8 fa ff ff ff       	mov    $0xfffffffa,%eax
 f01034cd:	eb 1f                	jmp    f01034ee <user_mem_check+0xbb>
@@ -4982,7 +4982,7 @@ f01034d4:	8b 45 e4             	mov    -0x1c(%ebp),%eax
 f01034d7:	89 45 e0             	mov    %eax,-0x20(%ebp)
 			user_mem_check_addr = (uintptr_t)(l < va ? va : l); 
 f01034da:	8b 45 e0             	mov    -0x20(%ebp),%eax
-f01034dd:	a3 3c 52 2a f0       	mov    %eax,0xf02a523c
+f01034dd:	a3 3c 72 2a f0       	mov    %eax,0xf02a723c
 			return -E_FAULT;
 f01034e2:	b8 fa ff ff ff       	mov    $0xfffffffa,%eax
 f01034e7:	eb 05                	jmp    f01034ee <user_mem_check+0xbb>
@@ -5020,7 +5020,7 @@ f010351d:	c9                   	leave
 f010351e:	c3                   	ret    
 		cprintf("[%08x] user_mem_check assertion failure for "
 f010351f:	83 ec 04             	sub    $0x4,%esp
-f0103522:	ff 35 3c 52 2a f0    	pushl  0xf02a523c
+f0103522:	ff 35 3c 72 2a f0    	pushl  0xf02a723c
 f0103528:	ff 73 48             	pushl  0x48(%ebx)
 f010352b:	68 e8 7e 10 f0       	push   $0xf0107ee8
 f0103530:	e8 4a 0a 00 00       	call   f0103f7f <cprintf>
@@ -5061,7 +5061,7 @@ f0103553:	81 e1 ff 03 00 00    	and    $0x3ff,%ecx
 f0103559:	89 ca                	mov    %ecx,%edx
 f010355b:	c1 e2 05             	shl    $0x5,%edx
 f010355e:	29 ca                	sub    %ecx,%edx
-f0103560:	8b 0d 48 52 2a f0    	mov    0xf02a5248,%ecx
+f0103560:	8b 0d 48 72 2a f0    	mov    0xf02a7248,%ecx
 f0103566:	8d 1c 91             	lea    (%ecx,%edx,4),%ebx
 	if (e->env_status == ENV_FREE || e->env_id != envid) {
 f0103569:	83 7b 54 00          	cmpl   $0x0,0x54(%ebx)
@@ -5098,7 +5098,7 @@ f0103590:	01 c2                	add    %eax,%edx
 f0103592:	01 d2                	add    %edx,%edx
 f0103594:	01 c2                	add    %eax,%edx
 f0103596:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0103599:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0103599:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f01035a0:	8b 75 0c             	mov    0xc(%ebp),%esi
 f01035a3:	89 06                	mov    %eax,(%esi)
 		return 0;
@@ -5117,7 +5117,7 @@ f01035c4:	01 c2                	add    %eax,%edx
 f01035c6:	01 d2                	add    %edx,%edx
 f01035c8:	01 c2                	add    %eax,%edx
 f01035ca:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f01035cd:	39 1c 85 28 60 2a f0 	cmp    %ebx,-0xfd59fd8(,%eax,4)
+f01035cd:	39 1c 85 28 80 2a f0 	cmp    %ebx,-0xfd57fd8(,%eax,4)
 f01035d4:	74 a4                	je     f010357a <envid2env+0x38>
 f01035d6:	8b 73 4c             	mov    0x4c(%ebx),%esi
 f01035d9:	e8 d4 30 00 00       	call   f01066b2 <cpunum>
@@ -5126,7 +5126,7 @@ f01035e1:	01 c2                	add    %eax,%edx
 f01035e3:	01 d2                	add    %edx,%edx
 f01035e5:	01 c2                	add    %eax,%edx
 f01035e7:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f01035ea:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f01035ea:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f01035f1:	3b 70 48             	cmp    0x48(%eax),%esi
 f01035f4:	74 84                	je     f010357a <envid2env+0x38>
 		*env_store = 0;
@@ -5185,8 +5185,8 @@ f010363a:	89 e5                	mov    %esp,%ebp
 f010363c:	56                   	push   %esi
 f010363d:	53                   	push   %ebx
 		envs[i].env_link = env_free_list;
-f010363e:	8b 35 48 52 2a f0    	mov    0xf02a5248,%esi
-f0103644:	8b 15 4c 52 2a f0    	mov    0xf02a524c,%edx
+f010363e:	8b 35 48 72 2a f0    	mov    0xf02a7248,%esi
+f0103644:	8b 15 4c 72 2a f0    	mov    0xf02a724c,%edx
 f010364a:	8d 86 84 ef 01 00    	lea    0x1ef84(%esi),%eax
 f0103650:	8d 5e 84             	lea    -0x7c(%esi),%ebx
 f0103653:	89 c1                	mov    %eax,%ecx
@@ -5197,7 +5197,7 @@ f010365b:	89 ca                	mov    %ecx,%edx
 	for (int i = NENV - 1; i >= 0; i--) { // Be sure not to use size_t
 f010365d:	39 d8                	cmp    %ebx,%eax
 f010365f:	75 f2                	jne    f0103653 <env_init+0x1a>
-f0103661:	89 35 4c 52 2a f0    	mov    %esi,0xf02a524c
+f0103661:	89 35 4c 72 2a f0    	mov    %esi,0xf02a724c
 	env_init_percpu();
 f0103667:	e8 9d ff ff ff       	call   f0103609 <env_init_percpu>
 }
@@ -5221,7 +5221,7 @@ f0103674:	53                   	push   %ebx
 	int r;
 	struct Env *e;
 	if (!(e = env_free_list))
-f0103675:	8b 1d 4c 52 2a f0    	mov    0xf02a524c,%ebx
+f0103675:	8b 1d 4c 72 2a f0    	mov    0xf02a724c,%ebx
 f010367b:	85 db                	test   %ebx,%ebx
 f010367d:	0f 84 fa 01 00 00    	je     f010387d <env_alloc+0x20d>
 	if (!(p = page_alloc(ALLOC_ZERO)))
@@ -5233,13 +5233,13 @@ f010368f:	83 c4 10             	add    $0x10,%esp
 f0103692:	85 c0                	test   %eax,%eax
 f0103694:	0f 84 ea 01 00 00    	je     f0103884 <env_alloc+0x214>
 	return (pp - pages) << PGSHIFT;
-f010369a:	2b 05 90 5e 2a f0    	sub    0xf02a5e90,%eax
+f010369a:	2b 05 90 7e 2a f0    	sub    0xf02a7e90,%eax
 f01036a0:	c1 f8 03             	sar    $0x3,%eax
 f01036a3:	c1 e0 0c             	shl    $0xc,%eax
 	if (PGNUM(pa) >= npages)
 f01036a6:	89 c2                	mov    %eax,%edx
 f01036a8:	c1 ea 0c             	shr    $0xc,%edx
-f01036ab:	3b 15 88 5e 2a f0    	cmp    0xf02a5e88,%edx
+f01036ab:	3b 15 88 7e 2a f0    	cmp    0xf02a7e88,%edx
 f01036b1:	0f 83 7c 01 00 00    	jae    f0103833 <env_alloc+0x1c3>
 	memset(page2kva(p), 0, PGSIZE);
 f01036b7:	83 ec 04             	sub    $0x4,%esp
@@ -5252,14 +5252,14 @@ f01036c7:	e8 0d 29 00 00       	call   f0105fd9 <memset>
 	p->pp_ref++;
 f01036cc:	66 ff 46 04          	incw   0x4(%esi)
 	return (pp - pages) << PGSHIFT;
-f01036d0:	2b 35 90 5e 2a f0    	sub    0xf02a5e90,%esi
+f01036d0:	2b 35 90 7e 2a f0    	sub    0xf02a7e90,%esi
 f01036d6:	c1 fe 03             	sar    $0x3,%esi
 f01036d9:	c1 e6 0c             	shl    $0xc,%esi
 	if (PGNUM(pa) >= npages)
 f01036dc:	89 f0                	mov    %esi,%eax
 f01036de:	c1 e8 0c             	shr    $0xc,%eax
 f01036e1:	83 c4 10             	add    $0x10,%esp
-f01036e4:	3b 05 88 5e 2a f0    	cmp    0xf02a5e88,%eax
+f01036e4:	3b 05 88 7e 2a f0    	cmp    0xf02a7e88,%eax
 f01036ea:	0f 83 55 01 00 00    	jae    f0103845 <env_alloc+0x1d5>
 	return (void *)(pa + KERNBASE);
 f01036f0:	81 ee 00 00 00 10    	sub    $0x10000000,%esi
@@ -5267,7 +5267,7 @@ f01036f6:	89 73 60             	mov    %esi,0x60(%ebx)
 	e->env_pgdir = page2kva(p);
 f01036f9:	b8 ec 0e 00 00       	mov    $0xeec,%eax
 		e->env_pgdir[pgt] = kern_pgdir[pgt];
-f01036fe:	8b 15 8c 5e 2a f0    	mov    0xf02a5e8c,%edx
+f01036fe:	8b 15 8c 7e 2a f0    	mov    0xf02a7e8c,%edx
 f0103704:	8b 0c 02             	mov    (%edx,%eax,1),%ecx
 f0103707:	8b 53 60             	mov    0x60(%ebx),%edx
 f010370a:	89 0c 02             	mov    %ecx,(%edx,%eax,1)
@@ -5299,7 +5299,7 @@ f0103743:	0f 8e 23 01 00 00    	jle    f010386c <env_alloc+0x1fc>
 		generation = 1 << ENVGENSHIFT;
 	e->env_id = generation | (e - envs);
 f0103749:	89 d8                	mov    %ebx,%eax
-f010374b:	2b 05 48 52 2a f0    	sub    0xf02a5248,%eax
+f010374b:	2b 05 48 72 2a f0    	sub    0xf02a7248,%eax
 f0103751:	c1 f8 02             	sar    $0x2,%eax
 f0103754:	89 c1                	mov    %eax,%ecx
 f0103756:	c1 e0 05             	shl    $0x5,%eax
@@ -5368,7 +5368,7 @@ f01037c8:	c6 43 68 00          	movb   $0x0,0x68(%ebx)
 	// commit the allocation
 	env_free_list = e->env_link;
 f01037cc:	8b 43 44             	mov    0x44(%ebx),%eax
-f01037cf:	a3 4c 52 2a f0       	mov    %eax,0xf02a524c
+f01037cf:	a3 4c 72 2a f0       	mov    %eax,0xf02a724c
 	*newenv_store = e;
 f01037d4:	8b 45 08             	mov    0x8(%ebp),%eax
 f01037d7:	89 18                	mov    %ebx,(%eax)
@@ -5382,7 +5382,7 @@ f01037e6:	01 d2                	add    %edx,%edx
 f01037e8:	01 c2                	add    %eax,%edx
 f01037ea:	8d 04 90             	lea    (%eax,%edx,4),%eax
 f01037ed:	83 c4 10             	add    $0x10,%esp
-f01037f0:	83 3c 85 28 60 2a f0 	cmpl   $0x0,-0xfd59fd8(,%eax,4)
+f01037f0:	83 3c 85 28 80 2a f0 	cmpl   $0x0,-0xfd57fd8(,%eax,4)
 f01037f7:	00 
 f01037f8:	74 7c                	je     f0103876 <env_alloc+0x206>
 f01037fa:	e8 b3 2e 00 00       	call   f01066b2 <cpunum>
@@ -5391,7 +5391,7 @@ f0103802:	01 c2                	add    %eax,%edx
 f0103804:	01 d2                	add    %edx,%edx
 f0103806:	01 c2                	add    %eax,%edx
 f0103808:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f010380b:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f010380b:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0103812:	8b 40 48             	mov    0x48(%eax),%eax
 f0103815:	83 ec 04             	sub    $0x4,%esp
 f0103818:	53                   	push   %ebx
@@ -5481,7 +5481,7 @@ f01038c5:	89 45 d4             	mov    %eax,-0x2c(%ebp)
 f01038c8:	83 ec 04             	sub    $0x4,%esp
 f01038cb:	6a 00                	push   $0x0
 f01038cd:	ff 77 60             	pushl  0x60(%edi)
-f01038d0:	ff 35 8c 5e 2a f0    	pushl  0xf02a5e8c
+f01038d0:	ff 35 8c 7e 2a f0    	pushl  0xf02a7e8c
 f01038d6:	e8 0b dc ff ff       	call   f01014e6 <pgdir_walk>
 	physaddr_t pgdir_phy = PTE_ADDR(pgdir_pte);
 f01038db:	8b 00                	mov    (%eax),%eax
@@ -5583,7 +5583,7 @@ f01039de:	8b 45 08             	mov    0x8(%ebp),%eax
 f01039e1:	8b 40 18             	mov    0x18(%eax),%eax
 f01039e4:	89 47 30             	mov    %eax,0x30(%edi)
 	lcr3(PADDR(kern_pgdir));
-f01039e7:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f01039e7:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 	if ((uint32_t)kva < KERNBASE)
 f01039ec:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
 f01039f1:	76 3e                	jbe    f0103a31 <env_create+0x1a6>
@@ -5671,10 +5671,10 @@ f0103a91:	01 d2                	add    %edx,%edx
 f0103a93:	01 c2                	add    %eax,%edx
 f0103a95:	8d 04 90             	lea    (%eax,%edx,4),%eax
 f0103a98:	8b 55 08             	mov    0x8(%ebp),%edx
-f0103a9b:	39 14 85 28 60 2a f0 	cmp    %edx,-0xfd59fd8(,%eax,4)
+f0103a9b:	39 14 85 28 80 2a f0 	cmp    %edx,-0xfd57fd8(,%eax,4)
 f0103aa2:	75 38                	jne    f0103adc <env_free+0x5e>
 		lcr3(PADDR(kern_pgdir));
-f0103aa4:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0103aa4:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 	if ((uint32_t)kva < KERNBASE)
 f0103aa9:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
 f0103aae:	76 17                	jbe    f0103ac7 <env_free+0x49>
@@ -5731,12 +5731,12 @@ f0103b28:	8b 55 dc             	mov    -0x24(%ebp),%edx
 f0103b2b:	c7 04 10 00 00 00 00 	movl   $0x0,(%eax,%edx,1)
 	if (PGNUM(pa) >= npages)
 f0103b32:	8b 45 d8             	mov    -0x28(%ebp),%eax
-f0103b35:	3b 05 88 5e 2a f0    	cmp    0xf02a5e88,%eax
+f0103b35:	3b 05 88 7e 2a f0    	cmp    0xf02a7e88,%eax
 f0103b3b:	73 6a                	jae    f0103ba7 <env_free+0x129>
 		page_decref(pa2page(pa));
 f0103b3d:	83 ec 0c             	sub    $0xc,%esp
 	return &pages[PGNUM(pa)];
-f0103b40:	a1 90 5e 2a f0       	mov    0xf02a5e90,%eax
+f0103b40:	a1 90 7e 2a f0       	mov    0xf02a7e90,%eax
 f0103b45:	8b 55 d8             	mov    -0x28(%ebp),%edx
 f0103b48:	8d 04 d0             	lea    (%eax,%edx,8),%eax
 f0103b4b:	50                   	push   %eax
@@ -5759,7 +5759,7 @@ f0103b6f:	25 00 f0 ff ff       	and    $0xfffff000,%eax
 f0103b74:	89 c2                	mov    %eax,%edx
 f0103b76:	c1 ea 0c             	shr    $0xc,%edx
 f0103b79:	89 55 d8             	mov    %edx,-0x28(%ebp)
-f0103b7c:	39 15 88 5e 2a f0    	cmp    %edx,0xf02a5e88
+f0103b7c:	39 15 88 7e 2a f0    	cmp    %edx,0xf02a7e88
 f0103b82:	0f 86 60 ff ff ff    	jbe    f0103ae8 <env_free+0x6a>
 	return (void *)(pa + KERNBASE);
 f0103b88:	8d 98 00 00 00 f0    	lea    -0x10000000(%eax),%ebx
@@ -5793,12 +5793,12 @@ f0103bcb:	c7 42 60 00 00 00 00 	movl   $0x0,0x60(%edx)
 f0103bd2:	05 00 00 00 10       	add    $0x10000000,%eax
 	if (PGNUM(pa) >= npages)
 f0103bd7:	c1 e8 0c             	shr    $0xc,%eax
-f0103bda:	3b 05 88 5e 2a f0    	cmp    0xf02a5e88,%eax
+f0103bda:	3b 05 88 7e 2a f0    	cmp    0xf02a7e88,%eax
 f0103be0:	73 4d                	jae    f0103c2f <env_free+0x1b1>
 	page_decref(pa2page(pa));
 f0103be2:	83 ec 0c             	sub    $0xc,%esp
 	return &pages[PGNUM(pa)];
-f0103be5:	8b 15 90 5e 2a f0    	mov    0xf02a5e90,%edx
+f0103be5:	8b 15 90 7e 2a f0    	mov    0xf02a7e90,%edx
 f0103beb:	8d 04 c2             	lea    (%edx,%eax,8),%eax
 f0103bee:	50                   	push   %eax
 f0103bef:	e8 cc d8 ff ff       	call   f01014c0 <page_decref>
@@ -5808,11 +5808,11 @@ f0103bef:	e8 cc d8 ff ff       	call   f01014c0 <page_decref>
 f0103bf4:	8b 45 08             	mov    0x8(%ebp),%eax
 f0103bf7:	c7 40 54 00 00 00 00 	movl   $0x0,0x54(%eax)
 	e->env_link = env_free_list;
-f0103bfe:	a1 4c 52 2a f0       	mov    0xf02a524c,%eax
+f0103bfe:	a1 4c 72 2a f0       	mov    0xf02a724c,%eax
 f0103c03:	8b 55 08             	mov    0x8(%ebp),%edx
 f0103c06:	89 42 44             	mov    %eax,0x44(%edx)
 	env_free_list = e;
-f0103c09:	89 15 4c 52 2a f0    	mov    %edx,0xf02a524c
+f0103c09:	89 15 4c 72 2a f0    	mov    %edx,0xf02a724c
 }
 f0103c0f:	83 c4 10             	add    $0x10,%esp
 f0103c12:	8d 65 f4             	lea    -0xc(%ebp),%esp
@@ -5869,7 +5869,7 @@ f0103c66:	01 d2                	add    %edx,%edx
 f0103c68:	01 c2                	add    %eax,%edx
 f0103c6a:	8d 04 90             	lea    (%eax,%edx,4),%eax
 f0103c6d:	83 c4 10             	add    $0x10,%esp
-f0103c70:	39 1c 85 28 60 2a f0 	cmp    %ebx,-0xfd59fd8(,%eax,4)
+f0103c70:	39 1c 85 28 80 2a f0 	cmp    %ebx,-0xfd57fd8(,%eax,4)
 f0103c77:	74 28                	je     f0103ca1 <env_destroy+0x5e>
 		curenv = NULL;
 		sched_yield();
@@ -5885,7 +5885,7 @@ f0103c86:	01 c2                	add    %eax,%edx
 f0103c88:	01 d2                	add    %edx,%edx
 f0103c8a:	01 c2                	add    %eax,%edx
 f0103c8c:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0103c8f:	39 1c 85 28 60 2a f0 	cmp    %ebx,-0xfd59fd8(,%eax,4)
+f0103c8f:	39 1c 85 28 80 2a f0 	cmp    %ebx,-0xfd57fd8(,%eax,4)
 f0103c96:	74 bb                	je     f0103c53 <env_destroy+0x10>
 		e->env_status = ENV_DYING;
 f0103c98:	c7 43 54 01 00 00 00 	movl   $0x1,0x54(%ebx)
@@ -5894,7 +5894,7 @@ f0103c9f:	eb d8                	jmp    f0103c79 <env_destroy+0x36>
 		curenv = NULL;
 f0103ca1:	e8 0c 2a 00 00       	call   f01066b2 <cpunum>
 f0103ca6:	6b c0 74             	imul   $0x74,%eax,%eax
-f0103ca9:	c7 80 28 60 2a f0 00 	movl   $0x0,-0xfd59fd8(%eax)
+f0103ca9:	c7 80 28 80 2a f0 00 	movl   $0x0,-0xfd57fd8(%eax)
 f0103cb0:	00 00 00 
 		sched_yield();
 f0103cb3:	e8 42 11 00 00       	call   f0104dfa <sched_yield>
@@ -5918,7 +5918,7 @@ f0103cc7:	01 c2                	add    %eax,%edx
 f0103cc9:	01 d2                	add    %edx,%edx
 f0103ccb:	01 c2                	add    %eax,%edx
 f0103ccd:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0103cd0:	8b 1c 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%ebx
+f0103cd0:	8b 1c 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%ebx
 f0103cd7:	e8 d6 29 00 00       	call   f01066b2 <cpunum>
 f0103cdc:	89 43 5c             	mov    %eax,0x5c(%ebx)
 
@@ -5963,12 +5963,12 @@ f0103d0e:	01 c2                	add    %eax,%edx
 f0103d10:	01 d2                	add    %edx,%edx
 f0103d12:	01 c2                	add    %eax,%edx
 f0103d14:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0103d17:	83 3c 85 28 60 2a f0 	cmpl   $0x0,-0xfd59fd8(,%eax,4)
+f0103d17:	83 3c 85 28 80 2a f0 	cmpl   $0x0,-0xfd57fd8(,%eax,4)
 f0103d1e:	00 
 f0103d1f:	74 18                	je     f0103d39 <env_run+0x39>
 f0103d21:	e8 8c 29 00 00       	call   f01066b2 <cpunum>
 f0103d26:	6b c0 74             	imul   $0x74,%eax,%eax
-f0103d29:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0103d29:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f0103d2f:	83 78 54 03          	cmpl   $0x3,0x54(%eax)
 f0103d33:	0f 84 8c 00 00 00    	je     f0103dc5 <env_run+0xc5>
 		curenv->env_status = ENV_RUNNABLE;
@@ -5982,7 +5982,7 @@ f0103d43:	01 d2                	add    %edx,%edx
 f0103d45:	01 c2                	add    %eax,%edx
 f0103d47:	8d 04 90             	lea    (%eax,%edx,4),%eax
 f0103d4a:	8b 55 08             	mov    0x8(%ebp),%edx
-f0103d4d:	89 14 85 28 60 2a f0 	mov    %edx,-0xfd59fd8(,%eax,4)
+f0103d4d:	89 14 85 28 80 2a f0 	mov    %edx,-0xfd57fd8(,%eax,4)
 	curenv->env_status = ENV_RUNNING;
 f0103d54:	e8 59 29 00 00       	call   f01066b2 <cpunum>
 f0103d59:	8d 14 00             	lea    (%eax,%eax,1),%edx
@@ -5990,7 +5990,7 @@ f0103d5c:	01 c2                	add    %eax,%edx
 f0103d5e:	01 d2                	add    %edx,%edx
 f0103d60:	01 c2                	add    %eax,%edx
 f0103d62:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0103d65:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0103d65:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0103d6c:	c7 40 54 03 00 00 00 	movl   $0x3,0x54(%eax)
 	curenv->env_runs++; // Incremetn run count
 f0103d73:	e8 3a 29 00 00       	call   f01066b2 <cpunum>
@@ -5999,7 +5999,7 @@ f0103d7b:	01 c2                	add    %eax,%edx
 f0103d7d:	01 d2                	add    %edx,%edx
 f0103d7f:	01 c2                	add    %eax,%edx
 f0103d81:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0103d84:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0103d84:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0103d8b:	ff 40 58             	incl   0x58(%eax)
 
 	// Jump to user env pgdir
@@ -6010,7 +6010,7 @@ f0103d96:	01 c2                	add    %eax,%edx
 f0103d98:	01 d2                	add    %edx,%edx
 f0103d9a:	01 c2                	add    %eax,%edx
 f0103d9c:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0103d9f:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0103d9f:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0103da6:	8b 40 60             	mov    0x60(%eax),%eax
 	if ((uint32_t)kva < KERNBASE)
 f0103da9:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
@@ -6024,7 +6024,7 @@ f0103dc0:	e8 cf c2 ff ff       	call   f0100094 <_panic>
 		curenv->env_status = ENV_RUNNABLE;
 f0103dc5:	e8 e8 28 00 00       	call   f01066b2 <cpunum>
 f0103dca:	6b c0 74             	imul   $0x74,%eax,%eax
-f0103dcd:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0103dcd:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f0103dd3:	c7 40 54 02 00 00 00 	movl   $0x2,0x54(%eax)
 f0103dda:	e9 5a ff ff ff       	jmp    f0103d39 <env_run+0x39>
 	return (physaddr_t)kva - KERNBASE;
@@ -6055,7 +6055,7 @@ f0103df4:	f3 90                	pause
 f0103df6:	e8 b7 28 00 00       	call   f01066b2 <cpunum>
 f0103dfb:	83 c4 04             	add    $0x4,%esp
 f0103dfe:	6b c0 74             	imul   $0x74,%eax,%eax
-f0103e01:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f0103e01:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f0103e07:	e8 ac fe ff ff       	call   f0103cb8 <env_pop_tf>
 
 f0103e0c <mc146818_read>:
@@ -6117,7 +6117,7 @@ f0103e3f:	8b 45 08             	mov    0x8(%ebp),%eax
 	irq_mask_8259A = mask;
 f0103e42:	66 a3 a8 33 12 f0    	mov    %ax,0xf01233a8
 	if (!didinit)
-f0103e48:	80 3d 50 52 2a f0 00 	cmpb   $0x0,0xf02a5250
+f0103e48:	80 3d 50 72 2a f0 00 	cmpb   $0x0,0xf02a7250
 f0103e4f:	75 07                	jne    f0103e58 <irq_setmask_8259A+0x1e>
 	cprintf("enabled interrupts:");
 	for (i = 0; i < 16; i++)
@@ -6181,7 +6181,7 @@ f0103ebf:	56                   	push   %esi
 f0103ec0:	53                   	push   %ebx
 f0103ec1:	83 ec 0c             	sub    $0xc,%esp
 	didinit = 1;
-f0103ec4:	c6 05 50 52 2a f0 01 	movb   $0x1,0xf02a5250
+f0103ec4:	c6 05 50 72 2a f0 01 	movb   $0x1,0xf02a7250
 f0103ecb:	b0 ff                	mov    $0xff,%al
 f0103ecd:	bb 21 00 00 00       	mov    $0x21,%ebx
 f0103ed2:	89 da                	mov    %ebx,%edx
@@ -6336,11 +6336,11 @@ f0103fa8:	01 db                	add    %ebx,%ebx
 f0103faa:	01 c3                	add    %eax,%ebx
 f0103fac:	c1 e3 02             	shl    $0x2,%ebx
 f0103faf:	8d 04 03             	lea    (%ebx,%eax,1),%eax
-f0103fb2:	8d 3c 85 2c 60 2a f0 	lea    -0xfd59fd4(,%eax,4),%edi
+f0103fb2:	8d 3c 85 2c 80 2a f0 	lea    -0xfd57fd4(,%eax,4),%edi
 	ts->ts_esp0 = KSTACKTOP - cpunum() * (KSTKSIZE + KSTKGAP);
 f0103fb9:	e8 f4 26 00 00       	call   f01066b2 <cpunum>
 f0103fbe:	8d 14 33             	lea    (%ebx,%esi,1),%edx
-f0103fc1:	8d 14 95 20 60 2a f0 	lea    -0xfd59fe0(,%edx,4),%edx
+f0103fc1:	8d 14 95 20 80 2a f0 	lea    -0xfd57fe0(,%edx,4),%edx
 f0103fc8:	c1 e0 10             	shl    $0x10,%eax
 f0103fcb:	89 c1                	mov    %eax,%ecx
 f0103fcd:	b8 00 00 00 f0       	mov    $0xf0000000,%eax
@@ -6350,7 +6350,7 @@ f0103fd4:	89 42 10             	mov    %eax,0x10(%edx)
 f0103fd7:	66 c7 42 14 10 00    	movw   $0x10,0x14(%edx)
 	ts->ts_iomb = sizeof(struct Taskstate);
 f0103fdd:	01 f3                	add    %esi,%ebx
-f0103fdf:	66 c7 04 9d 92 60 2a 	movw   $0x68,-0xfd59f6e(,%ebx,4)
+f0103fdf:	66 c7 04 9d 92 80 2a 	movw   $0x68,-0xfd57f6e(,%ebx,4)
 f0103fe6:	f0 68 00 
 
 	// Initialize the TSS slot of the gdt.
@@ -6394,319 +6394,319 @@ f0104034:	89 e5                	mov    %esp,%ebp
 f0104036:	83 ec 08             	sub    $0x8,%esp
 	SETGATE(idt[T_DIVIDE],  0, GD_KT, (void*)H_DIVIDE, 0);   
 f0104039:	b8 00 4c 10 f0       	mov    $0xf0104c00,%eax
-f010403e:	66 a3 60 52 2a f0    	mov    %ax,0xf02a5260
-f0104044:	66 c7 05 62 52 2a f0 	movw   $0x8,0xf02a5262
+f010403e:	66 a3 60 72 2a f0    	mov    %ax,0xf02a7260
+f0104044:	66 c7 05 62 72 2a f0 	movw   $0x8,0xf02a7262
 f010404b:	08 00 
-f010404d:	c6 05 64 52 2a f0 00 	movb   $0x0,0xf02a5264
-f0104054:	c6 05 65 52 2a f0 8e 	movb   $0x8e,0xf02a5265
+f010404d:	c6 05 64 72 2a f0 00 	movb   $0x0,0xf02a7264
+f0104054:	c6 05 65 72 2a f0 8e 	movb   $0x8e,0xf02a7265
 f010405b:	c1 e8 10             	shr    $0x10,%eax
-f010405e:	66 a3 66 52 2a f0    	mov    %ax,0xf02a5266
+f010405e:	66 a3 66 72 2a f0    	mov    %ax,0xf02a7266
 	SETGATE(idt[T_DEBUG],   0, GD_KT, (void*)H_DEBUG,  0);  
 f0104064:	b8 0a 4c 10 f0       	mov    $0xf0104c0a,%eax
-f0104069:	66 a3 68 52 2a f0    	mov    %ax,0xf02a5268
-f010406f:	66 c7 05 6a 52 2a f0 	movw   $0x8,0xf02a526a
+f0104069:	66 a3 68 72 2a f0    	mov    %ax,0xf02a7268
+f010406f:	66 c7 05 6a 72 2a f0 	movw   $0x8,0xf02a726a
 f0104076:	08 00 
-f0104078:	c6 05 6c 52 2a f0 00 	movb   $0x0,0xf02a526c
-f010407f:	c6 05 6d 52 2a f0 8e 	movb   $0x8e,0xf02a526d
+f0104078:	c6 05 6c 72 2a f0 00 	movb   $0x0,0xf02a726c
+f010407f:	c6 05 6d 72 2a f0 8e 	movb   $0x8e,0xf02a726d
 f0104086:	c1 e8 10             	shr    $0x10,%eax
-f0104089:	66 a3 6e 52 2a f0    	mov    %ax,0xf02a526e
+f0104089:	66 a3 6e 72 2a f0    	mov    %ax,0xf02a726e
 	SETGATE(idt[T_NMI],     0, GD_KT, (void*)H_NMI,    0);
 f010408f:	b8 14 4c 10 f0       	mov    $0xf0104c14,%eax
-f0104094:	66 a3 70 52 2a f0    	mov    %ax,0xf02a5270
-f010409a:	66 c7 05 72 52 2a f0 	movw   $0x8,0xf02a5272
+f0104094:	66 a3 70 72 2a f0    	mov    %ax,0xf02a7270
+f010409a:	66 c7 05 72 72 2a f0 	movw   $0x8,0xf02a7272
 f01040a1:	08 00 
-f01040a3:	c6 05 74 52 2a f0 00 	movb   $0x0,0xf02a5274
-f01040aa:	c6 05 75 52 2a f0 8e 	movb   $0x8e,0xf02a5275
+f01040a3:	c6 05 74 72 2a f0 00 	movb   $0x0,0xf02a7274
+f01040aa:	c6 05 75 72 2a f0 8e 	movb   $0x8e,0xf02a7275
 f01040b1:	c1 e8 10             	shr    $0x10,%eax
-f01040b4:	66 a3 76 52 2a f0    	mov    %ax,0xf02a5276
+f01040b4:	66 a3 76 72 2a f0    	mov    %ax,0xf02a7276
 	SETGATE(idt[T_BRKPT],   0, GD_KT, (void*)H_BRKPT,  3);  // User level previlege (3)
 f01040ba:	b8 1e 4c 10 f0       	mov    $0xf0104c1e,%eax
-f01040bf:	66 a3 78 52 2a f0    	mov    %ax,0xf02a5278
-f01040c5:	66 c7 05 7a 52 2a f0 	movw   $0x8,0xf02a527a
+f01040bf:	66 a3 78 72 2a f0    	mov    %ax,0xf02a7278
+f01040c5:	66 c7 05 7a 72 2a f0 	movw   $0x8,0xf02a727a
 f01040cc:	08 00 
-f01040ce:	c6 05 7c 52 2a f0 00 	movb   $0x0,0xf02a527c
-f01040d5:	c6 05 7d 52 2a f0 ee 	movb   $0xee,0xf02a527d
+f01040ce:	c6 05 7c 72 2a f0 00 	movb   $0x0,0xf02a727c
+f01040d5:	c6 05 7d 72 2a f0 ee 	movb   $0xee,0xf02a727d
 f01040dc:	c1 e8 10             	shr    $0x10,%eax
-f01040df:	66 a3 7e 52 2a f0    	mov    %ax,0xf02a527e
+f01040df:	66 a3 7e 72 2a f0    	mov    %ax,0xf02a727e
 	SETGATE(idt[T_OFLOW],   0, GD_KT, (void*)H_OFLOW,  0);  
 f01040e5:	b8 28 4c 10 f0       	mov    $0xf0104c28,%eax
-f01040ea:	66 a3 80 52 2a f0    	mov    %ax,0xf02a5280
-f01040f0:	66 c7 05 82 52 2a f0 	movw   $0x8,0xf02a5282
+f01040ea:	66 a3 80 72 2a f0    	mov    %ax,0xf02a7280
+f01040f0:	66 c7 05 82 72 2a f0 	movw   $0x8,0xf02a7282
 f01040f7:	08 00 
-f01040f9:	c6 05 84 52 2a f0 00 	movb   $0x0,0xf02a5284
-f0104100:	c6 05 85 52 2a f0 8e 	movb   $0x8e,0xf02a5285
+f01040f9:	c6 05 84 72 2a f0 00 	movb   $0x0,0xf02a7284
+f0104100:	c6 05 85 72 2a f0 8e 	movb   $0x8e,0xf02a7285
 f0104107:	c1 e8 10             	shr    $0x10,%eax
-f010410a:	66 a3 86 52 2a f0    	mov    %ax,0xf02a5286
+f010410a:	66 a3 86 72 2a f0    	mov    %ax,0xf02a7286
 	SETGATE(idt[T_BOUND],   0, GD_KT, (void*)H_BOUND,  0);  
 f0104110:	b8 32 4c 10 f0       	mov    $0xf0104c32,%eax
-f0104115:	66 a3 88 52 2a f0    	mov    %ax,0xf02a5288
-f010411b:	66 c7 05 8a 52 2a f0 	movw   $0x8,0xf02a528a
+f0104115:	66 a3 88 72 2a f0    	mov    %ax,0xf02a7288
+f010411b:	66 c7 05 8a 72 2a f0 	movw   $0x8,0xf02a728a
 f0104122:	08 00 
-f0104124:	c6 05 8c 52 2a f0 00 	movb   $0x0,0xf02a528c
-f010412b:	c6 05 8d 52 2a f0 8e 	movb   $0x8e,0xf02a528d
+f0104124:	c6 05 8c 72 2a f0 00 	movb   $0x0,0xf02a728c
+f010412b:	c6 05 8d 72 2a f0 8e 	movb   $0x8e,0xf02a728d
 f0104132:	c1 e8 10             	shr    $0x10,%eax
-f0104135:	66 a3 8e 52 2a f0    	mov    %ax,0xf02a528e
+f0104135:	66 a3 8e 72 2a f0    	mov    %ax,0xf02a728e
 	SETGATE(idt[T_ILLOP],   0, GD_KT, (void*)H_ILLOP,  0);  
 f010413b:	b8 3c 4c 10 f0       	mov    $0xf0104c3c,%eax
-f0104140:	66 a3 90 52 2a f0    	mov    %ax,0xf02a5290
-f0104146:	66 c7 05 92 52 2a f0 	movw   $0x8,0xf02a5292
+f0104140:	66 a3 90 72 2a f0    	mov    %ax,0xf02a7290
+f0104146:	66 c7 05 92 72 2a f0 	movw   $0x8,0xf02a7292
 f010414d:	08 00 
-f010414f:	c6 05 94 52 2a f0 00 	movb   $0x0,0xf02a5294
-f0104156:	c6 05 95 52 2a f0 8e 	movb   $0x8e,0xf02a5295
+f010414f:	c6 05 94 72 2a f0 00 	movb   $0x0,0xf02a7294
+f0104156:	c6 05 95 72 2a f0 8e 	movb   $0x8e,0xf02a7295
 f010415d:	c1 e8 10             	shr    $0x10,%eax
-f0104160:	66 a3 96 52 2a f0    	mov    %ax,0xf02a5296
+f0104160:	66 a3 96 72 2a f0    	mov    %ax,0xf02a7296
 	SETGATE(idt[T_DEVICE],  0, GD_KT, (void*)H_DEVICE, 0);   
 f0104166:	b8 46 4c 10 f0       	mov    $0xf0104c46,%eax
-f010416b:	66 a3 98 52 2a f0    	mov    %ax,0xf02a5298
-f0104171:	66 c7 05 9a 52 2a f0 	movw   $0x8,0xf02a529a
+f010416b:	66 a3 98 72 2a f0    	mov    %ax,0xf02a7298
+f0104171:	66 c7 05 9a 72 2a f0 	movw   $0x8,0xf02a729a
 f0104178:	08 00 
-f010417a:	c6 05 9c 52 2a f0 00 	movb   $0x0,0xf02a529c
-f0104181:	c6 05 9d 52 2a f0 8e 	movb   $0x8e,0xf02a529d
+f010417a:	c6 05 9c 72 2a f0 00 	movb   $0x0,0xf02a729c
+f0104181:	c6 05 9d 72 2a f0 8e 	movb   $0x8e,0xf02a729d
 f0104188:	c1 e8 10             	shr    $0x10,%eax
-f010418b:	66 a3 9e 52 2a f0    	mov    %ax,0xf02a529e
+f010418b:	66 a3 9e 72 2a f0    	mov    %ax,0xf02a729e
 	SETGATE(idt[T_DBLFLT],  0, GD_KT, (void*)H_DBLFLT, 0);   
 f0104191:	b8 50 4c 10 f0       	mov    $0xf0104c50,%eax
-f0104196:	66 a3 a0 52 2a f0    	mov    %ax,0xf02a52a0
-f010419c:	66 c7 05 a2 52 2a f0 	movw   $0x8,0xf02a52a2
+f0104196:	66 a3 a0 72 2a f0    	mov    %ax,0xf02a72a0
+f010419c:	66 c7 05 a2 72 2a f0 	movw   $0x8,0xf02a72a2
 f01041a3:	08 00 
-f01041a5:	c6 05 a4 52 2a f0 00 	movb   $0x0,0xf02a52a4
-f01041ac:	c6 05 a5 52 2a f0 8e 	movb   $0x8e,0xf02a52a5
+f01041a5:	c6 05 a4 72 2a f0 00 	movb   $0x0,0xf02a72a4
+f01041ac:	c6 05 a5 72 2a f0 8e 	movb   $0x8e,0xf02a72a5
 f01041b3:	c1 e8 10             	shr    $0x10,%eax
-f01041b6:	66 a3 a6 52 2a f0    	mov    %ax,0xf02a52a6
+f01041b6:	66 a3 a6 72 2a f0    	mov    %ax,0xf02a72a6
 	SETGATE(idt[T_TSS],     0, GD_KT, (void*)H_TSS,    0);
 f01041bc:	b8 58 4c 10 f0       	mov    $0xf0104c58,%eax
-f01041c1:	66 a3 b0 52 2a f0    	mov    %ax,0xf02a52b0
-f01041c7:	66 c7 05 b2 52 2a f0 	movw   $0x8,0xf02a52b2
+f01041c1:	66 a3 b0 72 2a f0    	mov    %ax,0xf02a72b0
+f01041c7:	66 c7 05 b2 72 2a f0 	movw   $0x8,0xf02a72b2
 f01041ce:	08 00 
-f01041d0:	c6 05 b4 52 2a f0 00 	movb   $0x0,0xf02a52b4
-f01041d7:	c6 05 b5 52 2a f0 8e 	movb   $0x8e,0xf02a52b5
+f01041d0:	c6 05 b4 72 2a f0 00 	movb   $0x0,0xf02a72b4
+f01041d7:	c6 05 b5 72 2a f0 8e 	movb   $0x8e,0xf02a72b5
 f01041de:	c1 e8 10             	shr    $0x10,%eax
-f01041e1:	66 a3 b6 52 2a f0    	mov    %ax,0xf02a52b6
+f01041e1:	66 a3 b6 72 2a f0    	mov    %ax,0xf02a72b6
 	SETGATE(idt[T_SEGNP],   0, GD_KT, (void*)H_SEGNP,  0);  
 f01041e7:	b8 60 4c 10 f0       	mov    $0xf0104c60,%eax
-f01041ec:	66 a3 b8 52 2a f0    	mov    %ax,0xf02a52b8
-f01041f2:	66 c7 05 ba 52 2a f0 	movw   $0x8,0xf02a52ba
+f01041ec:	66 a3 b8 72 2a f0    	mov    %ax,0xf02a72b8
+f01041f2:	66 c7 05 ba 72 2a f0 	movw   $0x8,0xf02a72ba
 f01041f9:	08 00 
-f01041fb:	c6 05 bc 52 2a f0 00 	movb   $0x0,0xf02a52bc
-f0104202:	c6 05 bd 52 2a f0 8e 	movb   $0x8e,0xf02a52bd
+f01041fb:	c6 05 bc 72 2a f0 00 	movb   $0x0,0xf02a72bc
+f0104202:	c6 05 bd 72 2a f0 8e 	movb   $0x8e,0xf02a72bd
 f0104209:	c1 e8 10             	shr    $0x10,%eax
-f010420c:	66 a3 be 52 2a f0    	mov    %ax,0xf02a52be
+f010420c:	66 a3 be 72 2a f0    	mov    %ax,0xf02a72be
 	SETGATE(idt[T_STACK],   0, GD_KT, (void*)H_STACK,  0);  
 f0104212:	b8 68 4c 10 f0       	mov    $0xf0104c68,%eax
-f0104217:	66 a3 c0 52 2a f0    	mov    %ax,0xf02a52c0
-f010421d:	66 c7 05 c2 52 2a f0 	movw   $0x8,0xf02a52c2
+f0104217:	66 a3 c0 72 2a f0    	mov    %ax,0xf02a72c0
+f010421d:	66 c7 05 c2 72 2a f0 	movw   $0x8,0xf02a72c2
 f0104224:	08 00 
-f0104226:	c6 05 c4 52 2a f0 00 	movb   $0x0,0xf02a52c4
-f010422d:	c6 05 c5 52 2a f0 8e 	movb   $0x8e,0xf02a52c5
+f0104226:	c6 05 c4 72 2a f0 00 	movb   $0x0,0xf02a72c4
+f010422d:	c6 05 c5 72 2a f0 8e 	movb   $0x8e,0xf02a72c5
 f0104234:	c1 e8 10             	shr    $0x10,%eax
-f0104237:	66 a3 c6 52 2a f0    	mov    %ax,0xf02a52c6
+f0104237:	66 a3 c6 72 2a f0    	mov    %ax,0xf02a72c6
 	SETGATE(idt[T_GPFLT],   0, GD_KT, (void*)H_GPFLT,  0);  
 f010423d:	b8 70 4c 10 f0       	mov    $0xf0104c70,%eax
-f0104242:	66 a3 c8 52 2a f0    	mov    %ax,0xf02a52c8
-f0104248:	66 c7 05 ca 52 2a f0 	movw   $0x8,0xf02a52ca
+f0104242:	66 a3 c8 72 2a f0    	mov    %ax,0xf02a72c8
+f0104248:	66 c7 05 ca 72 2a f0 	movw   $0x8,0xf02a72ca
 f010424f:	08 00 
-f0104251:	c6 05 cc 52 2a f0 00 	movb   $0x0,0xf02a52cc
-f0104258:	c6 05 cd 52 2a f0 8e 	movb   $0x8e,0xf02a52cd
+f0104251:	c6 05 cc 72 2a f0 00 	movb   $0x0,0xf02a72cc
+f0104258:	c6 05 cd 72 2a f0 8e 	movb   $0x8e,0xf02a72cd
 f010425f:	c1 e8 10             	shr    $0x10,%eax
-f0104262:	66 a3 ce 52 2a f0    	mov    %ax,0xf02a52ce
+f0104262:	66 a3 ce 72 2a f0    	mov    %ax,0xf02a72ce
 	SETGATE(idt[T_PGFLT],   0, GD_KT, (void*)H_PGFLT,  0);  
 f0104268:	b8 78 4c 10 f0       	mov    $0xf0104c78,%eax
-f010426d:	66 a3 d0 52 2a f0    	mov    %ax,0xf02a52d0
-f0104273:	66 c7 05 d2 52 2a f0 	movw   $0x8,0xf02a52d2
+f010426d:	66 a3 d0 72 2a f0    	mov    %ax,0xf02a72d0
+f0104273:	66 c7 05 d2 72 2a f0 	movw   $0x8,0xf02a72d2
 f010427a:	08 00 
-f010427c:	c6 05 d4 52 2a f0 00 	movb   $0x0,0xf02a52d4
-f0104283:	c6 05 d5 52 2a f0 8e 	movb   $0x8e,0xf02a52d5
+f010427c:	c6 05 d4 72 2a f0 00 	movb   $0x0,0xf02a72d4
+f0104283:	c6 05 d5 72 2a f0 8e 	movb   $0x8e,0xf02a72d5
 f010428a:	c1 e8 10             	shr    $0x10,%eax
-f010428d:	66 a3 d6 52 2a f0    	mov    %ax,0xf02a52d6
+f010428d:	66 a3 d6 72 2a f0    	mov    %ax,0xf02a72d6
 	SETGATE(idt[T_FPERR],   0, GD_KT, (void*)H_FPERR,  0);  
 f0104293:	b8 7c 4c 10 f0       	mov    $0xf0104c7c,%eax
-f0104298:	66 a3 e0 52 2a f0    	mov    %ax,0xf02a52e0
-f010429e:	66 c7 05 e2 52 2a f0 	movw   $0x8,0xf02a52e2
+f0104298:	66 a3 e0 72 2a f0    	mov    %ax,0xf02a72e0
+f010429e:	66 c7 05 e2 72 2a f0 	movw   $0x8,0xf02a72e2
 f01042a5:	08 00 
-f01042a7:	c6 05 e4 52 2a f0 00 	movb   $0x0,0xf02a52e4
-f01042ae:	c6 05 e5 52 2a f0 8e 	movb   $0x8e,0xf02a52e5
+f01042a7:	c6 05 e4 72 2a f0 00 	movb   $0x0,0xf02a72e4
+f01042ae:	c6 05 e5 72 2a f0 8e 	movb   $0x8e,0xf02a72e5
 f01042b5:	c1 e8 10             	shr    $0x10,%eax
-f01042b8:	66 a3 e6 52 2a f0    	mov    %ax,0xf02a52e6
+f01042b8:	66 a3 e6 72 2a f0    	mov    %ax,0xf02a72e6
 	SETGATE(idt[T_ALIGN],   0, GD_KT, (void*)H_ALIGN,  0);  
 f01042be:	b8 82 4c 10 f0       	mov    $0xf0104c82,%eax
-f01042c3:	66 a3 e8 52 2a f0    	mov    %ax,0xf02a52e8
-f01042c9:	66 c7 05 ea 52 2a f0 	movw   $0x8,0xf02a52ea
+f01042c3:	66 a3 e8 72 2a f0    	mov    %ax,0xf02a72e8
+f01042c9:	66 c7 05 ea 72 2a f0 	movw   $0x8,0xf02a72ea
 f01042d0:	08 00 
-f01042d2:	c6 05 ec 52 2a f0 00 	movb   $0x0,0xf02a52ec
-f01042d9:	c6 05 ed 52 2a f0 8e 	movb   $0x8e,0xf02a52ed
+f01042d2:	c6 05 ec 72 2a f0 00 	movb   $0x0,0xf02a72ec
+f01042d9:	c6 05 ed 72 2a f0 8e 	movb   $0x8e,0xf02a72ed
 f01042e0:	c1 e8 10             	shr    $0x10,%eax
-f01042e3:	66 a3 ee 52 2a f0    	mov    %ax,0xf02a52ee
+f01042e3:	66 a3 ee 72 2a f0    	mov    %ax,0xf02a72ee
 	SETGATE(idt[T_MCHK],    0, GD_KT, (void*)H_MCHK,   0); 
 f01042e9:	b8 88 4c 10 f0       	mov    $0xf0104c88,%eax
-f01042ee:	66 a3 f0 52 2a f0    	mov    %ax,0xf02a52f0
-f01042f4:	66 c7 05 f2 52 2a f0 	movw   $0x8,0xf02a52f2
+f01042ee:	66 a3 f0 72 2a f0    	mov    %ax,0xf02a72f0
+f01042f4:	66 c7 05 f2 72 2a f0 	movw   $0x8,0xf02a72f2
 f01042fb:	08 00 
-f01042fd:	c6 05 f4 52 2a f0 00 	movb   $0x0,0xf02a52f4
-f0104304:	c6 05 f5 52 2a f0 8e 	movb   $0x8e,0xf02a52f5
+f01042fd:	c6 05 f4 72 2a f0 00 	movb   $0x0,0xf02a72f4
+f0104304:	c6 05 f5 72 2a f0 8e 	movb   $0x8e,0xf02a72f5
 f010430b:	c1 e8 10             	shr    $0x10,%eax
-f010430e:	66 a3 f6 52 2a f0    	mov    %ax,0xf02a52f6
+f010430e:	66 a3 f6 72 2a f0    	mov    %ax,0xf02a72f6
 	SETGATE(idt[T_SIMDERR], 0, GD_KT, (void*)H_SIMDERR,0);  
 f0104314:	b8 8e 4c 10 f0       	mov    $0xf0104c8e,%eax
-f0104319:	66 a3 f8 52 2a f0    	mov    %ax,0xf02a52f8
-f010431f:	66 c7 05 fa 52 2a f0 	movw   $0x8,0xf02a52fa
+f0104319:	66 a3 f8 72 2a f0    	mov    %ax,0xf02a72f8
+f010431f:	66 c7 05 fa 72 2a f0 	movw   $0x8,0xf02a72fa
 f0104326:	08 00 
-f0104328:	c6 05 fc 52 2a f0 00 	movb   $0x0,0xf02a52fc
-f010432f:	c6 05 fd 52 2a f0 8e 	movb   $0x8e,0xf02a52fd
+f0104328:	c6 05 fc 72 2a f0 00 	movb   $0x0,0xf02a72fc
+f010432f:	c6 05 fd 72 2a f0 8e 	movb   $0x8e,0xf02a72fd
 f0104336:	c1 e8 10             	shr    $0x10,%eax
-f0104339:	66 a3 fe 52 2a f0    	mov    %ax,0xf02a52fe
+f0104339:	66 a3 fe 72 2a f0    	mov    %ax,0xf02a72fe
 	SETGATE(idt[T_SYSCALL], 0, GD_KT, (void*)H_SYSCALL,3);  // System call
 f010433f:	b8 94 4c 10 f0       	mov    $0xf0104c94,%eax
-f0104344:	66 a3 e0 53 2a f0    	mov    %ax,0xf02a53e0
-f010434a:	66 c7 05 e2 53 2a f0 	movw   $0x8,0xf02a53e2
+f0104344:	66 a3 e0 73 2a f0    	mov    %ax,0xf02a73e0
+f010434a:	66 c7 05 e2 73 2a f0 	movw   $0x8,0xf02a73e2
 f0104351:	08 00 
-f0104353:	c6 05 e4 53 2a f0 00 	movb   $0x0,0xf02a53e4
-f010435a:	c6 05 e5 53 2a f0 ee 	movb   $0xee,0xf02a53e5
+f0104353:	c6 05 e4 73 2a f0 00 	movb   $0x0,0xf02a73e4
+f010435a:	c6 05 e5 73 2a f0 ee 	movb   $0xee,0xf02a73e5
 f0104361:	c1 e8 10             	shr    $0x10,%eax
-f0104364:	66 a3 e6 53 2a f0    	mov    %ax,0xf02a53e6
+f0104364:	66 a3 e6 73 2a f0    	mov    %ax,0xf02a73e6
 	SETGATE(idt[IRQ_OFFSET + IRQ_TIMER],    0, GD_KT, (void*)H_TIMER,  0);
 f010436a:	b8 9a 4c 10 f0       	mov    $0xf0104c9a,%eax
-f010436f:	66 a3 60 53 2a f0    	mov    %ax,0xf02a5360
-f0104375:	66 c7 05 62 53 2a f0 	movw   $0x8,0xf02a5362
+f010436f:	66 a3 60 73 2a f0    	mov    %ax,0xf02a7360
+f0104375:	66 c7 05 62 73 2a f0 	movw   $0x8,0xf02a7362
 f010437c:	08 00 
-f010437e:	c6 05 64 53 2a f0 00 	movb   $0x0,0xf02a5364
-f0104385:	c6 05 65 53 2a f0 8e 	movb   $0x8e,0xf02a5365
+f010437e:	c6 05 64 73 2a f0 00 	movb   $0x0,0xf02a7364
+f0104385:	c6 05 65 73 2a f0 8e 	movb   $0x8e,0xf02a7365
 f010438c:	c1 e8 10             	shr    $0x10,%eax
-f010438f:	66 a3 66 53 2a f0    	mov    %ax,0xf02a5366
+f010438f:	66 a3 66 73 2a f0    	mov    %ax,0xf02a7366
 	SETGATE(idt[IRQ_OFFSET + IRQ_KBD],      0, GD_KT, (void*)H_KBD,    0);
 f0104395:	b8 a0 4c 10 f0       	mov    $0xf0104ca0,%eax
-f010439a:	66 a3 68 53 2a f0    	mov    %ax,0xf02a5368
-f01043a0:	66 c7 05 6a 53 2a f0 	movw   $0x8,0xf02a536a
+f010439a:	66 a3 68 73 2a f0    	mov    %ax,0xf02a7368
+f01043a0:	66 c7 05 6a 73 2a f0 	movw   $0x8,0xf02a736a
 f01043a7:	08 00 
-f01043a9:	c6 05 6c 53 2a f0 00 	movb   $0x0,0xf02a536c
-f01043b0:	c6 05 6d 53 2a f0 8e 	movb   $0x8e,0xf02a536d
+f01043a9:	c6 05 6c 73 2a f0 00 	movb   $0x0,0xf02a736c
+f01043b0:	c6 05 6d 73 2a f0 8e 	movb   $0x8e,0xf02a736d
 f01043b7:	c1 e8 10             	shr    $0x10,%eax
-f01043ba:	66 a3 6e 53 2a f0    	mov    %ax,0xf02a536e
+f01043ba:	66 a3 6e 73 2a f0    	mov    %ax,0xf02a736e
 	SETGATE(idt[IRQ_OFFSET + 2],            0, GD_KT, (void*)H_IRQ2,   0);
 f01043c0:	b8 a6 4c 10 f0       	mov    $0xf0104ca6,%eax
-f01043c5:	66 a3 70 53 2a f0    	mov    %ax,0xf02a5370
-f01043cb:	66 c7 05 72 53 2a f0 	movw   $0x8,0xf02a5372
+f01043c5:	66 a3 70 73 2a f0    	mov    %ax,0xf02a7370
+f01043cb:	66 c7 05 72 73 2a f0 	movw   $0x8,0xf02a7372
 f01043d2:	08 00 
-f01043d4:	c6 05 74 53 2a f0 00 	movb   $0x0,0xf02a5374
-f01043db:	c6 05 75 53 2a f0 8e 	movb   $0x8e,0xf02a5375
+f01043d4:	c6 05 74 73 2a f0 00 	movb   $0x0,0xf02a7374
+f01043db:	c6 05 75 73 2a f0 8e 	movb   $0x8e,0xf02a7375
 f01043e2:	c1 e8 10             	shr    $0x10,%eax
-f01043e5:	66 a3 76 53 2a f0    	mov    %ax,0xf02a5376
+f01043e5:	66 a3 76 73 2a f0    	mov    %ax,0xf02a7376
 	SETGATE(idt[IRQ_OFFSET + 3],            0, GD_KT, (void*)H_IRQ3,   0);
 f01043eb:	b8 ac 4c 10 f0       	mov    $0xf0104cac,%eax
-f01043f0:	66 a3 78 53 2a f0    	mov    %ax,0xf02a5378
-f01043f6:	66 c7 05 7a 53 2a f0 	movw   $0x8,0xf02a537a
+f01043f0:	66 a3 78 73 2a f0    	mov    %ax,0xf02a7378
+f01043f6:	66 c7 05 7a 73 2a f0 	movw   $0x8,0xf02a737a
 f01043fd:	08 00 
-f01043ff:	c6 05 7c 53 2a f0 00 	movb   $0x0,0xf02a537c
-f0104406:	c6 05 7d 53 2a f0 8e 	movb   $0x8e,0xf02a537d
+f01043ff:	c6 05 7c 73 2a f0 00 	movb   $0x0,0xf02a737c
+f0104406:	c6 05 7d 73 2a f0 8e 	movb   $0x8e,0xf02a737d
 f010440d:	c1 e8 10             	shr    $0x10,%eax
-f0104410:	66 a3 7e 53 2a f0    	mov    %ax,0xf02a537e
+f0104410:	66 a3 7e 73 2a f0    	mov    %ax,0xf02a737e
 	SETGATE(idt[IRQ_OFFSET + IRQ_SERIAL],   0, GD_KT, (void*)H_SERIAL, 0);
 f0104416:	b8 b2 4c 10 f0       	mov    $0xf0104cb2,%eax
-f010441b:	66 a3 80 53 2a f0    	mov    %ax,0xf02a5380
-f0104421:	66 c7 05 82 53 2a f0 	movw   $0x8,0xf02a5382
+f010441b:	66 a3 80 73 2a f0    	mov    %ax,0xf02a7380
+f0104421:	66 c7 05 82 73 2a f0 	movw   $0x8,0xf02a7382
 f0104428:	08 00 
-f010442a:	c6 05 84 53 2a f0 00 	movb   $0x0,0xf02a5384
-f0104431:	c6 05 85 53 2a f0 8e 	movb   $0x8e,0xf02a5385
+f010442a:	c6 05 84 73 2a f0 00 	movb   $0x0,0xf02a7384
+f0104431:	c6 05 85 73 2a f0 8e 	movb   $0x8e,0xf02a7385
 f0104438:	c1 e8 10             	shr    $0x10,%eax
-f010443b:	66 a3 86 53 2a f0    	mov    %ax,0xf02a5386
+f010443b:	66 a3 86 73 2a f0    	mov    %ax,0xf02a7386
 	SETGATE(idt[IRQ_OFFSET + 5],            0, GD_KT, (void*)H_IRQ5,   0);
 f0104441:	b8 b8 4c 10 f0       	mov    $0xf0104cb8,%eax
-f0104446:	66 a3 88 53 2a f0    	mov    %ax,0xf02a5388
-f010444c:	66 c7 05 8a 53 2a f0 	movw   $0x8,0xf02a538a
+f0104446:	66 a3 88 73 2a f0    	mov    %ax,0xf02a7388
+f010444c:	66 c7 05 8a 73 2a f0 	movw   $0x8,0xf02a738a
 f0104453:	08 00 
-f0104455:	c6 05 8c 53 2a f0 00 	movb   $0x0,0xf02a538c
-f010445c:	c6 05 8d 53 2a f0 8e 	movb   $0x8e,0xf02a538d
+f0104455:	c6 05 8c 73 2a f0 00 	movb   $0x0,0xf02a738c
+f010445c:	c6 05 8d 73 2a f0 8e 	movb   $0x8e,0xf02a738d
 f0104463:	c1 e8 10             	shr    $0x10,%eax
-f0104466:	66 a3 8e 53 2a f0    	mov    %ax,0xf02a538e
+f0104466:	66 a3 8e 73 2a f0    	mov    %ax,0xf02a738e
 	SETGATE(idt[IRQ_OFFSET + 6],            0, GD_KT, (void*)H_IRQ6,   0);
 f010446c:	b8 be 4c 10 f0       	mov    $0xf0104cbe,%eax
-f0104471:	66 a3 90 53 2a f0    	mov    %ax,0xf02a5390
-f0104477:	66 c7 05 92 53 2a f0 	movw   $0x8,0xf02a5392
+f0104471:	66 a3 90 73 2a f0    	mov    %ax,0xf02a7390
+f0104477:	66 c7 05 92 73 2a f0 	movw   $0x8,0xf02a7392
 f010447e:	08 00 
-f0104480:	c6 05 94 53 2a f0 00 	movb   $0x0,0xf02a5394
-f0104487:	c6 05 95 53 2a f0 8e 	movb   $0x8e,0xf02a5395
+f0104480:	c6 05 94 73 2a f0 00 	movb   $0x0,0xf02a7394
+f0104487:	c6 05 95 73 2a f0 8e 	movb   $0x8e,0xf02a7395
 f010448e:	c1 e8 10             	shr    $0x10,%eax
-f0104491:	66 a3 96 53 2a f0    	mov    %ax,0xf02a5396
+f0104491:	66 a3 96 73 2a f0    	mov    %ax,0xf02a7396
 	SETGATE(idt[IRQ_OFFSET + IRQ_SPURIOUS], 0, GD_KT, (void*)H_SPUR,   0);
 f0104497:	b8 c4 4c 10 f0       	mov    $0xf0104cc4,%eax
-f010449c:	66 a3 98 53 2a f0    	mov    %ax,0xf02a5398
-f01044a2:	66 c7 05 9a 53 2a f0 	movw   $0x8,0xf02a539a
+f010449c:	66 a3 98 73 2a f0    	mov    %ax,0xf02a7398
+f01044a2:	66 c7 05 9a 73 2a f0 	movw   $0x8,0xf02a739a
 f01044a9:	08 00 
-f01044ab:	c6 05 9c 53 2a f0 00 	movb   $0x0,0xf02a539c
-f01044b2:	c6 05 9d 53 2a f0 8e 	movb   $0x8e,0xf02a539d
+f01044ab:	c6 05 9c 73 2a f0 00 	movb   $0x0,0xf02a739c
+f01044b2:	c6 05 9d 73 2a f0 8e 	movb   $0x8e,0xf02a739d
 f01044b9:	c1 e8 10             	shr    $0x10,%eax
-f01044bc:	66 a3 9e 53 2a f0    	mov    %ax,0xf02a539e
+f01044bc:	66 a3 9e 73 2a f0    	mov    %ax,0xf02a739e
 	SETGATE(idt[IRQ_OFFSET + 8],            0, GD_KT, (void*)H_IRQ8,   0);
 f01044c2:	b8 ca 4c 10 f0       	mov    $0xf0104cca,%eax
-f01044c7:	66 a3 a0 53 2a f0    	mov    %ax,0xf02a53a0
-f01044cd:	66 c7 05 a2 53 2a f0 	movw   $0x8,0xf02a53a2
+f01044c7:	66 a3 a0 73 2a f0    	mov    %ax,0xf02a73a0
+f01044cd:	66 c7 05 a2 73 2a f0 	movw   $0x8,0xf02a73a2
 f01044d4:	08 00 
-f01044d6:	c6 05 a4 53 2a f0 00 	movb   $0x0,0xf02a53a4
-f01044dd:	c6 05 a5 53 2a f0 8e 	movb   $0x8e,0xf02a53a5
+f01044d6:	c6 05 a4 73 2a f0 00 	movb   $0x0,0xf02a73a4
+f01044dd:	c6 05 a5 73 2a f0 8e 	movb   $0x8e,0xf02a73a5
 f01044e4:	c1 e8 10             	shr    $0x10,%eax
-f01044e7:	66 a3 a6 53 2a f0    	mov    %ax,0xf02a53a6
+f01044e7:	66 a3 a6 73 2a f0    	mov    %ax,0xf02a73a6
 	SETGATE(idt[IRQ_OFFSET + 9],            0, GD_KT, (void*)H_IRQ9,   0);
 f01044ed:	b8 d0 4c 10 f0       	mov    $0xf0104cd0,%eax
-f01044f2:	66 a3 a8 53 2a f0    	mov    %ax,0xf02a53a8
-f01044f8:	66 c7 05 aa 53 2a f0 	movw   $0x8,0xf02a53aa
+f01044f2:	66 a3 a8 73 2a f0    	mov    %ax,0xf02a73a8
+f01044f8:	66 c7 05 aa 73 2a f0 	movw   $0x8,0xf02a73aa
 f01044ff:	08 00 
-f0104501:	c6 05 ac 53 2a f0 00 	movb   $0x0,0xf02a53ac
-f0104508:	c6 05 ad 53 2a f0 8e 	movb   $0x8e,0xf02a53ad
+f0104501:	c6 05 ac 73 2a f0 00 	movb   $0x0,0xf02a73ac
+f0104508:	c6 05 ad 73 2a f0 8e 	movb   $0x8e,0xf02a73ad
 f010450f:	c1 e8 10             	shr    $0x10,%eax
-f0104512:	66 a3 ae 53 2a f0    	mov    %ax,0xf02a53ae
+f0104512:	66 a3 ae 73 2a f0    	mov    %ax,0xf02a73ae
 	SETGATE(idt[IRQ_OFFSET + 10],           0, GD_KT, (void*)H_IRQ10,  0);
 f0104518:	b8 d6 4c 10 f0       	mov    $0xf0104cd6,%eax
-f010451d:	66 a3 b0 53 2a f0    	mov    %ax,0xf02a53b0
-f0104523:	66 c7 05 b2 53 2a f0 	movw   $0x8,0xf02a53b2
+f010451d:	66 a3 b0 73 2a f0    	mov    %ax,0xf02a73b0
+f0104523:	66 c7 05 b2 73 2a f0 	movw   $0x8,0xf02a73b2
 f010452a:	08 00 
-f010452c:	c6 05 b4 53 2a f0 00 	movb   $0x0,0xf02a53b4
-f0104533:	c6 05 b5 53 2a f0 8e 	movb   $0x8e,0xf02a53b5
+f010452c:	c6 05 b4 73 2a f0 00 	movb   $0x0,0xf02a73b4
+f0104533:	c6 05 b5 73 2a f0 8e 	movb   $0x8e,0xf02a73b5
 f010453a:	c1 e8 10             	shr    $0x10,%eax
-f010453d:	66 a3 b6 53 2a f0    	mov    %ax,0xf02a53b6
+f010453d:	66 a3 b6 73 2a f0    	mov    %ax,0xf02a73b6
 	SETGATE(idt[IRQ_OFFSET + 11],           0, GD_KT, (void*)H_IRQ11,  0);
 f0104543:	b8 dc 4c 10 f0       	mov    $0xf0104cdc,%eax
-f0104548:	66 a3 b8 53 2a f0    	mov    %ax,0xf02a53b8
-f010454e:	66 c7 05 ba 53 2a f0 	movw   $0x8,0xf02a53ba
+f0104548:	66 a3 b8 73 2a f0    	mov    %ax,0xf02a73b8
+f010454e:	66 c7 05 ba 73 2a f0 	movw   $0x8,0xf02a73ba
 f0104555:	08 00 
-f0104557:	c6 05 bc 53 2a f0 00 	movb   $0x0,0xf02a53bc
-f010455e:	c6 05 bd 53 2a f0 8e 	movb   $0x8e,0xf02a53bd
+f0104557:	c6 05 bc 73 2a f0 00 	movb   $0x0,0xf02a73bc
+f010455e:	c6 05 bd 73 2a f0 8e 	movb   $0x8e,0xf02a73bd
 f0104565:	c1 e8 10             	shr    $0x10,%eax
-f0104568:	66 a3 be 53 2a f0    	mov    %ax,0xf02a53be
+f0104568:	66 a3 be 73 2a f0    	mov    %ax,0xf02a73be
 	SETGATE(idt[IRQ_OFFSET + 12],           0, GD_KT, (void*)H_IRQ12,  0);
 f010456e:	b8 e2 4c 10 f0       	mov    $0xf0104ce2,%eax
-f0104573:	66 a3 c0 53 2a f0    	mov    %ax,0xf02a53c0
-f0104579:	66 c7 05 c2 53 2a f0 	movw   $0x8,0xf02a53c2
+f0104573:	66 a3 c0 73 2a f0    	mov    %ax,0xf02a73c0
+f0104579:	66 c7 05 c2 73 2a f0 	movw   $0x8,0xf02a73c2
 f0104580:	08 00 
-f0104582:	c6 05 c4 53 2a f0 00 	movb   $0x0,0xf02a53c4
-f0104589:	c6 05 c5 53 2a f0 8e 	movb   $0x8e,0xf02a53c5
+f0104582:	c6 05 c4 73 2a f0 00 	movb   $0x0,0xf02a73c4
+f0104589:	c6 05 c5 73 2a f0 8e 	movb   $0x8e,0xf02a73c5
 f0104590:	c1 e8 10             	shr    $0x10,%eax
-f0104593:	66 a3 c6 53 2a f0    	mov    %ax,0xf02a53c6
+f0104593:	66 a3 c6 73 2a f0    	mov    %ax,0xf02a73c6
 	SETGATE(idt[IRQ_OFFSET + 13],           0, GD_KT, (void*)H_IRQ13,  0);
 f0104599:	b8 e8 4c 10 f0       	mov    $0xf0104ce8,%eax
-f010459e:	66 a3 c8 53 2a f0    	mov    %ax,0xf02a53c8
-f01045a4:	66 c7 05 ca 53 2a f0 	movw   $0x8,0xf02a53ca
+f010459e:	66 a3 c8 73 2a f0    	mov    %ax,0xf02a73c8
+f01045a4:	66 c7 05 ca 73 2a f0 	movw   $0x8,0xf02a73ca
 f01045ab:	08 00 
-f01045ad:	c6 05 cc 53 2a f0 00 	movb   $0x0,0xf02a53cc
-f01045b4:	c6 05 cd 53 2a f0 8e 	movb   $0x8e,0xf02a53cd
+f01045ad:	c6 05 cc 73 2a f0 00 	movb   $0x0,0xf02a73cc
+f01045b4:	c6 05 cd 73 2a f0 8e 	movb   $0x8e,0xf02a73cd
 f01045bb:	c1 e8 10             	shr    $0x10,%eax
-f01045be:	66 a3 ce 53 2a f0    	mov    %ax,0xf02a53ce
+f01045be:	66 a3 ce 73 2a f0    	mov    %ax,0xf02a73ce
 	SETGATE(idt[IRQ_OFFSET + IRQ_IDE],      0, GD_KT, (void*)H_IDE,    0);
 f01045c4:	b8 ee 4c 10 f0       	mov    $0xf0104cee,%eax
-f01045c9:	66 a3 d0 53 2a f0    	mov    %ax,0xf02a53d0
-f01045cf:	66 c7 05 d2 53 2a f0 	movw   $0x8,0xf02a53d2
+f01045c9:	66 a3 d0 73 2a f0    	mov    %ax,0xf02a73d0
+f01045cf:	66 c7 05 d2 73 2a f0 	movw   $0x8,0xf02a73d2
 f01045d6:	08 00 
-f01045d8:	c6 05 d4 53 2a f0 00 	movb   $0x0,0xf02a53d4
-f01045df:	c6 05 d5 53 2a f0 8e 	movb   $0x8e,0xf02a53d5
+f01045d8:	c6 05 d4 73 2a f0 00 	movb   $0x0,0xf02a73d4
+f01045df:	c6 05 d5 73 2a f0 8e 	movb   $0x8e,0xf02a73d5
 f01045e6:	c1 e8 10             	shr    $0x10,%eax
-f01045e9:	66 a3 d6 53 2a f0    	mov    %ax,0xf02a53d6
+f01045e9:	66 a3 d6 73 2a f0    	mov    %ax,0xf02a73d6
 	SETGATE(idt[IRQ_OFFSET + 15],           0, GD_KT, (void*)H_IRQ15,  0);
 f01045ef:	b8 f4 4c 10 f0       	mov    $0xf0104cf4,%eax
-f01045f4:	66 a3 d8 53 2a f0    	mov    %ax,0xf02a53d8
-f01045fa:	66 c7 05 da 53 2a f0 	movw   $0x8,0xf02a53da
+f01045f4:	66 a3 d8 73 2a f0    	mov    %ax,0xf02a73d8
+f01045fa:	66 c7 05 da 73 2a f0 	movw   $0x8,0xf02a73da
 f0104601:	08 00 
-f0104603:	c6 05 dc 53 2a f0 00 	movb   $0x0,0xf02a53dc
-f010460a:	c6 05 dd 53 2a f0 8e 	movb   $0x8e,0xf02a53dd
+f0104603:	c6 05 dc 73 2a f0 00 	movb   $0x0,0xf02a73dc
+f010460a:	c6 05 dd 73 2a f0 8e 	movb   $0x8e,0xf02a73dd
 f0104611:	c1 e8 10             	shr    $0x10,%eax
-f0104614:	66 a3 de 53 2a f0    	mov    %ax,0xf02a53de
+f0104614:	66 a3 de 73 2a f0    	mov    %ax,0xf02a73de
 	trap_init_percpu();
 f010461a:	e8 74 f9 ff ff       	call   f0103f93 <trap_init_percpu>
 }
@@ -6825,7 +6825,7 @@ f010472c:	68 2f 84 10 f0       	push   $0xf010842f
 f0104731:	e8 49 f8 ff ff       	call   f0103f7f <cprintf>
 	if (tf == last_tf && tf->tf_trapno == T_PGFLT)
 f0104736:	83 c4 10             	add    $0x10,%esp
-f0104739:	39 1d 60 5a 2a f0    	cmp    %ebx,0xf02a5a60
+f0104739:	39 1d 60 7a 2a f0    	cmp    %ebx,0xf02a7a60
 f010473f:	0f 84 ab 00 00 00    	je     f01047f0 <print_trapframe+0x141>
 	cprintf("  err  0x%08x", tf->tf_err);
 f0104745:	83 ec 08             	sub    $0x8,%esp
@@ -6955,7 +6955,7 @@ f0104883:	0f 84 ad 00 00 00    	je     f0104936 <page_fault_handler+0xc6>
 	if (!curenv->env_pgfault_upcall) {
 f0104889:	e8 24 1e 00 00       	call   f01066b2 <cpunum>
 f010488e:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104891:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0104891:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f0104897:	83 78 64 00          	cmpl   $0x0,0x64(%eax)
 f010489b:	0f 84 b3 00 00 00    	je     f0104954 <page_fault_handler+0xe4>
 		print_trapframe(tf);
@@ -6983,7 +6983,7 @@ f01048c3:	6a 06                	push   $0x6
 f01048c5:	6a 38                	push   $0x38
 f01048c7:	57                   	push   %edi
 f01048c8:	6b c0 74             	imul   $0x74,%eax,%eax
-f01048cb:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f01048cb:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f01048d1:	e8 20 ec ff ff       	call   f01034f6 <user_mem_assert>
 		// FIXME
 		*((uint32_t*)esp - 1) = 0;  // We also set the int padding to 0.
@@ -7021,7 +7021,7 @@ f0104909:	89 78 30             	mov    %edi,0x30(%eax)
 	tf->tf_eip = (uintptr_t)curenv->env_pgfault_upcall;
 f010490c:	e8 a1 1d 00 00       	call   f01066b2 <cpunum>
 f0104911:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104914:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0104914:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f010491a:	8b 40 64             	mov    0x64(%eax),%eax
 f010491d:	89 43 30             	mov    %eax,0x30(%ebx)
 
@@ -7030,7 +7030,7 @@ f010491d:	89 43 30             	mov    %eax,0x30(%ebx)
 f0104920:	e8 8d 1d 00 00       	call   f01066b2 <cpunum>
 f0104925:	83 ec 0c             	sub    $0xc,%esp
 f0104928:	6b c0 74             	imul   $0x74,%eax,%eax
-f010492b:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f010492b:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f0104931:	e8 ca f3 ff ff       	call   f0103d00 <env_run>
 		print_trapframe(tf);
 f0104936:	83 ec 0c             	sub    $0xc,%esp
@@ -7052,7 +7052,7 @@ f010495d:	56                   	push   %esi
 				curenv->env_id, fault_va, tf->tf_eip);
 f010495e:	6b c0 74             	imul   $0x74,%eax,%eax
 		cprintf("[%08x] user fault va %08x ip %08x\n",
-f0104961:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0104961:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f0104967:	ff 70 48             	pushl  0x48(%eax)
 f010496a:	68 94 86 10 f0       	push   $0xf0108694
 f010496f:	e8 0b f6 ff ff       	call   f0103f7f <cprintf>
@@ -7063,7 +7063,7 @@ f0104977:	e8 33 fd ff ff       	call   f01046af <print_trapframe>
 f010497c:	e8 31 1d 00 00       	call   f01066b2 <cpunum>
 f0104981:	83 c4 04             	add    $0x4,%esp
 f0104984:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104987:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f0104987:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f010498d:	e8 b1 f2 ff ff       	call   f0103c43 <env_destroy>
 f0104992:	83 c4 10             	add    $0x10,%esp
 f0104995:	e9 07 ff ff ff       	jmp    f01048a1 <page_fault_handler+0x31>
@@ -7075,7 +7075,7 @@ f01049a6:	6a 06                	push   $0x6
 f01049a8:	6a 34                	push   $0x34
 f01049aa:	68 cc ff bf ee       	push   $0xeebfffcc
 f01049af:	6b c0 74             	imul   $0x74,%eax,%eax
-f01049b2:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f01049b2:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f01049b8:	e8 39 eb ff ff       	call   f01034f6 <user_mem_assert>
 f01049bd:	83 c4 10             	add    $0x10,%esp
 f01049c0:	e9 1e ff ff ff       	jmp    f01048e3 <page_fault_handler+0x73>
@@ -7090,7 +7090,7 @@ f01049ca:	8b 75 08             	mov    0x8(%ebp),%esi
 	asm volatile("cld" ::: "cc");
 f01049cd:	fc                   	cld    
 	if (panicstr)
-f01049ce:	83 3d 80 5e 2a f0 00 	cmpl   $0x0,0xf02a5e80
+f01049ce:	83 3d 80 7e 2a f0 00 	cmpl   $0x0,0xf02a7e80
 f01049d5:	74 01                	je     f01049d8 <trap+0x13>
 		asm volatile("hlt");
 f01049d7:	f4                   	hlt    
@@ -7104,7 +7104,7 @@ f01049e6:	8d 04 90             	lea    (%eax,%edx,4),%eax
 f01049e9:	8d 14 85 04 00 00 00 	lea    0x4(,%eax,4),%edx
 	asm volatile("lock; xchgl %0, %1"
 f01049f0:	b8 01 00 00 00       	mov    $0x1,%eax
-f01049f5:	f0 87 82 20 60 2a f0 	lock xchg %eax,-0xfd59fe0(%edx)
+f01049f5:	f0 87 82 20 80 2a f0 	lock xchg %eax,-0xfd57fe0(%edx)
 f01049fc:	83 f8 02             	cmp    $0x2,%eax
 f01049ff:	74 53                	je     f0104a54 <trap+0x8f>
 	asm volatile("pushfl; popl %0" : "=r" (eflags));
@@ -7119,7 +7119,7 @@ f0104a0c:	83 e0 03             	and    $0x3,%eax
 f0104a0f:	66 83 f8 03          	cmp    $0x3,%ax
 f0104a13:	74 6a                	je     f0104a7f <trap+0xba>
 	last_tf = tf;
-f0104a15:	89 35 60 5a 2a f0    	mov    %esi,0xf02a5a60
+f0104a15:	89 35 60 7a 2a f0    	mov    %esi,0xf02a7a60
 	switch(tf->tf_trapno){
 f0104a1b:	8b 46 28             	mov    0x28(%esi),%eax
 f0104a1e:	83 f8 0e             	cmp    $0xe,%eax
@@ -7158,25 +7158,25 @@ f0104a87:	e8 9a 1e 00 00       	call   f0106926 <spin_lock>
 f0104a8c:	e8 21 1c 00 00       	call   f01066b2 <cpunum>
 f0104a91:	6b c0 74             	imul   $0x74,%eax,%eax
 f0104a94:	83 c4 10             	add    $0x10,%esp
-f0104a97:	83 b8 28 60 2a f0 00 	cmpl   $0x0,-0xfd59fd8(%eax)
+f0104a97:	83 b8 28 80 2a f0 00 	cmpl   $0x0,-0xfd57fd8(%eax)
 f0104a9e:	74 3e                	je     f0104ade <trap+0x119>
 		if (curenv->env_status == ENV_DYING) {
 f0104aa0:	e8 0d 1c 00 00       	call   f01066b2 <cpunum>
 f0104aa5:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104aa8:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0104aa8:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f0104aae:	83 78 54 01          	cmpl   $0x1,0x54(%eax)
 f0104ab2:	74 43                	je     f0104af7 <trap+0x132>
 		curenv->env_tf = *tf;
 f0104ab4:	e8 f9 1b 00 00       	call   f01066b2 <cpunum>
 f0104ab9:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104abc:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0104abc:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f0104ac2:	b9 11 00 00 00       	mov    $0x11,%ecx
 f0104ac7:	89 c7                	mov    %eax,%edi
 f0104ac9:	f3 a5                	rep movsl %ds:(%esi),%es:(%edi)
 		tf = &curenv->env_tf;
 f0104acb:	e8 e2 1b 00 00       	call   f01066b2 <cpunum>
 f0104ad0:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104ad3:	8b b0 28 60 2a f0    	mov    -0xfd59fd8(%eax),%esi
+f0104ad3:	8b b0 28 80 2a f0    	mov    -0xfd57fd8(%eax),%esi
 f0104ad9:	e9 37 ff ff ff       	jmp    f0104a15 <trap+0x50>
 		assert(curenv);
 f0104ade:	68 e5 84 10 f0       	push   $0xf01084e5
@@ -7188,12 +7188,12 @@ f0104af2:	e8 9d b5 ff ff       	call   f0100094 <_panic>
 f0104af7:	e8 b6 1b 00 00       	call   f01066b2 <cpunum>
 f0104afc:	83 ec 0c             	sub    $0xc,%esp
 f0104aff:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104b02:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f0104b02:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f0104b08:	e8 71 ef ff ff       	call   f0103a7e <env_free>
 			curenv = NULL;
 f0104b0d:	e8 a0 1b 00 00       	call   f01066b2 <cpunum>
 f0104b12:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104b15:	c7 80 28 60 2a f0 00 	movl   $0x0,-0xfd59fd8(%eax)
+f0104b15:	c7 80 28 80 2a f0 00 	movl   $0x0,-0xfd57fd8(%eax)
 f0104b1c:	00 00 00 
 			sched_yield();
 f0104b1f:	e8 d6 02 00 00       	call   f0104dfa <sched_yield>
@@ -7215,11 +7215,11 @@ f0104b49:	83 c4 20             	add    $0x20,%esp
 	if (curenv && curenv->env_status == ENV_RUNNING)
 f0104b4c:	e8 61 1b 00 00       	call   f01066b2 <cpunum>
 f0104b51:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104b54:	83 b8 28 60 2a f0 00 	cmpl   $0x0,-0xfd59fd8(%eax)
+f0104b54:	83 b8 28 80 2a f0 00 	cmpl   $0x0,-0xfd57fd8(%eax)
 f0104b5b:	74 14                	je     f0104b71 <trap+0x1ac>
 f0104b5d:	e8 50 1b 00 00       	call   f01066b2 <cpunum>
 f0104b62:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104b65:	8b 80 28 60 2a f0    	mov    -0xfd59fd8(%eax),%eax
+f0104b65:	8b 80 28 80 2a f0    	mov    -0xfd57fd8(%eax),%eax
 f0104b6b:	83 78 54 03          	cmpl   $0x3,0x54(%eax)
 f0104b6f:	74 78                	je     f0104be9 <trap+0x224>
 		sched_yield();
@@ -7242,7 +7242,7 @@ f0104b91:	74 3f                	je     f0104bd2 <trap+0x20d>
 f0104b93:	e8 1a 1b 00 00       	call   f01066b2 <cpunum>
 f0104b98:	83 ec 0c             	sub    $0xc,%esp
 f0104b9b:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104b9e:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f0104b9e:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f0104ba4:	e8 9a f0 ff ff       	call   f0103c43 <env_destroy>
 f0104ba9:	83 c4 10             	add    $0x10,%esp
 f0104bac:	eb 9e                	jmp    f0104b4c <trap+0x187>
@@ -7269,7 +7269,7 @@ f0104be4:	e8 ab b4 ff ff       	call   f0100094 <_panic>
 f0104be9:	e8 c4 1a 00 00       	call   f01066b2 <cpunum>
 f0104bee:	83 ec 0c             	sub    $0xc,%esp
 f0104bf1:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104bf4:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f0104bf4:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f0104bfa:	e8 01 f1 ff ff       	call   f0103d00 <env_run>
 f0104bff:	90                   	nop
 
@@ -7530,7 +7530,7 @@ sched_halt(void)
 f0104d0b:	55                   	push   %ebp
 f0104d0c:	89 e5                	mov    %esp,%ebp
 f0104d0e:	83 ec 08             	sub    $0x8,%esp
-f0104d11:	a1 48 52 2a f0       	mov    0xf02a5248,%eax
+f0104d11:	a1 48 72 2a f0       	mov    0xf02a7248,%eax
 f0104d16:	83 c0 54             	add    $0x54,%eax
 	int i;
 
@@ -7579,10 +7579,10 @@ f0104d61:	01 c2                	add    %eax,%edx
 f0104d63:	01 d2                	add    %edx,%edx
 f0104d65:	01 c2                	add    %eax,%edx
 f0104d67:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104d6a:	c7 04 85 28 60 2a f0 	movl   $0x0,-0xfd59fd8(,%eax,4)
+f0104d6a:	c7 04 85 28 80 2a f0 	movl   $0x0,-0xfd57fd8(,%eax,4)
 f0104d71:	00 00 00 00 
 	lcr3(PADDR(kern_pgdir));
-f0104d75:	a1 8c 5e 2a f0       	mov    0xf02a5e8c,%eax
+f0104d75:	a1 8c 7e 2a f0       	mov    0xf02a7e8c,%eax
 	if ((uint32_t)kva < KERNBASE)
 f0104d7a:	3d ff ff ff ef       	cmp    $0xefffffff,%eax
 f0104d7f:	76 67                	jbe    f0104de8 <sched_halt+0xdd>
@@ -7604,7 +7604,7 @@ f0104d97:	8d 04 90             	lea    (%eax,%edx,4),%eax
 f0104d9a:	8d 14 85 04 00 00 00 	lea    0x4(,%eax,4),%edx
 	asm volatile("lock; xchgl %0, %1"
 f0104da1:	b8 02 00 00 00       	mov    $0x2,%eax
-f0104da6:	f0 87 82 20 60 2a f0 	lock xchg %eax,-0xfd59fe0(%edx)
+f0104da6:	f0 87 82 20 80 2a f0 	lock xchg %eax,-0xfd57fe0(%edx)
 	spin_unlock(&kernel_lock);
 f0104dad:	83 ec 0c             	sub    $0xc,%esp
 f0104db0:	68 c0 33 12 f0       	push   $0xf01233c0
@@ -7624,7 +7624,7 @@ f0104dc6:	01 d2                	add    %edx,%edx
 f0104dc8:	01 c2                	add    %eax,%edx
 f0104dca:	8d 04 90             	lea    (%eax,%edx,4),%eax
 	asm volatile (
-f0104dcd:	8b 04 85 30 60 2a f0 	mov    -0xfd59fd0(,%eax,4),%eax
+f0104dcd:	8b 04 85 30 80 2a f0 	mov    -0xfd57fd0(,%eax,4),%eax
 f0104dd4:	bd 00 00 00 00       	mov    $0x0,%ebp
 f0104dd9:	89 c4                	mov    %eax,%esp
 f0104ddb:	6a 00                	push   $0x0
@@ -7656,7 +7656,7 @@ f0104e09:	01 c2                	add    %eax,%edx
 f0104e0b:	01 d2                	add    %edx,%edx
 f0104e0d:	01 c2                	add    %eax,%edx
 f0104e0f:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104e12:	83 3c 85 28 60 2a f0 	cmpl   $0x0,-0xfd59fd8(,%eax,4)
+f0104e12:	83 3c 85 28 80 2a f0 	cmpl   $0x0,-0xfd57fd8(,%eax,4)
 f0104e19:	00 
 f0104e1a:	74 29                	je     f0104e45 <sched_yield+0x4b>
 		for (idle = curenv + 1; idle < envs + NENV; idle++)
@@ -7666,13 +7666,13 @@ f0104e24:	01 c2                	add    %eax,%edx
 f0104e26:	01 d2                	add    %edx,%edx
 f0104e28:	01 c2                	add    %eax,%edx
 f0104e2a:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104e2d:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0104e2d:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0104e34:	83 c0 7c             	add    $0x7c,%eax
-f0104e37:	8b 1d 48 52 2a f0    	mov    0xf02a5248,%ebx
+f0104e37:	8b 1d 48 72 2a f0    	mov    0xf02a7248,%ebx
 f0104e3d:	8d 93 00 f0 01 00    	lea    0x1f000(%ebx),%edx
 f0104e43:	eb 26                	jmp    f0104e6b <sched_yield+0x71>
 		for (idle = envs; idle < envs + NENV; idle++)
-f0104e45:	a1 48 52 2a f0       	mov    0xf02a5248,%eax
+f0104e45:	a1 48 72 2a f0       	mov    0xf02a7248,%eax
 f0104e4a:	8d 90 00 f0 01 00    	lea    0x1f000(%eax),%edx
 f0104e50:	39 d0                	cmp    %edx,%eax
 f0104e52:	74 76                	je     f0104eca <sched_yield+0xd0>
@@ -7708,7 +7708,7 @@ f0104e8f:	01 c2                	add    %eax,%edx
 f0104e91:	01 d2                	add    %edx,%edx
 f0104e93:	01 c2                	add    %eax,%edx
 f0104e95:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104e98:	39 1c 85 28 60 2a f0 	cmp    %ebx,-0xfd59fd8(,%eax,4)
+f0104e98:	39 1c 85 28 80 2a f0 	cmp    %ebx,-0xfd57fd8(,%eax,4)
 f0104e9f:	76 0b                	jbe    f0104eac <sched_yield+0xb2>
 			if (idle->env_status == ENV_RUNNABLE)
 f0104ea1:	83 7b 54 02          	cmpl   $0x2,0x54(%ebx)
@@ -7723,7 +7723,7 @@ f0104eb4:	01 c2                	add    %eax,%edx
 f0104eb6:	01 d2                	add    %edx,%edx
 f0104eb8:	01 c2                	add    %eax,%edx
 f0104eba:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104ebd:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0104ebd:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0104ec4:	83 78 54 03          	cmpl   $0x3,0x54(%eax)
 f0104ec8:	74 0a                	je     f0104ed4 <sched_yield+0xda>
 	sched_halt();
@@ -7736,7 +7736,7 @@ f0104ed3:	c3                   	ret
 f0104ed4:	e8 d9 17 00 00       	call   f01066b2 <cpunum>
 f0104ed9:	83 ec 0c             	sub    $0xc,%esp
 f0104edc:	6b c0 74             	imul   $0x74,%eax,%eax
-f0104edf:	ff b0 28 60 2a f0    	pushl  -0xfd59fd8(%eax)
+f0104edf:	ff b0 28 80 2a f0    	pushl  -0xfd57fd8(%eax)
 f0104ee5:	e8 16 ee ff ff       	call   f0103d00 <env_run>
 
 f0104eea <sys_ipc_recv>:
@@ -7759,7 +7759,7 @@ f0104efc:	01 c2                	add    %eax,%edx
 f0104efe:	01 d2                	add    %edx,%edx
 f0104f00:	01 c2                	add    %eax,%edx
 f0104f02:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104f05:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0104f05:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0104f0c:	c6 40 68 01          	movb   $0x1,0x68(%eax)
 
 	// If willing to receive page but not aligned
@@ -7778,7 +7778,7 @@ f0104f28:	01 c2                	add    %eax,%edx
 f0104f2a:	01 d2                	add    %edx,%edx
 f0104f2c:	01 c2                	add    %eax,%edx
 f0104f2e:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104f31:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0104f31:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0104f38:	89 58 6c             	mov    %ebx,0x6c(%eax)
 
 	// Mark not-runnable. Don't run until we receive something.
@@ -7789,7 +7789,7 @@ f0104f43:	01 c2                	add    %eax,%edx
 f0104f45:	01 d2                	add    %edx,%edx
 f0104f47:	01 c2                	add    %eax,%edx
 f0104f49:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104f4c:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0104f4c:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0104f53:	c7 40 54 04 00 00 00 	movl   $0x4,0x54(%eax)
 	// There used to be a yield here, which is wrong.
 	// When the env is continued, it will (surely) not be running 
@@ -7835,7 +7835,7 @@ f0104f97:	01 c2                	add    %eax,%edx
 f0104f99:	01 d2                	add    %edx,%edx
 f0104f9b:	01 c2                	add    %eax,%edx
 f0104f9d:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104fa0:	ff 34 85 28 60 2a f0 	pushl  -0xfd59fd8(,%eax,4)
+f0104fa0:	ff 34 85 28 80 2a f0 	pushl  -0xfd57fd8(,%eax,4)
 f0104fa7:	e8 4a e5 ff ff       	call   f01034f6 <user_mem_assert>
 	cprintf("%.*s", len, s);
 f0104fac:	83 c4 0c             	add    $0xc,%esp
@@ -7872,7 +7872,7 @@ f0104fe1:	01 c2                	add    %eax,%edx
 f0104fe3:	01 d2                	add    %edx,%edx
 f0104fe5:	01 c2                	add    %eax,%edx
 f0104fe7:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0104fea:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0104fea:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0104ff1:	8b 58 48             	mov    0x48(%eax),%ebx
 		return sys_getenvid();
 f0104ff4:	eb d1                	jmp    f0104fc7 <syscall+0x5b>
@@ -7895,7 +7895,7 @@ f010501b:	01 c2                	add    %eax,%edx
 f010501d:	01 d2                	add    %edx,%edx
 f010501f:	01 c2                	add    %eax,%edx
 f0105021:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0105024:	39 0c 85 28 60 2a f0 	cmp    %ecx,-0xfd59fd8(,%eax,4)
+f0105024:	39 0c 85 28 80 2a f0 	cmp    %ecx,-0xfd57fd8(,%eax,4)
 f010502b:	74 47                	je     f0105074 <syscall+0x108>
 		cprintf("[%08x] destroying %08x\n", curenv->env_id, e->env_id);
 f010502d:	8b 59 48             	mov    0x48(%ecx),%ebx
@@ -7907,7 +7907,7 @@ f010503c:	01 c2                	add    %eax,%edx
 f010503e:	01 d2                	add    %edx,%edx
 f0105040:	01 c2                	add    %eax,%edx
 f0105042:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0105045:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0105045:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f010504c:	ff 70 48             	pushl  0x48(%eax)
 f010504f:	68 66 87 10 f0       	push   $0xf0108766
 f0105054:	e8 26 ef ff ff       	call   f0103f7f <cprintf>
@@ -7929,7 +7929,7 @@ f010507f:	01 c2                	add    %eax,%edx
 f0105081:	01 d2                	add    %edx,%edx
 f0105083:	01 c2                	add    %eax,%edx
 f0105085:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0105088:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0105088:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f010508f:	ff 70 48             	pushl  0x48(%eax)
 f0105092:	68 4b 87 10 f0       	push   $0xf010874b
 f0105097:	e8 e3 ee ff ff       	call   f0103f7f <cprintf>
@@ -8113,7 +8113,7 @@ f0105287:	01 c2                	add    %eax,%edx
 f0105289:	01 d2                	add    %edx,%edx
 f010528b:	01 c2                	add    %eax,%edx
 f010528d:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f0105290:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f0105290:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0105297:	ff 70 48             	pushl  0x48(%eax)
 f010529a:	8d 45 f4             	lea    -0xc(%ebp),%eax
 f010529d:	50                   	push   %eax
@@ -8135,7 +8135,7 @@ f01052c7:	01 c2                	add    %eax,%edx
 f01052c9:	01 d2                	add    %edx,%edx
 f01052cb:	01 c2                	add    %eax,%edx
 f01052cd:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f01052d0:	ff 34 85 28 60 2a f0 	pushl  -0xfd59fd8(,%eax,4)
+f01052d0:	ff 34 85 28 80 2a f0 	pushl  -0xfd57fd8(,%eax,4)
 f01052d7:	ff 75 f4             	pushl  -0xc(%ebp)
 f01052da:	e8 ad 0d 00 00       	call   f010608c <memcpy>
 	newenv->env_tf.tf_regs.reg_eax = 0;
@@ -8214,7 +8214,7 @@ f0105397:	01 c2                	add    %eax,%edx
 f0105399:	01 d2                	add    %edx,%edx
 f010539b:	01 c2                	add    %eax,%edx
 f010539d:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f01053a0:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f01053a0:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f01053a7:	8b 40 48             	mov    0x48(%eax),%eax
 f01053aa:	89 41 74             	mov    %eax,0x74(%ecx)
 	target_env->env_ipc_recving = false;
@@ -8250,7 +8250,7 @@ f0105406:	01 c2                	add    %eax,%edx
 f0105408:	01 d2                	add    %edx,%edx
 f010540a:	01 c2                	add    %eax,%edx
 f010540c:	8d 04 90             	lea    (%eax,%edx,4),%eax
-f010540f:	8b 04 85 28 60 2a f0 	mov    -0xfd59fd8(,%eax,4),%eax
+f010540f:	8b 04 85 28 80 2a f0 	mov    -0xfd57fd8(,%eax,4),%eax
 f0105416:	ff 70 60             	pushl  0x60(%eax)
 f0105419:	e8 2e c2 ff ff       	call   f010164c <page_lookup>
 		if ((~*src_pgt & PTE_W) && (perm & PTE_W))
@@ -9557,9 +9557,9 @@ f0105e0b:	85 ff                	test   %edi,%edi
 f0105e0d:	75 14                	jne    f0105e23 <readline+0x9a>
 				cputchar('\n');
 			buf[i] = 0;
-f0105e0f:	c6 86 80 5a 2a f0 00 	movb   $0x0,-0xfd5a580(%esi)
+f0105e0f:	c6 86 80 7a 2a f0 00 	movb   $0x0,-0xfd58580(%esi)
 			return buf;
-f0105e16:	b8 80 5a 2a f0       	mov    $0xf02a5a80,%eax
+f0105e16:	b8 80 7a 2a f0       	mov    $0xf02a7a80,%eax
 		}
 	}
 }
@@ -9603,7 +9603,7 @@ f0105e5f:	7f a0                	jg     f0105e01 <readline+0x78>
 f0105e61:	85 ff                	test   %edi,%edi
 f0105e63:	75 8e                	jne    f0105df3 <readline+0x6a>
 			buf[i++] = c;
-f0105e65:	88 9e 80 5a 2a f0    	mov    %bl,-0xfd5a580(%esi)
+f0105e65:	88 9e 80 7a 2a f0    	mov    %bl,-0xfd58580(%esi)
 f0105e6b:	8d 76 01             	lea    0x1(%esi),%esi
 f0105e6e:	eb cb                	jmp    f0105e3b <readline+0xb2>
 		} else if ((c == '\b' || c == '\x7f') && i > 0) {
@@ -10367,4 +10367,1352 @@ f01061ff:	41                   	inc    %ecx
 f0106200:	bf 00 00 00 00       	mov    $0x0,%edi
 f0106205:	eb d6                	jmp    f01061dd <strtoul+0x23>
 		s++, neg = 1;
-f0106207:	41                   	inc    %e
+f0106207:	41                   	inc    %ecx
+f0106208:	bf 01 00 00 00       	mov    $0x1,%edi
+f010620d:	eb ce                	jmp    f01061dd <strtoul+0x23>
+	if ((base == 0 || base == 16) && (s[0] == '0' && s[1] == 'x'))
+f010620f:	80 79 01 78          	cmpb   $0x78,0x1(%ecx)
+f0106213:	74 10                	je     f0106225 <strtoul+0x6b>
+	else if (base == 0 && s[0] == '0')
+f0106215:	83 7d 10 00          	cmpl   $0x0,0x10(%ebp)
+f0106219:	75 dd                	jne    f01061f8 <strtoul+0x3e>
+		s++, base = 8;
+f010621b:	41                   	inc    %ecx
+f010621c:	c7 45 10 08 00 00 00 	movl   $0x8,0x10(%ebp)
+f0106223:	eb d3                	jmp    f01061f8 <strtoul+0x3e>
+		s += 2, base = 16;
+f0106225:	83 c1 02             	add    $0x2,%ecx
+f0106228:	c7 45 10 10 00 00 00 	movl   $0x10,0x10(%ebp)
+f010622f:	eb c7                	jmp    f01061f8 <strtoul+0x3e>
+	while (1) {
+		int dig;
+
+		if (*s >= '0' && *s <= '9')
+			dig = *s - '0';
+		else if (*s >= 'a' && *s <= 'z')
+f0106231:	8d 72 9f             	lea    -0x61(%edx),%esi
+f0106234:	89 f3                	mov    %esi,%ebx
+f0106236:	80 fb 19             	cmp    $0x19,%bl
+f0106239:	77 24                	ja     f010625f <strtoul+0xa5>
+			dig = *s - 'a' + 10;
+f010623b:	0f be d2             	movsbl %dl,%edx
+f010623e:	83 ea 57             	sub    $0x57,%edx
+		else if (*s >= 'A' && *s <= 'Z')
+			dig = *s - 'A' + 10;
+		else
+			break;
+		if (dig >= base)
+f0106241:	3b 55 10             	cmp    0x10(%ebp),%edx
+f0106244:	7d 2b                	jge    f0106271 <strtoul+0xb7>
+			break;
+		s++, val = (val * base) + dig;
+f0106246:	41                   	inc    %ecx
+f0106247:	0f af 45 10          	imul   0x10(%ebp),%eax
+f010624b:	01 d0                	add    %edx,%eax
+		if (*s >= '0' && *s <= '9')
+f010624d:	8a 11                	mov    (%ecx),%dl
+f010624f:	8d 5a d0             	lea    -0x30(%edx),%ebx
+f0106252:	80 fb 09             	cmp    $0x9,%bl
+f0106255:	77 da                	ja     f0106231 <strtoul+0x77>
+			dig = *s - '0';
+f0106257:	0f be d2             	movsbl %dl,%edx
+f010625a:	83 ea 30             	sub    $0x30,%edx
+f010625d:	eb e2                	jmp    f0106241 <strtoul+0x87>
+		else if (*s >= 'A' && *s <= 'Z')
+f010625f:	8d 72 bf             	lea    -0x41(%edx),%esi
+f0106262:	89 f3                	mov    %esi,%ebx
+f0106264:	80 fb 19             	cmp    $0x19,%bl
+f0106267:	77 08                	ja     f0106271 <strtoul+0xb7>
+			dig = *s - 'A' + 10;
+f0106269:	0f be d2             	movsbl %dl,%edx
+f010626c:	83 ea 37             	sub    $0x37,%edx
+f010626f:	eb d0                	jmp    f0106241 <strtoul+0x87>
+		// we don't properly detect overflow!
+	}
+
+	if (endptr)
+f0106271:	83 7d 0c 00          	cmpl   $0x0,0xc(%ebp)
+f0106275:	74 05                	je     f010627c <strtoul+0xc2>
+		*endptr = (char *) s;
+f0106277:	8b 75 0c             	mov    0xc(%ebp),%esi
+f010627a:	89 0e                	mov    %ecx,(%esi)
+	return (neg ? -val : val);
+f010627c:	85 ff                	test   %edi,%edi
+f010627e:	74 02                	je     f0106282 <strtoul+0xc8>
+f0106280:	f7 d8                	neg    %eax
+}
+f0106282:	5b                   	pop    %ebx
+f0106283:	5e                   	pop    %esi
+f0106284:	5f                   	pop    %edi
+f0106285:	5d                   	pop    %ebp
+f0106286:	c3                   	ret    
+f0106287:	90                   	nop
+
+f0106288 <mpentry_start>:
+.set PROT_MODE_DSEG, 0x10	# kernel data segment selector
+
+.code16           
+.globl mpentry_start
+mpentry_start:
+	cli            
+f0106288:	fa                   	cli    
+
+	xorw    %ax, %ax
+f0106289:	31 c0                	xor    %eax,%eax
+	movw    %ax, %ds
+f010628b:	8e d8                	mov    %eax,%ds
+	movw    %ax, %es
+f010628d:	8e c0                	mov    %eax,%es
+	movw    %ax, %ss
+f010628f:	8e d0                	mov    %eax,%ss
+
+	lgdt    MPBOOTPHYS(gdtdesc)
+f0106291:	0f 01 16             	lgdtl  (%esi)
+f0106294:	74 70                	je     f0106306 <mpsearch1+0x3>
+	movl    %cr0, %eax
+f0106296:	0f 20 c0             	mov    %cr0,%eax
+	orl     $CR0_PE, %eax
+f0106299:	66 83 c8 01          	or     $0x1,%ax
+	movl    %eax, %cr0
+f010629d:	0f 22 c0             	mov    %eax,%cr0
+
+	ljmpl   $(PROT_MODE_CSEG), $(MPBOOTPHYS(start32))
+f01062a0:	66 ea 20 70 00 00    	ljmpw  $0x0,$0x7020
+f01062a6:	08 00                	or     %al,(%eax)
+
+f01062a8 <start32>:
+
+.code32
+start32:
+	movw    $(PROT_MODE_DSEG), %ax
+f01062a8:	66 b8 10 00          	mov    $0x10,%ax
+	movw    %ax, %ds
+f01062ac:	8e d8                	mov    %eax,%ds
+	movw    %ax, %es
+f01062ae:	8e c0                	mov    %eax,%es
+	movw    %ax, %ss
+f01062b0:	8e d0                	mov    %eax,%ss
+	movw    $0, %ax
+f01062b2:	66 b8 00 00          	mov    $0x0,%ax
+	movw    %ax, %fs
+f01062b6:	8e e0                	mov    %eax,%fs
+	movw    %ax, %gs
+f01062b8:	8e e8                	mov    %eax,%gs
+
+	# Set up initial page table. We cannot use kern_pgdir yet because
+	# we are still running at a low EIP.
+	movl    $(RELOC(entry_pgdir)), %eax
+f01062ba:	b8 00 10 12 00       	mov    $0x121000,%eax
+	movl    %eax, %cr3
+f01062bf:	0f 22 d8             	mov    %eax,%cr3
+	# Turn on paging.
+	movl    %cr0, %eax
+f01062c2:	0f 20 c0             	mov    %cr0,%eax
+	orl     $(CR0_PE|CR0_PG|CR0_WP), %eax
+f01062c5:	0d 01 00 01 80       	or     $0x80010001,%eax
+	movl    %eax, %cr0
+f01062ca:	0f 22 c0             	mov    %eax,%cr0
+
+	# Switch to the per-cpu stack allocated in boot_aps()
+	movl    mpentry_kstack, %esp
+f01062cd:	8b 25 84 7e 2a f0    	mov    0xf02a7e84,%esp
+	movl    $0x0, %ebp       # nuke frame pointer
+f01062d3:	bd 00 00 00 00       	mov    $0x0,%ebp
+
+	# Call mp_main().  (Exercise for the reader: why the indirect call?)
+	movl    $mp_main, %eax
+f01062d8:	b8 a1 02 10 f0       	mov    $0xf01002a1,%eax
+	call    *%eax
+f01062dd:	ff d0                	call   *%eax
+
+f01062df <spin>:
+
+	# If mp_main returns (it shouldn't), loop.
+spin:
+	jmp     spin
+f01062df:	eb fe                	jmp    f01062df <spin>
+f01062e1:	8d 76 00             	lea    0x0(%esi),%esi
+
+f01062e4 <gdt>:
+	...
+f01062ec:	ff                   	(bad)  
+f01062ed:	ff 00                	incl   (%eax)
+f01062ef:	00 00                	add    %al,(%eax)
+f01062f1:	9a cf 00 ff ff 00 00 	lcall  $0x0,$0xffff00cf
+f01062f8:	00                   	.byte 0x0
+f01062f9:	92                   	xchg   %eax,%edx
+f01062fa:	cf                   	iret   
+	...
+
+f01062fc <gdtdesc>:
+f01062fc:	17                   	pop    %ss
+f01062fd:	00 5c 70 00          	add    %bl,0x0(%eax,%esi,2)
+	...
+
+f0106302 <mpentry_end>:
+	.word   0x17				# sizeof(gdt) - 1
+	.long   MPBOOTPHYS(gdt)			# address gdt
+
+.globl mpentry_end
+mpentry_end:
+	nop
+f0106302:	90                   	nop
+
+f0106303 <mpsearch1>:
+}
+
+// Look for an MP structure in the len bytes at physical address addr.
+static struct mp *
+mpsearch1(physaddr_t a, int len)
+{
+f0106303:	55                   	push   %ebp
+f0106304:	89 e5                	mov    %esp,%ebp
+f0106306:	57                   	push   %edi
+f0106307:	56                   	push   %esi
+f0106308:	53                   	push   %ebx
+f0106309:	83 ec 0c             	sub    $0xc,%esp
+	if (PGNUM(pa) >= npages)
+f010630c:	8b 0d 88 7e 2a f0    	mov    0xf02a7e88,%ecx
+f0106312:	89 c3                	mov    %eax,%ebx
+f0106314:	c1 eb 0c             	shr    $0xc,%ebx
+f0106317:	39 cb                	cmp    %ecx,%ebx
+f0106319:	73 1a                	jae    f0106335 <mpsearch1+0x32>
+	return (void *)(pa + KERNBASE);
+f010631b:	8d 98 00 00 00 f0    	lea    -0x10000000(%eax),%ebx
+	struct mp *mp = KADDR(a), *end = KADDR(a + len);
+f0106321:	8d 34 02             	lea    (%edx,%eax,1),%esi
+	if (PGNUM(pa) >= npages)
+f0106324:	89 f0                	mov    %esi,%eax
+f0106326:	c1 e8 0c             	shr    $0xc,%eax
+f0106329:	39 c8                	cmp    %ecx,%eax
+f010632b:	73 1a                	jae    f0106347 <mpsearch1+0x44>
+	return (void *)(pa + KERNBASE);
+f010632d:	81 ee 00 00 00 10    	sub    $0x10000000,%esi
+
+	for (; mp < end; mp++)
+f0106333:	eb 27                	jmp    f010635c <mpsearch1+0x59>
+		_panic(file, line, "KADDR called with invalid pa %08lx", pa);
+f0106335:	50                   	push   %eax
+f0106336:	68 48 6e 10 f0       	push   $0xf0106e48
+f010633b:	6a 57                	push   $0x57
+f010633d:	68 5d 8c 10 f0       	push   $0xf0108c5d
+f0106342:	e8 4d 9d ff ff       	call   f0100094 <_panic>
+f0106347:	56                   	push   %esi
+f0106348:	68 48 6e 10 f0       	push   $0xf0106e48
+f010634d:	6a 57                	push   $0x57
+f010634f:	68 5d 8c 10 f0       	push   $0xf0108c5d
+f0106354:	e8 3b 9d ff ff       	call   f0100094 <_panic>
+f0106359:	83 c3 10             	add    $0x10,%ebx
+f010635c:	39 f3                	cmp    %esi,%ebx
+f010635e:	73 2c                	jae    f010638c <mpsearch1+0x89>
+		if (memcmp(mp->signature, "_MP_", 4) == 0 &&
+f0106360:	83 ec 04             	sub    $0x4,%esp
+f0106363:	6a 04                	push   $0x4
+f0106365:	68 6d 8c 10 f0       	push   $0xf0108c6d
+f010636a:	53                   	push   %ebx
+f010636b:	e8 2f fd ff ff       	call   f010609f <memcmp>
+f0106370:	83 c4 10             	add    $0x10,%esp
+f0106373:	85 c0                	test   %eax,%eax
+f0106375:	75 e2                	jne    f0106359 <mpsearch1+0x56>
+f0106377:	89 da                	mov    %ebx,%edx
+f0106379:	8d 7b 10             	lea    0x10(%ebx),%edi
+		sum += ((uint8_t *)addr)[i];
+f010637c:	0f b6 0a             	movzbl (%edx),%ecx
+f010637f:	01 c8                	add    %ecx,%eax
+f0106381:	42                   	inc    %edx
+	for (i = 0; i < len; i++)
+f0106382:	39 fa                	cmp    %edi,%edx
+f0106384:	75 f6                	jne    f010637c <mpsearch1+0x79>
+		if (memcmp(mp->signature, "_MP_", 4) == 0 &&
+f0106386:	84 c0                	test   %al,%al
+f0106388:	75 cf                	jne    f0106359 <mpsearch1+0x56>
+f010638a:	eb 05                	jmp    f0106391 <mpsearch1+0x8e>
+		    sum(mp, sizeof(*mp)) == 0)
+			return mp;
+	return NULL;
+f010638c:	bb 00 00 00 00       	mov    $0x0,%ebx
+}
+f0106391:	89 d8                	mov    %ebx,%eax
+f0106393:	8d 65 f4             	lea    -0xc(%ebp),%esp
+f0106396:	5b                   	pop    %ebx
+f0106397:	5e                   	pop    %esi
+f0106398:	5f                   	pop    %edi
+f0106399:	5d                   	pop    %ebp
+f010639a:	c3                   	ret    
+
+f010639b <mp_init>:
+	return conf;
+}
+
+void
+mp_init(void)
+{
+f010639b:	55                   	push   %ebp
+f010639c:	89 e5                	mov    %esp,%ebp
+f010639e:	57                   	push   %edi
+f010639f:	56                   	push   %esi
+f01063a0:	53                   	push   %ebx
+f01063a1:	83 ec 1c             	sub    $0x1c,%esp
+	struct mpconf *conf;
+	struct mpproc *proc;
+	uint8_t *p;
+	unsigned int i;
+
+	bootcpu = &cpus[0];
+f01063a4:	c7 05 c0 83 2a f0 20 	movl   $0xf02a8020,0xf02a83c0
+f01063ab:	80 2a f0 
+	if (PGNUM(pa) >= npages)
+f01063ae:	83 3d 88 7e 2a f0 00 	cmpl   $0x0,0xf02a7e88
+f01063b5:	0f 84 84 00 00 00    	je     f010643f <mp_init+0xa4>
+	if ((p = *(uint16_t *) (bda + 0x0E))) {
+f01063bb:	0f b7 05 0e 04 00 f0 	movzwl 0xf000040e,%eax
+f01063c2:	85 c0                	test   %eax,%eax
+f01063c4:	0f 84 8b 00 00 00    	je     f0106455 <mp_init+0xba>
+		p <<= 4;	// Translate from segment to PA
+f01063ca:	c1 e0 04             	shl    $0x4,%eax
+		if ((mp = mpsearch1(p, 1024)))
+f01063cd:	ba 00 04 00 00       	mov    $0x400,%edx
+f01063d2:	e8 2c ff ff ff       	call   f0106303 <mpsearch1>
+f01063d7:	89 45 e0             	mov    %eax,-0x20(%ebp)
+f01063da:	85 c0                	test   %eax,%eax
+f01063dc:	0f 84 97 00 00 00    	je     f0106479 <mp_init+0xde>
+	if (mp->physaddr == 0 || mp->type != 0) {
+f01063e2:	8b 45 e0             	mov    -0x20(%ebp),%eax
+f01063e5:	8b 70 04             	mov    0x4(%eax),%esi
+f01063e8:	85 f6                	test   %esi,%esi
+f01063ea:	0f 84 a8 00 00 00    	je     f0106498 <mp_init+0xfd>
+f01063f0:	80 78 0b 00          	cmpb   $0x0,0xb(%eax)
+f01063f4:	0f 85 9e 00 00 00    	jne    f0106498 <mp_init+0xfd>
+f01063fa:	89 f0                	mov    %esi,%eax
+f01063fc:	c1 e8 0c             	shr    $0xc,%eax
+f01063ff:	3b 05 88 7e 2a f0    	cmp    0xf02a7e88,%eax
+f0106405:	0f 83 a2 00 00 00    	jae    f01064ad <mp_init+0x112>
+	return (void *)(pa + KERNBASE);
+f010640b:	8d 9e 00 00 00 f0    	lea    -0x10000000(%esi),%ebx
+f0106411:	89 df                	mov    %ebx,%edi
+	if (memcmp(conf, "PCMP", 4) != 0) {
+f0106413:	83 ec 04             	sub    $0x4,%esp
+f0106416:	6a 04                	push   $0x4
+f0106418:	68 72 8c 10 f0       	push   $0xf0108c72
+f010641d:	53                   	push   %ebx
+f010641e:	e8 7c fc ff ff       	call   f010609f <memcmp>
+f0106423:	83 c4 10             	add    $0x10,%esp
+f0106426:	85 c0                	test   %eax,%eax
+f0106428:	0f 85 94 00 00 00    	jne    f01064c2 <mp_init+0x127>
+f010642e:	0f b7 53 04          	movzwl 0x4(%ebx),%edx
+f0106432:	8d 0c 1a             	lea    (%edx,%ebx,1),%ecx
+f0106435:	89 4d e4             	mov    %ecx,-0x1c(%ebp)
+	sum = 0;
+f0106438:	89 c2                	mov    %eax,%edx
+f010643a:	e9 9e 00 00 00       	jmp    f01064dd <mp_init+0x142>
+		_panic(file, line, "KADDR called with invalid pa %08lx", pa);
+f010643f:	68 00 04 00 00       	push   $0x400
+f0106444:	68 48 6e 10 f0       	push   $0xf0106e48
+f0106449:	6a 6f                	push   $0x6f
+f010644b:	68 5d 8c 10 f0       	push   $0xf0108c5d
+f0106450:	e8 3f 9c ff ff       	call   f0100094 <_panic>
+		p = *(uint16_t *) (bda + 0x13) * 1024;
+f0106455:	0f b7 05 13 04 00 f0 	movzwl 0xf0000413,%eax
+f010645c:	c1 e0 0a             	shl    $0xa,%eax
+		if ((mp = mpsearch1(p - 1024, 1024)))
+f010645f:	2d 00 04 00 00       	sub    $0x400,%eax
+f0106464:	ba 00 04 00 00       	mov    $0x400,%edx
+f0106469:	e8 95 fe ff ff       	call   f0106303 <mpsearch1>
+f010646e:	89 45 e0             	mov    %eax,-0x20(%ebp)
+f0106471:	85 c0                	test   %eax,%eax
+f0106473:	0f 85 69 ff ff ff    	jne    f01063e2 <mp_init+0x47>
+	return mpsearch1(0xF0000, 0x10000);
+f0106479:	ba 00 00 01 00       	mov    $0x10000,%edx
+f010647e:	b8 00 00 0f 00       	mov    $0xf0000,%eax
+f0106483:	e8 7b fe ff ff       	call   f0106303 <mpsearch1>
+f0106488:	89 45 e0             	mov    %eax,-0x20(%ebp)
+	if ((mp = mpsearch()) == 0)
+f010648b:	85 c0                	test   %eax,%eax
+f010648d:	0f 85 4f ff ff ff    	jne    f01063e2 <mp_init+0x47>
+f0106493:	e9 b3 01 00 00       	jmp    f010664b <mp_init+0x2b0>
+		cprintf("SMP: Default configurations not implemented\n");
+f0106498:	83 ec 0c             	sub    $0xc,%esp
+f010649b:	68 d0 8a 10 f0       	push   $0xf0108ad0
+f01064a0:	e8 da da ff ff       	call   f0103f7f <cprintf>
+f01064a5:	83 c4 10             	add    $0x10,%esp
+f01064a8:	e9 9e 01 00 00       	jmp    f010664b <mp_init+0x2b0>
+f01064ad:	56                   	push   %esi
+f01064ae:	68 48 6e 10 f0       	push   $0xf0106e48
+f01064b3:	68 90 00 00 00       	push   $0x90
+f01064b8:	68 5d 8c 10 f0       	push   $0xf0108c5d
+f01064bd:	e8 d2 9b ff ff       	call   f0100094 <_panic>
+		cprintf("SMP: Incorrect MP configuration table signature\n");
+f01064c2:	83 ec 0c             	sub    $0xc,%esp
+f01064c5:	68 00 8b 10 f0       	push   $0xf0108b00
+f01064ca:	e8 b0 da ff ff       	call   f0103f7f <cprintf>
+f01064cf:	83 c4 10             	add    $0x10,%esp
+f01064d2:	e9 74 01 00 00       	jmp    f010664b <mp_init+0x2b0>
+		sum += ((uint8_t *)addr)[i];
+f01064d7:	0f b6 0b             	movzbl (%ebx),%ecx
+f01064da:	01 ca                	add    %ecx,%edx
+f01064dc:	43                   	inc    %ebx
+	for (i = 0; i < len; i++)
+f01064dd:	3b 5d e4             	cmp    -0x1c(%ebp),%ebx
+f01064e0:	75 f5                	jne    f01064d7 <mp_init+0x13c>
+	if (sum(conf, conf->length) != 0) {
+f01064e2:	84 d2                	test   %dl,%dl
+f01064e4:	75 15                	jne    f01064fb <mp_init+0x160>
+	if (conf->version != 1 && conf->version != 4) {
+f01064e6:	8a 57 06             	mov    0x6(%edi),%dl
+f01064e9:	80 fa 01             	cmp    $0x1,%dl
+f01064ec:	74 05                	je     f01064f3 <mp_init+0x158>
+f01064ee:	80 fa 04             	cmp    $0x4,%dl
+f01064f1:	75 1d                	jne    f0106510 <mp_init+0x175>
+f01064f3:	0f b7 4f 28          	movzwl 0x28(%edi),%ecx
+f01064f7:	01 d9                	add    %ebx,%ecx
+f01064f9:	eb 34                	jmp    f010652f <mp_init+0x194>
+		cprintf("SMP: Bad MP configuration checksum\n");
+f01064fb:	83 ec 0c             	sub    $0xc,%esp
+f01064fe:	68 34 8b 10 f0       	push   $0xf0108b34
+f0106503:	e8 77 da ff ff       	call   f0103f7f <cprintf>
+f0106508:	83 c4 10             	add    $0x10,%esp
+f010650b:	e9 3b 01 00 00       	jmp    f010664b <mp_init+0x2b0>
+		cprintf("SMP: Unsupported MP version %d\n", conf->version);
+f0106510:	83 ec 08             	sub    $0x8,%esp
+f0106513:	0f b6 d2             	movzbl %dl,%edx
+f0106516:	52                   	push   %edx
+f0106517:	68 58 8b 10 f0       	push   $0xf0108b58
+f010651c:	e8 5e da ff ff       	call   f0103f7f <cprintf>
+f0106521:	83 c4 10             	add    $0x10,%esp
+f0106524:	e9 22 01 00 00       	jmp    f010664b <mp_init+0x2b0>
+		sum += ((uint8_t *)addr)[i];
+f0106529:	0f b6 13             	movzbl (%ebx),%edx
+f010652c:	01 d0                	add    %edx,%eax
+f010652e:	43                   	inc    %ebx
+	for (i = 0; i < len; i++)
+f010652f:	39 d9                	cmp    %ebx,%ecx
+f0106531:	75 f6                	jne    f0106529 <mp_init+0x18e>
+	if ((sum((uint8_t *)conf + conf->length, conf->xlength) + conf->xchecksum) & 0xff) {
+f0106533:	02 47 2a             	add    0x2a(%edi),%al
+f0106536:	75 28                	jne    f0106560 <mp_init+0x1c5>
+	if ((conf = mpconfig(&mp)) == 0)
+f0106538:	81 fe 00 00 00 10    	cmp    $0x10000000,%esi
+f010653e:	0f 84 07 01 00 00    	je     f010664b <mp_init+0x2b0>
+		return;
+	ismp = 1;
+f0106544:	c7 05 00 80 2a f0 01 	movl   $0x1,0xf02a8000
+f010654b:	00 00 00 
+	lapicaddr = conf->lapicaddr;
+f010654e:	8b 47 24             	mov    0x24(%edi),%eax
+f0106551:	a3 00 90 2e f0       	mov    %eax,0xf02e9000
+
+	for (p = conf->entries, i = 0; i < conf->entry; i++) {
+f0106556:	8d 77 2c             	lea    0x2c(%edi),%esi
+f0106559:	bb 00 00 00 00       	mov    $0x0,%ebx
+f010655e:	eb 60                	jmp    f01065c0 <mp_init+0x225>
+		cprintf("SMP: Bad MP configuration extended checksum\n");
+f0106560:	83 ec 0c             	sub    $0xc,%esp
+f0106563:	68 78 8b 10 f0       	push   $0xf0108b78
+f0106568:	e8 12 da ff ff       	call   f0103f7f <cprintf>
+f010656d:	83 c4 10             	add    $0x10,%esp
+f0106570:	e9 d6 00 00 00       	jmp    f010664b <mp_init+0x2b0>
+		switch (*p) {
+		case MPPROC:
+			proc = (struct mpproc *)p;
+			if (proc->flags & MPPROC_BOOT)
+f0106575:	f6 46 03 02          	testb  $0x2,0x3(%esi)
+f0106579:	74 1e                	je     f0106599 <mp_init+0x1fe>
+				bootcpu = &cpus[ncpu];
+f010657b:	8b 15 c4 83 2a f0    	mov    0xf02a83c4,%edx
+f0106581:	8d 04 12             	lea    (%edx,%edx,1),%eax
+f0106584:	01 d0                	add    %edx,%eax
+f0106586:	01 c0                	add    %eax,%eax
+f0106588:	01 d0                	add    %edx,%eax
+f010658a:	8d 04 82             	lea    (%edx,%eax,4),%eax
+f010658d:	8d 04 85 20 80 2a f0 	lea    -0xfd57fe0(,%eax,4),%eax
+f0106594:	a3 c0 83 2a f0       	mov    %eax,0xf02a83c0
+			if (ncpu < NCPU) {
+f0106599:	a1 c4 83 2a f0       	mov    0xf02a83c4,%eax
+f010659e:	83 f8 07             	cmp    $0x7,%eax
+f01065a1:	7f 34                	jg     f01065d7 <mp_init+0x23c>
+				cpus[ncpu].cpu_id = ncpu;
+f01065a3:	8d 14 00             	lea    (%eax,%eax,1),%edx
+f01065a6:	01 c2                	add    %eax,%edx
+f01065a8:	01 d2                	add    %edx,%edx
+f01065aa:	01 c2                	add    %eax,%edx
+f01065ac:	8d 14 90             	lea    (%eax,%edx,4),%edx
+f01065af:	88 04 95 20 80 2a f0 	mov    %al,-0xfd57fe0(,%edx,4)
+				ncpu++;
+f01065b6:	40                   	inc    %eax
+f01065b7:	a3 c4 83 2a f0       	mov    %eax,0xf02a83c4
+			} else {
+				cprintf("SMP: too many CPUs, CPU %d disabled\n",
+					proc->apicid);
+			}
+			p += sizeof(struct mpproc);
+f01065bc:	83 c6 14             	add    $0x14,%esi
+	for (p = conf->entries, i = 0; i < conf->entry; i++) {
+f01065bf:	43                   	inc    %ebx
+f01065c0:	0f b7 47 22          	movzwl 0x22(%edi),%eax
+f01065c4:	39 d8                	cmp    %ebx,%eax
+f01065c6:	76 4a                	jbe    f0106612 <mp_init+0x277>
+		switch (*p) {
+f01065c8:	8a 06                	mov    (%esi),%al
+f01065ca:	84 c0                	test   %al,%al
+f01065cc:	74 a7                	je     f0106575 <mp_init+0x1da>
+f01065ce:	3c 04                	cmp    $0x4,%al
+f01065d0:	77 1c                	ja     f01065ee <mp_init+0x253>
+			continue;
+		case MPBUS:
+		case MPIOAPIC:
+		case MPIOINTR:
+		case MPLINTR:
+			p += 8;
+f01065d2:	83 c6 08             	add    $0x8,%esi
+			continue;
+f01065d5:	eb e8                	jmp    f01065bf <mp_init+0x224>
+				cprintf("SMP: too many CPUs, CPU %d disabled\n",
+f01065d7:	83 ec 08             	sub    $0x8,%esp
+f01065da:	0f b6 46 01          	movzbl 0x1(%esi),%eax
+f01065de:	50                   	push   %eax
+f01065df:	68 a8 8b 10 f0       	push   $0xf0108ba8
+f01065e4:	e8 96 d9 ff ff       	call   f0103f7f <cprintf>
+f01065e9:	83 c4 10             	add    $0x10,%esp
+f01065ec:	eb ce                	jmp    f01065bc <mp_init+0x221>
+		default:
+			cprintf("mpinit: unknown config type %x\n", *p);
+f01065ee:	83 ec 08             	sub    $0x8,%esp
+		switch (*p) {
+f01065f1:	0f b6 c0             	movzbl %al,%eax
+			cprintf("mpinit: unknown config type %x\n", *p);
+f01065f4:	50                   	push   %eax
+f01065f5:	68 d0 8b 10 f0       	push   $0xf0108bd0
+f01065fa:	e8 80 d9 ff ff       	call   f0103f7f <cprintf>
+			ismp = 0;
+f01065ff:	c7 05 00 80 2a f0 00 	movl   $0x0,0xf02a8000
+f0106606:	00 00 00 
+			i = conf->entry;
+f0106609:	0f b7 5f 22          	movzwl 0x22(%edi),%ebx
+f010660d:	83 c4 10             	add    $0x10,%esp
+f0106610:	eb ad                	jmp    f01065bf <mp_init+0x224>
+		}
+	}
+
+	bootcpu->cpu_status = CPU_STARTED;
+f0106612:	a1 c0 83 2a f0       	mov    0xf02a83c0,%eax
+f0106617:	c7 40 04 01 00 00 00 	movl   $0x1,0x4(%eax)
+	if (!ismp) {
+f010661e:	83 3d 00 80 2a f0 00 	cmpl   $0x0,0xf02a8000
+f0106625:	75 2c                	jne    f0106653 <mp_init+0x2b8>
+		// Didn't like what we found; fall back to no MP.
+		ncpu = 1;
+f0106627:	c7 05 c4 83 2a f0 01 	movl   $0x1,0xf02a83c4
+f010662e:	00 00 00 
+		lapicaddr = 0;
+f0106631:	c7 05 00 90 2e f0 00 	movl   $0x0,0xf02e9000
+f0106638:	00 00 00 
+		cprintf("SMP: configuration not found, SMP disabled\n");
+f010663b:	83 ec 0c             	sub    $0xc,%esp
+f010663e:	68 f0 8b 10 f0       	push   $0xf0108bf0
+f0106643:	e8 37 d9 ff ff       	call   f0103f7f <cprintf>
+		return;
+f0106648:	83 c4 10             	add    $0x10,%esp
+		// switch to getting interrupts from the LAPIC.
+		cprintf("SMP: Setting IMCR to switch from PIC mode to symmetric I/O mode\n");
+		outb(0x22, 0x70);   // Select IMCR
+		outb(0x23, inb(0x23) | 1);  // Mask external interrupts.
+	}
+}
+f010664b:	8d 65 f4             	lea    -0xc(%ebp),%esp
+f010664e:	5b                   	pop    %ebx
+f010664f:	5e                   	pop    %esi
+f0106650:	5f                   	pop    %edi
+f0106651:	5d                   	pop    %ebp
+f0106652:	c3                   	ret    
+	cprintf("SMP: CPU %d found %d CPU(s)\n", bootcpu->cpu_id,  ncpu);
+f0106653:	83 ec 04             	sub    $0x4,%esp
+f0106656:	ff 35 c4 83 2a f0    	pushl  0xf02a83c4
+f010665c:	0f b6 00             	movzbl (%eax),%eax
+f010665f:	50                   	push   %eax
+f0106660:	68 77 8c 10 f0       	push   $0xf0108c77
+f0106665:	e8 15 d9 ff ff       	call   f0103f7f <cprintf>
+	if (mp->imcrp) {
+f010666a:	83 c4 10             	add    $0x10,%esp
+f010666d:	8b 45 e0             	mov    -0x20(%ebp),%eax
+f0106670:	80 78 0c 00          	cmpb   $0x0,0xc(%eax)
+f0106674:	74 d5                	je     f010664b <mp_init+0x2b0>
+		cprintf("SMP: Setting IMCR to switch from PIC mode to symmetric I/O mode\n");
+f0106676:	83 ec 0c             	sub    $0xc,%esp
+f0106679:	68 1c 8c 10 f0       	push   $0xf0108c1c
+f010667e:	e8 fc d8 ff ff       	call   f0103f7f <cprintf>
+	asm volatile("outb %0,%w1" : : "a" (data), "d" (port));
+f0106683:	b0 70                	mov    $0x70,%al
+f0106685:	ba 22 00 00 00       	mov    $0x22,%edx
+f010668a:	ee                   	out    %al,(%dx)
+	asm volatile("inb %w1,%0" : "=a" (data) : "d" (port));
+f010668b:	ba 23 00 00 00       	mov    $0x23,%edx
+f0106690:	ec                   	in     (%dx),%al
+		outb(0x23, inb(0x23) | 1);  // Mask external interrupts.
+f0106691:	83 c8 01             	or     $0x1,%eax
+	asm volatile("outb %0,%w1" : : "a" (data), "d" (port));
+f0106694:	ee                   	out    %al,(%dx)
+f0106695:	83 c4 10             	add    $0x10,%esp
+f0106698:	eb b1                	jmp    f010664b <mp_init+0x2b0>
+
+f010669a <lapicw>:
+physaddr_t lapicaddr;        // Initialized in mpconfig.c
+volatile uint32_t *lapic;
+
+static void
+lapicw(int index, int value)
+{
+f010669a:	55                   	push   %ebp
+f010669b:	89 e5                	mov    %esp,%ebp
+	lapic[index] = value;
+f010669d:	8b 0d 04 90 2e f0    	mov    0xf02e9004,%ecx
+f01066a3:	8d 04 81             	lea    (%ecx,%eax,4),%eax
+f01066a6:	89 10                	mov    %edx,(%eax)
+	lapic[ID];  // wait for write to finish, by reading
+f01066a8:	a1 04 90 2e f0       	mov    0xf02e9004,%eax
+f01066ad:	8b 40 20             	mov    0x20(%eax),%eax
+}
+f01066b0:	5d                   	pop    %ebp
+f01066b1:	c3                   	ret    
+
+f01066b2 <cpunum>:
+	lapicw(TPR, 0);
+}
+
+int
+cpunum(void)
+{
+f01066b2:	55                   	push   %ebp
+f01066b3:	89 e5                	mov    %esp,%ebp
+	if (lapic)
+f01066b5:	a1 04 90 2e f0       	mov    0xf02e9004,%eax
+f01066ba:	85 c0                	test   %eax,%eax
+f01066bc:	74 08                	je     f01066c6 <cpunum+0x14>
+		return lapic[ID] >> 24;
+f01066be:	8b 40 20             	mov    0x20(%eax),%eax
+f01066c1:	c1 e8 18             	shr    $0x18,%eax
+	return 0;
+}
+f01066c4:	5d                   	pop    %ebp
+f01066c5:	c3                   	ret    
+	return 0;
+f01066c6:	b8 00 00 00 00       	mov    $0x0,%eax
+f01066cb:	eb f7                	jmp    f01066c4 <cpunum+0x12>
+
+f01066cd <lapic_init>:
+	if (!lapicaddr)
+f01066cd:	a1 00 90 2e f0       	mov    0xf02e9000,%eax
+f01066d2:	85 c0                	test   %eax,%eax
+f01066d4:	75 01                	jne    f01066d7 <lapic_init+0xa>
+f01066d6:	c3                   	ret    
+{
+f01066d7:	55                   	push   %ebp
+f01066d8:	89 e5                	mov    %esp,%ebp
+f01066da:	83 ec 10             	sub    $0x10,%esp
+	lapic = mmio_map_region(lapicaddr, 4096);
+f01066dd:	68 00 10 00 00       	push   $0x1000
+f01066e2:	50                   	push   %eax
+f01066e3:	e8 d4 b0 ff ff       	call   f01017bc <mmio_map_region>
+f01066e8:	a3 04 90 2e f0       	mov    %eax,0xf02e9004
+	lapicw(SVR, ENABLE | (IRQ_OFFSET + IRQ_SPURIOUS));
+f01066ed:	ba 27 01 00 00       	mov    $0x127,%edx
+f01066f2:	b8 3c 00 00 00       	mov    $0x3c,%eax
+f01066f7:	e8 9e ff ff ff       	call   f010669a <lapicw>
+	lapicw(TDCR, X1);
+f01066fc:	ba 0b 00 00 00       	mov    $0xb,%edx
+f0106701:	b8 f8 00 00 00       	mov    $0xf8,%eax
+f0106706:	e8 8f ff ff ff       	call   f010669a <lapicw>
+	lapicw(TIMER, PERIODIC | (IRQ_OFFSET + IRQ_TIMER));
+f010670b:	ba 20 00 02 00       	mov    $0x20020,%edx
+f0106710:	b8 c8 00 00 00       	mov    $0xc8,%eax
+f0106715:	e8 80 ff ff ff       	call   f010669a <lapicw>
+	lapicw(TICR, 10000000); 
+f010671a:	ba 80 96 98 00       	mov    $0x989680,%edx
+f010671f:	b8 e0 00 00 00       	mov    $0xe0,%eax
+f0106724:	e8 71 ff ff ff       	call   f010669a <lapicw>
+	if (thiscpu != bootcpu)
+f0106729:	e8 84 ff ff ff       	call   f01066b2 <cpunum>
+f010672e:	8d 14 00             	lea    (%eax,%eax,1),%edx
+f0106731:	01 c2                	add    %eax,%edx
+f0106733:	01 d2                	add    %edx,%edx
+f0106735:	01 c2                	add    %eax,%edx
+f0106737:	8d 04 90             	lea    (%eax,%edx,4),%eax
+f010673a:	8d 04 85 20 80 2a f0 	lea    -0xfd57fe0(,%eax,4),%eax
+f0106741:	83 c4 10             	add    $0x10,%esp
+f0106744:	39 05 c0 83 2a f0    	cmp    %eax,0xf02a83c0
+f010674a:	74 0f                	je     f010675b <lapic_init+0x8e>
+		lapicw(LINT0, MASKED);
+f010674c:	ba 00 00 01 00       	mov    $0x10000,%edx
+f0106751:	b8 d4 00 00 00       	mov    $0xd4,%eax
+f0106756:	e8 3f ff ff ff       	call   f010669a <lapicw>
+	lapicw(LINT1, MASKED);
+f010675b:	ba 00 00 01 00       	mov    $0x10000,%edx
+f0106760:	b8 d8 00 00 00       	mov    $0xd8,%eax
+f0106765:	e8 30 ff ff ff       	call   f010669a <lapicw>
+	if (((lapic[VER]>>16) & 0xFF) >= 4)
+f010676a:	a1 04 90 2e f0       	mov    0xf02e9004,%eax
+f010676f:	8b 40 30             	mov    0x30(%eax),%eax
+f0106772:	c1 e8 10             	shr    $0x10,%eax
+f0106775:	3c 03                	cmp    $0x3,%al
+f0106777:	77 7c                	ja     f01067f5 <lapic_init+0x128>
+	lapicw(ERROR, IRQ_OFFSET + IRQ_ERROR);
+f0106779:	ba 33 00 00 00       	mov    $0x33,%edx
+f010677e:	b8 dc 00 00 00       	mov    $0xdc,%eax
+f0106783:	e8 12 ff ff ff       	call   f010669a <lapicw>
+	lapicw(ESR, 0);
+f0106788:	ba 00 00 00 00       	mov    $0x0,%edx
+f010678d:	b8 a0 00 00 00       	mov    $0xa0,%eax
+f0106792:	e8 03 ff ff ff       	call   f010669a <lapicw>
+	lapicw(ESR, 0);
+f0106797:	ba 00 00 00 00       	mov    $0x0,%edx
+f010679c:	b8 a0 00 00 00       	mov    $0xa0,%eax
+f01067a1:	e8 f4 fe ff ff       	call   f010669a <lapicw>
+	lapicw(EOI, 0);
+f01067a6:	ba 00 00 00 00       	mov    $0x0,%edx
+f01067ab:	b8 2c 00 00 00       	mov    $0x2c,%eax
+f01067b0:	e8 e5 fe ff ff       	call   f010669a <lapicw>
+	lapicw(ICRHI, 0);
+f01067b5:	ba 00 00 00 00       	mov    $0x0,%edx
+f01067ba:	b8 c4 00 00 00       	mov    $0xc4,%eax
+f01067bf:	e8 d6 fe ff ff       	call   f010669a <lapicw>
+	lapicw(ICRLO, BCAST | INIT | LEVEL);
+f01067c4:	ba 00 85 08 00       	mov    $0x88500,%edx
+f01067c9:	b8 c0 00 00 00       	mov    $0xc0,%eax
+f01067ce:	e8 c7 fe ff ff       	call   f010669a <lapicw>
+	while(lapic[ICRLO] & DELIVS)
+f01067d3:	8b 15 04 90 2e f0    	mov    0xf02e9004,%edx
+f01067d9:	8b 82 00 03 00 00    	mov    0x300(%edx),%eax
+f01067df:	f6 c4 10             	test   $0x10,%ah
+f01067e2:	75 f5                	jne    f01067d9 <lapic_init+0x10c>
+	lapicw(TPR, 0);
+f01067e4:	ba 00 00 00 00       	mov    $0x0,%edx
+f01067e9:	b8 20 00 00 00       	mov    $0x20,%eax
+f01067ee:	e8 a7 fe ff ff       	call   f010669a <lapicw>
+}
+f01067f3:	c9                   	leave  
+f01067f4:	c3                   	ret    
+		lapicw(PCINT, MASKED);
+f01067f5:	ba 00 00 01 00       	mov    $0x10000,%edx
+f01067fa:	b8 d0 00 00 00       	mov    $0xd0,%eax
+f01067ff:	e8 96 fe ff ff       	call   f010669a <lapicw>
+f0106804:	e9 70 ff ff ff       	jmp    f0106779 <lapic_init+0xac>
+
+f0106809 <lapic_eoi>:
+
+// Acknowledge interrupt.
+void
+lapic_eoi(void)
+{
+	if (lapic)
+f0106809:	83 3d 04 90 2e f0 00 	cmpl   $0x0,0xf02e9004
+f0106810:	74 14                	je     f0106826 <lapic_eoi+0x1d>
+{
+f0106812:	55                   	push   %ebp
+f0106813:	89 e5                	mov    %esp,%ebp
+		lapicw(EOI, 0);
+f0106815:	ba 00 00 00 00       	mov    $0x0,%edx
+f010681a:	b8 2c 00 00 00       	mov    $0x2c,%eax
+f010681f:	e8 76 fe ff ff       	call   f010669a <lapicw>
+}
+f0106824:	5d                   	pop    %ebp
+f0106825:	c3                   	ret    
+f0106826:	c3                   	ret    
+
+f0106827 <lapic_startap>:
+
+// Start additional processor running entry code at addr.
+// See Appendix B of MultiProcessor Specification.
+void
+lapic_startap(uint8_t apicid, uint32_t addr)
+{
+f0106827:	55                   	push   %ebp
+f0106828:	89 e5                	mov    %esp,%ebp
+f010682a:	56                   	push   %esi
+f010682b:	53                   	push   %ebx
+f010682c:	8b 75 08             	mov    0x8(%ebp),%esi
+f010682f:	8b 5d 0c             	mov    0xc(%ebp),%ebx
+f0106832:	b0 0f                	mov    $0xf,%al
+f0106834:	ba 70 00 00 00       	mov    $0x70,%edx
+f0106839:	ee                   	out    %al,(%dx)
+f010683a:	b0 0a                	mov    $0xa,%al
+f010683c:	ba 71 00 00 00       	mov    $0x71,%edx
+f0106841:	ee                   	out    %al,(%dx)
+	if (PGNUM(pa) >= npages)
+f0106842:	83 3d 88 7e 2a f0 00 	cmpl   $0x0,0xf02a7e88
+f0106849:	74 7e                	je     f01068c9 <lapic_startap+0xa2>
+	// and the warm reset vector (DWORD based at 40:67) to point at
+	// the AP startup code prior to the [universal startup algorithm]."
+	outb(IO_RTC, 0xF);  // offset 0xF is shutdown code
+	outb(IO_RTC+1, 0x0A);
+	wrv = (uint16_t *)KADDR((0x40 << 4 | 0x67));  // Warm reset vector
+	wrv[0] = 0;
+f010684b:	66 c7 05 67 04 00 f0 	movw   $0x0,0xf0000467
+f0106852:	00 00 
+	wrv[1] = addr >> 4;
+f0106854:	89 d8                	mov    %ebx,%eax
+f0106856:	c1 e8 04             	shr    $0x4,%eax
+f0106859:	66 a3 69 04 00 f0    	mov    %ax,0xf0000469
+
+	// "Universal startup algorithm."
+	// Send INIT (level-triggered) interrupt to reset other CPU.
+	lapicw(ICRHI, apicid << 24);
+f010685f:	c1 e6 18             	shl    $0x18,%esi
+f0106862:	89 f2                	mov    %esi,%edx
+f0106864:	b8 c4 00 00 00       	mov    $0xc4,%eax
+f0106869:	e8 2c fe ff ff       	call   f010669a <lapicw>
+	lapicw(ICRLO, INIT | LEVEL | ASSERT);
+f010686e:	ba 00 c5 00 00       	mov    $0xc500,%edx
+f0106873:	b8 c0 00 00 00       	mov    $0xc0,%eax
+f0106878:	e8 1d fe ff ff       	call   f010669a <lapicw>
+	microdelay(200);
+	lapicw(ICRLO, INIT | LEVEL);
+f010687d:	ba 00 85 00 00       	mov    $0x8500,%edx
+f0106882:	b8 c0 00 00 00       	mov    $0xc0,%eax
+f0106887:	e8 0e fe ff ff       	call   f010669a <lapicw>
+	// when it is in the halted state due to an INIT.  So the second
+	// should be ignored, but it is part of the official Intel algorithm.
+	// Bochs complains about the second one.  Too bad for Bochs.
+	for (i = 0; i < 2; i++) {
+		lapicw(ICRHI, apicid << 24);
+		lapicw(ICRLO, STARTUP | (addr >> 12));
+f010688c:	c1 eb 0c             	shr    $0xc,%ebx
+f010688f:	80 cf 06             	or     $0x6,%bh
+		lapicw(ICRHI, apicid << 24);
+f0106892:	89 f2                	mov    %esi,%edx
+f0106894:	b8 c4 00 00 00       	mov    $0xc4,%eax
+f0106899:	e8 fc fd ff ff       	call   f010669a <lapicw>
+		lapicw(ICRLO, STARTUP | (addr >> 12));
+f010689e:	89 da                	mov    %ebx,%edx
+f01068a0:	b8 c0 00 00 00       	mov    $0xc0,%eax
+f01068a5:	e8 f0 fd ff ff       	call   f010669a <lapicw>
+		lapicw(ICRHI, apicid << 24);
+f01068aa:	89 f2                	mov    %esi,%edx
+f01068ac:	b8 c4 00 00 00       	mov    $0xc4,%eax
+f01068b1:	e8 e4 fd ff ff       	call   f010669a <lapicw>
+		lapicw(ICRLO, STARTUP | (addr >> 12));
+f01068b6:	89 da                	mov    %ebx,%edx
+f01068b8:	b8 c0 00 00 00       	mov    $0xc0,%eax
+f01068bd:	e8 d8 fd ff ff       	call   f010669a <lapicw>
+		microdelay(200);
+	}
+}
+f01068c2:	8d 65 f8             	lea    -0x8(%ebp),%esp
+f01068c5:	5b                   	pop    %ebx
+f01068c6:	5e                   	pop    %esi
+f01068c7:	5d                   	pop    %ebp
+f01068c8:	c3                   	ret    
+		_panic(file, line, "KADDR called with invalid pa %08lx", pa);
+f01068c9:	68 67 04 00 00       	push   $0x467
+f01068ce:	68 48 6e 10 f0       	push   $0xf0106e48
+f01068d3:	68 98 00 00 00       	push   $0x98
+f01068d8:	68 94 8c 10 f0       	push   $0xf0108c94
+f01068dd:	e8 b2 97 ff ff       	call   f0100094 <_panic>
+
+f01068e2 <lapic_ipi>:
+
+void
+lapic_ipi(int vector)
+{
+f01068e2:	55                   	push   %ebp
+f01068e3:	89 e5                	mov    %esp,%ebp
+	lapicw(ICRLO, OTHERS | FIXED | vector);
+f01068e5:	8b 55 08             	mov    0x8(%ebp),%edx
+f01068e8:	81 ca 00 00 0c 00    	or     $0xc0000,%edx
+f01068ee:	b8 c0 00 00 00       	mov    $0xc0,%eax
+f01068f3:	e8 a2 fd ff ff       	call   f010669a <lapicw>
+	while (lapic[ICRLO] & DELIVS)
+f01068f8:	8b 15 04 90 2e f0    	mov    0xf02e9004,%edx
+f01068fe:	8b 82 00 03 00 00    	mov    0x300(%edx),%eax
+f0106904:	f6 c4 10             	test   $0x10,%ah
+f0106907:	75 f5                	jne    f01068fe <lapic_ipi+0x1c>
+		;
+}
+f0106909:	5d                   	pop    %ebp
+f010690a:	c3                   	ret    
+
+f010690b <__spin_initlock>:
+}
+#endif
+
+void
+__spin_initlock(struct spinlock *lk, char *name)
+{
+f010690b:	55                   	push   %ebp
+f010690c:	89 e5                	mov    %esp,%ebp
+f010690e:	8b 45 08             	mov    0x8(%ebp),%eax
+	lk->locked = 0;
+f0106911:	c7 00 00 00 00 00    	movl   $0x0,(%eax)
+#ifdef DEBUG_SPINLOCK
+	lk->name = name;
+f0106917:	8b 55 0c             	mov    0xc(%ebp),%edx
+f010691a:	89 50 04             	mov    %edx,0x4(%eax)
+	lk->cpu = 0;
+f010691d:	c7 40 08 00 00 00 00 	movl   $0x0,0x8(%eax)
+#endif
+}
+f0106924:	5d                   	pop    %ebp
+f0106925:	c3                   	ret    
+
+f0106926 <spin_lock>:
+// Loops (spins) until the lock is acquired.
+// Holding a lock for a long time may cause
+// other CPUs to waste time spinning to acquire it.
+void
+spin_lock(struct spinlock *lk)
+{
+f0106926:	55                   	push   %ebp
+f0106927:	89 e5                	mov    %esp,%ebp
+f0106929:	56                   	push   %esi
+f010692a:	53                   	push   %ebx
+f010692b:	8b 5d 08             	mov    0x8(%ebp),%ebx
+	return lock->locked && lock->cpu == thiscpu;
+f010692e:	83 3b 00             	cmpl   $0x0,(%ebx)
+f0106931:	75 07                	jne    f010693a <spin_lock+0x14>
+	asm volatile("lock; xchgl %0, %1"
+f0106933:	ba 01 00 00 00       	mov    $0x1,%edx
+f0106938:	eb 3f                	jmp    f0106979 <spin_lock+0x53>
+f010693a:	8b 73 08             	mov    0x8(%ebx),%esi
+f010693d:	e8 70 fd ff ff       	call   f01066b2 <cpunum>
+f0106942:	8d 14 00             	lea    (%eax,%eax,1),%edx
+f0106945:	01 c2                	add    %eax,%edx
+f0106947:	01 d2                	add    %edx,%edx
+f0106949:	01 c2                	add    %eax,%edx
+f010694b:	8d 04 90             	lea    (%eax,%edx,4),%eax
+f010694e:	8d 04 85 20 80 2a f0 	lea    -0xfd57fe0(,%eax,4),%eax
+#ifdef DEBUG_SPINLOCK
+	if (holding(lk))
+f0106955:	39 c6                	cmp    %eax,%esi
+f0106957:	75 da                	jne    f0106933 <spin_lock+0xd>
+		panic("CPU %d cannot acquire %s: already holding", cpunum(), lk->name);
+f0106959:	8b 5b 04             	mov    0x4(%ebx),%ebx
+f010695c:	e8 51 fd ff ff       	call   f01066b2 <cpunum>
+f0106961:	83 ec 0c             	sub    $0xc,%esp
+f0106964:	53                   	push   %ebx
+f0106965:	50                   	push   %eax
+f0106966:	68 a4 8c 10 f0       	push   $0xf0108ca4
+f010696b:	6a 41                	push   $0x41
+f010696d:	68 08 8d 10 f0       	push   $0xf0108d08
+f0106972:	e8 1d 97 ff ff       	call   f0100094 <_panic>
+
+	// The xchg is atomic.
+	// It also serializes, so that reads after acquire are not
+	// reordered before it. 
+	while (xchg(&lk->locked, 1) != 0)
+		asm volatile ("pause");
+f0106977:	f3 90                	pause  
+f0106979:	89 d0                	mov    %edx,%eax
+f010697b:	f0 87 03             	lock xchg %eax,(%ebx)
+	while (xchg(&lk->locked, 1) != 0)
+f010697e:	85 c0                	test   %eax,%eax
+f0106980:	75 f5                	jne    f0106977 <spin_lock+0x51>
+
+	// Record info about lock acquisition for debugging.
+#ifdef DEBUG_SPINLOCK
+	lk->cpu = thiscpu;
+f0106982:	e8 2b fd ff ff       	call   f01066b2 <cpunum>
+f0106987:	8d 14 00             	lea    (%eax,%eax,1),%edx
+f010698a:	01 c2                	add    %eax,%edx
+f010698c:	01 d2                	add    %edx,%edx
+f010698e:	01 c2                	add    %eax,%edx
+f0106990:	8d 04 90             	lea    (%eax,%edx,4),%eax
+f0106993:	8d 04 85 20 80 2a f0 	lea    -0xfd57fe0(,%eax,4),%eax
+f010699a:	89 43 08             	mov    %eax,0x8(%ebx)
+	get_caller_pcs(lk->pcs);
+f010699d:	83 c3 0c             	add    $0xc,%ebx
+	asm volatile("movl %%ebp,%0" : "=r" (ebp));
+f01069a0:	89 ea                	mov    %ebp,%edx
+	for (i = 0; i < 10; i++){
+f01069a2:	b8 00 00 00 00       	mov    $0x0,%eax
+		if (ebp == 0 || ebp < (uint32_t *)ULIM)
+f01069a7:	81 fa ff ff 7f ef    	cmp    $0xef7fffff,%edx
+f01069ad:	76 1d                	jbe    f01069cc <spin_lock+0xa6>
+		pcs[i] = ebp[1];          // saved %eip
+f01069af:	8b 4a 04             	mov    0x4(%edx),%ecx
+f01069b2:	89 0c 83             	mov    %ecx,(%ebx,%eax,4)
+		ebp = (uint32_t *)ebp[0]; // saved %ebp
+f01069b5:	8b 12                	mov    (%edx),%edx
+	for (i = 0; i < 10; i++){
+f01069b7:	40                   	inc    %eax
+f01069b8:	83 f8 0a             	cmp    $0xa,%eax
+f01069bb:	75 ea                	jne    f01069a7 <spin_lock+0x81>
+#endif
+}
+f01069bd:	8d 65 f8             	lea    -0x8(%ebp),%esp
+f01069c0:	5b                   	pop    %ebx
+f01069c1:	5e                   	pop    %esi
+f01069c2:	5d                   	pop    %ebp
+f01069c3:	c3                   	ret    
+		pcs[i] = 0;
+f01069c4:	c7 04 83 00 00 00 00 	movl   $0x0,(%ebx,%eax,4)
+	for (; i < 10; i++)
+f01069cb:	40                   	inc    %eax
+f01069cc:	83 f8 09             	cmp    $0x9,%eax
+f01069cf:	7e f3                	jle    f01069c4 <spin_lock+0x9e>
+f01069d1:	eb ea                	jmp    f01069bd <spin_lock+0x97>
+
+f01069d3 <spin_unlock>:
+
+// Release the lock.
+void
+spin_unlock(struct spinlock *lk)
+{
+f01069d3:	55                   	push   %ebp
+f01069d4:	89 e5                	mov    %esp,%ebp
+f01069d6:	57                   	push   %edi
+f01069d7:	56                   	push   %esi
+f01069d8:	53                   	push   %ebx
+f01069d9:	83 ec 4c             	sub    $0x4c,%esp
+f01069dc:	8b 75 08             	mov    0x8(%ebp),%esi
+	return lock->locked && lock->cpu == thiscpu;
+f01069df:	83 3e 00             	cmpl   $0x0,(%esi)
+f01069e2:	75 35                	jne    f0106a19 <spin_unlock+0x46>
+#ifdef DEBUG_SPINLOCK
+	if (!holding(lk)) {
+		int i;
+		uint32_t pcs[10];
+		// Nab the acquiring EIP chain before it gets released
+		memmove(pcs, lk->pcs, sizeof pcs);
+f01069e4:	83 ec 04             	sub    $0x4,%esp
+f01069e7:	6a 28                	push   $0x28
+f01069e9:	8d 46 0c             	lea    0xc(%esi),%eax
+f01069ec:	50                   	push   %eax
+f01069ed:	8d 5d c0             	lea    -0x40(%ebp),%ebx
+f01069f0:	53                   	push   %ebx
+f01069f1:	e8 30 f6 ff ff       	call   f0106026 <memmove>
+		cprintf("CPU %d cannot release %s: held by CPU %d\nAcquired at:", 
+			cpunum(), lk->name, lk->cpu->cpu_id);
+f01069f6:	8b 46 08             	mov    0x8(%esi),%eax
+		cprintf("CPU %d cannot release %s: held by CPU %d\nAcquired at:", 
+f01069f9:	0f b6 38             	movzbl (%eax),%edi
+f01069fc:	8b 76 04             	mov    0x4(%esi),%esi
+f01069ff:	e8 ae fc ff ff       	call   f01066b2 <cpunum>
+f0106a04:	57                   	push   %edi
+f0106a05:	56                   	push   %esi
+f0106a06:	50                   	push   %eax
+f0106a07:	68 d0 8c 10 f0       	push   $0xf0108cd0
+f0106a0c:	e8 6e d5 ff ff       	call   f0103f7f <cprintf>
+f0106a11:	83 c4 20             	add    $0x20,%esp
+		for (i = 0; i < 10 && pcs[i]; i++) {
+			struct Eipdebuginfo info;
+			if (debuginfo_eip(pcs[i], &info) >= 0)
+f0106a14:	8d 7d a8             	lea    -0x58(%ebp),%edi
+f0106a17:	eb 6c                	jmp    f0106a85 <spin_unlock+0xb2>
+	return lock->locked && lock->cpu == thiscpu;
+f0106a19:	8b 5e 08             	mov    0x8(%esi),%ebx
+f0106a1c:	e8 91 fc ff ff       	call   f01066b2 <cpunum>
+f0106a21:	8d 14 00             	lea    (%eax,%eax,1),%edx
+f0106a24:	01 c2                	add    %eax,%edx
+f0106a26:	01 d2                	add    %edx,%edx
+f0106a28:	01 c2                	add    %eax,%edx
+f0106a2a:	8d 04 90             	lea    (%eax,%edx,4),%eax
+f0106a2d:	8d 04 85 20 80 2a f0 	lea    -0xfd57fe0(,%eax,4),%eax
+	if (!holding(lk)) {
+f0106a34:	39 c3                	cmp    %eax,%ebx
+f0106a36:	75 ac                	jne    f01069e4 <spin_unlock+0x11>
+				cprintf("  %08x\n", pcs[i]);
+		}
+		panic("spin_unlock");
+	}
+
+	lk->pcs[0] = 0;
+f0106a38:	c7 46 0c 00 00 00 00 	movl   $0x0,0xc(%esi)
+	lk->cpu = 0;
+f0106a3f:	c7 46 08 00 00 00 00 	movl   $0x0,0x8(%esi)
+	asm volatile("lock; xchgl %0, %1"
+f0106a46:	b8 00 00 00 00       	mov    $0x0,%eax
+f0106a4b:	f0 87 06             	lock xchg %eax,(%esi)
+	// respect to any other instruction which references the same memory.
+	// x86 CPUs will not reorder loads/stores across locked instructions
+	// (vol 3, 8.2.2). Because xchg() is implemented using asm volatile,
+	// gcc will not reorder C statements across the xchg.
+	xchg(&lk->locked, 0);
+}
+f0106a4e:	8d 65 f4             	lea    -0xc(%ebp),%esp
+f0106a51:	5b                   	pop    %ebx
+f0106a52:	5e                   	pop    %esi
+f0106a53:	5f                   	pop    %edi
+f0106a54:	5d                   	pop    %ebp
+f0106a55:	c3                   	ret    
+					pcs[i] - info.eip_fn_addr);
+f0106a56:	8b 06                	mov    (%esi),%eax
+				cprintf("  %08x %s:%d: %.*s+%x\n", pcs[i],
+f0106a58:	83 ec 04             	sub    $0x4,%esp
+f0106a5b:	89 c2                	mov    %eax,%edx
+f0106a5d:	2b 55 b8             	sub    -0x48(%ebp),%edx
+f0106a60:	52                   	push   %edx
+f0106a61:	ff 75 b0             	pushl  -0x50(%ebp)
+f0106a64:	ff 75 b4             	pushl  -0x4c(%ebp)
+f0106a67:	ff 75 ac             	pushl  -0x54(%ebp)
+f0106a6a:	ff 75 a8             	pushl  -0x58(%ebp)
+f0106a6d:	50                   	push   %eax
+f0106a6e:	68 18 8d 10 f0       	push   $0xf0108d18
+f0106a73:	e8 07 d5 ff ff       	call   f0103f7f <cprintf>
+f0106a78:	83 c4 20             	add    $0x20,%esp
+f0106a7b:	83 c3 04             	add    $0x4,%ebx
+		for (i = 0; i < 10 && pcs[i]; i++) {
+f0106a7e:	8d 45 e8             	lea    -0x18(%ebp),%eax
+f0106a81:	39 c3                	cmp    %eax,%ebx
+f0106a83:	74 2d                	je     f0106ab2 <spin_unlock+0xdf>
+f0106a85:	89 de                	mov    %ebx,%esi
+f0106a87:	8b 03                	mov    (%ebx),%eax
+f0106a89:	85 c0                	test   %eax,%eax
+f0106a8b:	74 25                	je     f0106ab2 <spin_unlock+0xdf>
+			if (debuginfo_eip(pcs[i], &info) >= 0)
+f0106a8d:	83 ec 08             	sub    $0x8,%esp
+f0106a90:	57                   	push   %edi
+f0106a91:	50                   	push   %eax
+f0106a92:	e8 f1 ea ff ff       	call   f0105588 <debuginfo_eip>
+f0106a97:	83 c4 10             	add    $0x10,%esp
+f0106a9a:	85 c0                	test   %eax,%eax
+f0106a9c:	79 b8                	jns    f0106a56 <spin_unlock+0x83>
+				cprintf("  %08x\n", pcs[i]);
+f0106a9e:	83 ec 08             	sub    $0x8,%esp
+f0106aa1:	ff 36                	pushl  (%esi)
+f0106aa3:	68 2f 8d 10 f0       	push   $0xf0108d2f
+f0106aa8:	e8 d2 d4 ff ff       	call   f0103f7f <cprintf>
+f0106aad:	83 c4 10             	add    $0x10,%esp
+f0106ab0:	eb c9                	jmp    f0106a7b <spin_unlock+0xa8>
+		panic("spin_unlock");
+f0106ab2:	83 ec 04             	sub    $0x4,%esp
+f0106ab5:	68 37 8d 10 f0       	push   $0xf0108d37
+f0106aba:	6a 67                	push   $0x67
+f0106abc:	68 08 8d 10 f0       	push   $0xf0108d08
+f0106ac1:	e8 ce 95 ff ff       	call   f0100094 <_panic>
+f0106ac6:	66 90                	xchg   %ax,%ax
+
+f0106ac8 <__udivdi3>:
+f0106ac8:	55                   	push   %ebp
+f0106ac9:	57                   	push   %edi
+f0106aca:	56                   	push   %esi
+f0106acb:	53                   	push   %ebx
+f0106acc:	83 ec 1c             	sub    $0x1c,%esp
+f0106acf:	8b 6c 24 30          	mov    0x30(%esp),%ebp
+f0106ad3:	8b 74 24 34          	mov    0x34(%esp),%esi
+f0106ad7:	8b 7c 24 38          	mov    0x38(%esp),%edi
+f0106adb:	8b 54 24 3c          	mov    0x3c(%esp),%edx
+f0106adf:	85 d2                	test   %edx,%edx
+f0106ae1:	75 2d                	jne    f0106b10 <__udivdi3+0x48>
+f0106ae3:	39 f7                	cmp    %esi,%edi
+f0106ae5:	77 59                	ja     f0106b40 <__udivdi3+0x78>
+f0106ae7:	89 f9                	mov    %edi,%ecx
+f0106ae9:	85 ff                	test   %edi,%edi
+f0106aeb:	75 0b                	jne    f0106af8 <__udivdi3+0x30>
+f0106aed:	b8 01 00 00 00       	mov    $0x1,%eax
+f0106af2:	31 d2                	xor    %edx,%edx
+f0106af4:	f7 f7                	div    %edi
+f0106af6:	89 c1                	mov    %eax,%ecx
+f0106af8:	31 d2                	xor    %edx,%edx
+f0106afa:	89 f0                	mov    %esi,%eax
+f0106afc:	f7 f1                	div    %ecx
+f0106afe:	89 c3                	mov    %eax,%ebx
+f0106b00:	89 e8                	mov    %ebp,%eax
+f0106b02:	f7 f1                	div    %ecx
+f0106b04:	89 da                	mov    %ebx,%edx
+f0106b06:	83 c4 1c             	add    $0x1c,%esp
+f0106b09:	5b                   	pop    %ebx
+f0106b0a:	5e                   	pop    %esi
+f0106b0b:	5f                   	pop    %edi
+f0106b0c:	5d                   	pop    %ebp
+f0106b0d:	c3                   	ret    
+f0106b0e:	66 90                	xchg   %ax,%ax
+f0106b10:	39 f2                	cmp    %esi,%edx
+f0106b12:	77 1c                	ja     f0106b30 <__udivdi3+0x68>
+f0106b14:	0f bd da             	bsr    %edx,%ebx
+f0106b17:	83 f3 1f             	xor    $0x1f,%ebx
+f0106b1a:	75 38                	jne    f0106b54 <__udivdi3+0x8c>
+f0106b1c:	39 f2                	cmp    %esi,%edx
+f0106b1e:	72 08                	jb     f0106b28 <__udivdi3+0x60>
+f0106b20:	39 ef                	cmp    %ebp,%edi
+f0106b22:	0f 87 98 00 00 00    	ja     f0106bc0 <__udivdi3+0xf8>
+f0106b28:	b8 01 00 00 00       	mov    $0x1,%eax
+f0106b2d:	eb 05                	jmp    f0106b34 <__udivdi3+0x6c>
+f0106b2f:	90                   	nop
+f0106b30:	31 db                	xor    %ebx,%ebx
+f0106b32:	31 c0                	xor    %eax,%eax
+f0106b34:	89 da                	mov    %ebx,%edx
+f0106b36:	83 c4 1c             	add    $0x1c,%esp
+f0106b39:	5b                   	pop    %ebx
+f0106b3a:	5e                   	pop    %esi
+f0106b3b:	5f                   	pop    %edi
+f0106b3c:	5d                   	pop    %ebp
+f0106b3d:	c3                   	ret    
+f0106b3e:	66 90                	xchg   %ax,%ax
+f0106b40:	89 e8                	mov    %ebp,%eax
+f0106b42:	89 f2                	mov    %esi,%edx
+f0106b44:	f7 f7                	div    %edi
+f0106b46:	31 db                	xor    %ebx,%ebx
+f0106b48:	89 da                	mov    %ebx,%edx
+f0106b4a:	83 c4 1c             	add    $0x1c,%esp
+f0106b4d:	5b                   	pop    %ebx
+f0106b4e:	5e                   	pop    %esi
+f0106b4f:	5f                   	pop    %edi
+f0106b50:	5d                   	pop    %ebp
+f0106b51:	c3                   	ret    
+f0106b52:	66 90                	xchg   %ax,%ax
+f0106b54:	b8 20 00 00 00       	mov    $0x20,%eax
+f0106b59:	29 d8                	sub    %ebx,%eax
+f0106b5b:	88 d9                	mov    %bl,%cl
+f0106b5d:	d3 e2                	shl    %cl,%edx
+f0106b5f:	89 54 24 08          	mov    %edx,0x8(%esp)
+f0106b63:	89 fa                	mov    %edi,%edx
+f0106b65:	88 c1                	mov    %al,%cl
+f0106b67:	d3 ea                	shr    %cl,%edx
+f0106b69:	8b 4c 24 08          	mov    0x8(%esp),%ecx
+f0106b6d:	09 d1                	or     %edx,%ecx
+f0106b6f:	89 4c 24 08          	mov    %ecx,0x8(%esp)
+f0106b73:	88 d9                	mov    %bl,%cl
+f0106b75:	d3 e7                	shl    %cl,%edi
+f0106b77:	89 7c 24 0c          	mov    %edi,0xc(%esp)
+f0106b7b:	89 f7                	mov    %esi,%edi
+f0106b7d:	88 c1                	mov    %al,%cl
+f0106b7f:	d3 ef                	shr    %cl,%edi
+f0106b81:	88 d9                	mov    %bl,%cl
+f0106b83:	d3 e6                	shl    %cl,%esi
+f0106b85:	89 ea                	mov    %ebp,%edx
+f0106b87:	88 c1                	mov    %al,%cl
+f0106b89:	d3 ea                	shr    %cl,%edx
+f0106b8b:	09 d6                	or     %edx,%esi
+f0106b8d:	89 f0                	mov    %esi,%eax
+f0106b8f:	89 fa                	mov    %edi,%edx
+f0106b91:	f7 74 24 08          	divl   0x8(%esp)
+f0106b95:	89 d7                	mov    %edx,%edi
+f0106b97:	89 c6                	mov    %eax,%esi
+f0106b99:	f7 64 24 0c          	mull   0xc(%esp)
+f0106b9d:	39 d7                	cmp    %edx,%edi
+f0106b9f:	72 13                	jb     f0106bb4 <__udivdi3+0xec>
+f0106ba1:	74 09                	je     f0106bac <__udivdi3+0xe4>
+f0106ba3:	89 f0                	mov    %esi,%eax
+f0106ba5:	31 db                	xor    %ebx,%ebx
+f0106ba7:	eb 8b                	jmp    f0106b34 <__udivdi3+0x6c>
+f0106ba9:	8d 76 00             	lea    0x0(%esi),%esi
+f0106bac:	88 d9                	mov    %bl,%cl
+f0106bae:	d3 e5                	shl    %cl,%ebp
+f0106bb0:	39 c5                	cmp    %eax,%ebp
+f0106bb2:	73 ef                	jae    f0106ba3 <__udivdi3+0xdb>
+f0106bb4:	8d 46 ff             	lea    -0x1(%esi),%eax
+f0106bb7:	31 db                	xor    %ebx,%ebx
+f0106bb9:	e9 76 ff ff ff       	jmp    f0106b34 <__udivdi3+0x6c>
+f0106bbe:	66 90                	xchg   %ax,%ax
+f0106bc0:	31 c0                	xor    %eax,%eax
+f0106bc2:	e9 6d ff ff ff       	jmp    f0106b34 <__udivdi3+0x6c>
+f0106bc7:	90                   	nop
+
+f0106bc8 <__umoddi3>:
+f0106bc8:	55                   	push   %ebp
+f0106bc9:	57                   	push   %edi
+f0106bca:	56                   	push   %esi
+f0106bcb:	53                   	push   %ebx
+f0106bcc:	83 ec 1c             	sub    $0x1c,%esp
+f0106bcf:	8b 74 24 30          	mov    0x30(%esp),%esi
+f0106bd3:	8b 5c 24 34          	mov    0x34(%esp),%ebx
+f0106bd7:	8b 7c 24 38          	mov    0x38(%esp),%edi
+f0106bdb:	8b 6c 24 3c          	mov    0x3c(%esp),%ebp
+f0106bdf:	89 f0                	mov    %esi,%eax
+f0106be1:	89 da                	mov    %ebx,%edx
+f0106be3:	85 ed                	test   %ebp,%ebp
+f0106be5:	75 15                	jne    f0106bfc <__umoddi3+0x34>
+f0106be7:	39 df                	cmp    %ebx,%edi
+f0106be9:	76 39                	jbe    f0106c24 <__umoddi3+0x5c>
+f0106beb:	f7 f7                	div    %edi
+f0106bed:	89 d0                	mov    %edx,%eax
+f0106bef:	31 d2                	xor    %edx,%edx
+f0106bf1:	83 c4 1c             	add    $0x1c,%esp
+f0106bf4:	5b                   	pop    %ebx
+f0106bf5:	5e                   	pop    %esi
+f0106bf6:	5f                   	pop    %edi
+f0106bf7:	5d                   	pop    %ebp
+f0106bf8:	c3                   	ret    
+f0106bf9:	8d 76 00             	lea    0x0(%esi),%esi
+f0106bfc:	39 dd                	cmp    %ebx,%ebp
+f0106bfe:	77 f1                	ja     f0106bf1 <__umoddi3+0x29>
+f0106c00:	0f bd cd             	bsr    %ebp,%ecx
+f0106c03:	83 f1 1f             	xor    $0x1f,%ecx
+f0106c06:	89 4c 24 04          	mov    %ecx,0x4(%esp)
+f0106c0a:	75 38                	jne    f0106c44 <__umoddi3+0x7c>
+f0106c0c:	39 dd                	cmp    %ebx,%ebp
+f0106c0e:	72 04                	jb     f0106c14 <__umoddi3+0x4c>
+f0106c10:	39 f7                	cmp    %esi,%edi
+f0106c12:	77 dd                	ja     f0106bf1 <__umoddi3+0x29>
+f0106c14:	89 da                	mov    %ebx,%edx
+f0106c16:	89 f0                	mov    %esi,%eax
+f0106c18:	29 f8                	sub    %edi,%eax
+f0106c1a:	19 ea                	sbb    %ebp,%edx
+f0106c1c:	83 c4 1c             	add    $0x1c,%esp
+f0106c1f:	5b                   	pop    %ebx
+f0106c20:	5e                   	pop    %esi
+f0106c21:	5f                   	pop    %edi
+f0106c22:	5d                   	pop    %ebp
+f0106c23:	c3                   	ret    
+f0106c24:	89 f9                	mov    %edi,%ecx
+f0106c26:	85 ff                	test   %edi,%edi
+f0106c28:	75 0b                	jne    f0106c35 <__umoddi3+0x6d>
+f0106c2a:	b8 01 00 00 00       	mov    $0x1,%eax
+f0106c2f:	31 d2                	xor    %edx,%edx
+f0106c31:	f7 f7                	div    %edi
+f0106c33:	89 c1                	mov    %eax,%ecx
+f0106c35:	89 d8                	mov    %ebx,%eax
+f0106c37:	31 d2                	xor    %edx,%edx
+f0106c39:	f7 f1                	div    %ecx
+f0106c3b:	89 f0                	mov    %esi,%eax
+f0106c3d:	f7 f1                	div    %ecx
+f0106c3f:	eb ac                	jmp    f0106bed <__umoddi3+0x25>
+f0106c41:	8d 76 00             	lea    0x0(%esi),%esi
+f0106c44:	b8 20 00 00 00       	mov    $0x20,%eax
+f0106c49:	89 c2                	mov    %eax,%edx
+f0106c4b:	8b 44 24 04          	mov    0x4(%esp),%eax
+f0106c4f:	29 c2                	sub    %eax,%edx
+f0106c51:	89 54 24 0c          	mov    %edx,0xc(%esp)
+f0106c55:	88 c1                	mov    %al,%cl
+f0106c57:	d3 e5                	shl    %cl,%ebp
+f0106c59:	89 f8                	mov    %edi,%eax
+f0106c5b:	88 d1                	mov    %dl,%cl
+f0106c5d:	d3 e8                	shr    %cl,%eax
+f0106c5f:	09 c5                	or     %eax,%ebp
+f0106c61:	8b 44 24 04          	mov    0x4(%esp),%eax
+f0106c65:	88 c1                	mov    %al,%cl
+f0106c67:	d3 e7                	shl    %cl,%edi
+f0106c69:	89 7c 24 08          	mov    %edi,0x8(%esp)
+f0106c6d:	89 df                	mov    %ebx,%edi
+f0106c6f:	88 d1                	mov    %dl,%cl
+f0106c71:	d3 ef                	shr    %cl,%edi
+f0106c73:	88 c1                	mov    %al,%cl
+f0106c75:	d3 e3                	shl    %cl,%ebx
+f0106c77:	89 f0                	mov    %esi,%eax
+f0106c79:	88 d1                	mov    %dl,%cl
+f0106c7b:	d3 e8                	shr    %cl,%eax
+f0106c7d:	09 d8                	or     %ebx,%eax
+f0106c7f:	8a 4c 24 04          	mov    0x4(%esp),%cl
+f0106c83:	d3 e6                	shl    %cl,%esi
+f0106c85:	89 fa                	mov    %edi,%edx
+f0106c87:	f7 f5                	div    %ebp
+f0106c89:	89 d1                	mov    %edx,%ecx
+f0106c8b:	f7 64 24 08          	mull   0x8(%esp)
+f0106c8f:	89 c3                	mov    %eax,%ebx
+f0106c91:	89 d7                	mov    %edx,%edi
+f0106c93:	39 d1                	cmp    %edx,%ecx
+f0106c95:	72 29                	jb     f0106cc0 <__umoddi3+0xf8>
+f0106c97:	74 23                	je     f0106cbc <__umoddi3+0xf4>
+f0106c99:	89 ca                	mov    %ecx,%edx
+f0106c9b:	29 de                	sub    %ebx,%esi
+f0106c9d:	19 fa                	sbb    %edi,%edx
+f0106c9f:	89 d0                	mov    %edx,%eax
+f0106ca1:	8a 4c 24 0c          	mov    0xc(%esp),%cl
+f0106ca5:	d3 e0                	shl    %cl,%eax
+f0106ca7:	8b 5c 24 04          	mov    0x4(%esp),%ebx
+f0106cab:	88 d9                	mov    %bl,%cl
+f0106cad:	d3 ee                	shr    %cl,%esi
+f0106caf:	09 f0                	or     %esi,%eax
+f0106cb1:	d3 ea                	shr    %cl,%edx
+f0106cb3:	83 c4 1c             	add    $0x1c,%esp
+f0106cb6:	5b                   	pop    %ebx
+f0106cb7:	5e                   	pop    %esi
+f0106cb8:	5f                   	pop    %edi
+f0106cb9:	5d                   	pop    %ebp
+f0106cba:	c3                   	ret    
+f0106cbb:	90                   	nop
+f0106cbc:	39 c6                	cmp    %eax,%esi
+f0106cbe:	73 d9                	jae    f0106c99 <__umoddi3+0xd1>
+f0106cc0:	2b 44 24 08          	sub    0x8(%esp),%eax
+f0106cc4:	19 ea                	sbb    %ebp,%edx
+f0106cc6:	89 d7                	mov    %edx,%edi
+f0106cc8:	89 c3                	mov    %eax,%ebx
+f0106cca:	eb cd                	jmp    f0106c99 <__umoddi3+0xd1>

@@ -52,7 +52,7 @@ bc_pgfault(struct UTrapframe *utf)
 		panic("in bc_pgfault, sys_page_alloc: %e", r);
 
 	uint32_t secno = ((uint32_t)addr - DISKMAP) / SECTSIZE;
-	if ((r = ide_read(secno, addr_aligned, PGSIZE / SECTSIZE)) < 0)
+	if ((r = ide_read(secno, addr_aligned, BLKSECTS)) < 0)
 		panic("in bc_pgfault, ide_read: %e", r);
 	
 	// Clear the dirty bit for the disk block page since we just read the
@@ -87,7 +87,7 @@ flush_block(void *addr)
 	
 	uint32_t secno = ((uint32_t)addr - DISKMAP) / SECTSIZE;
 	void* addr_aligned = ROUNDDOWN(addr, PGSIZE);
-	ide_write(secno, addr_aligned, PGSIZE / SECTSIZE);
+	ide_write(secno, addr_aligned, BLKSECTS);
 
 	int r = sys_page_map(0, addr_aligned, 0, addr_aligned, uvpt[PGNUM(addr)] & PTE_SYSCALL);
 	if (r < 0)	

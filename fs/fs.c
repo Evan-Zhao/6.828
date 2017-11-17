@@ -61,8 +61,12 @@ alloc_block(void)
 	// contains the in-use bits for BLKBITSIZE blocks.  There are
 	// super->s_nblocks blocks in the disk altogether.
 
-	// LAB 5: Your code here.
-	panic("alloc_block not implemented");
+	for (uint32_t blockno = 0; blockno < super->s_nblocks; blockno++)
+		if (bitmap[blockno / 32] & (1 << (blockno % 32))) {
+			bitmap[blockno / 32] &= ~(1 << (blockno % 32));
+			flush_block(bitmap + blockno / 32);
+			return blockno;
+		}
 	return -E_NO_DISK;
 }
 
@@ -134,8 +138,34 @@ fs_init(void)
 static int
 file_block_walk(struct File *f, uint32_t filebno, uint32_t **ppdiskbno, bool alloc)
 {
-       // LAB 5: Your code here.
-       panic("file_block_walk not implemented");
+    if (filebno < NDIRECT) { // found in direct block
+		*ppdiskbno = f->f_direct + filebno;
+		return 0;
+	}
+	else if (filebno >= NDIRECT && 
+			 filebno < NDIRECT + NINDIRECT) { // look in indirect block 
+		if (!f->f_indirect) { // No indirect block
+			if (!alloc)
+				return -E_NOT_FOUND;
+			
+			int blk = alloc_block();
+			if (blk < 0)
+				return -E_NO_DISK;
+			else
+				f->f_indirect = blk;
+			
+			// Clean up the allocated block.
+			// This will trigger a pagefault, and 
+			// the file content will be read in here.
+			memset(diskaddr(f->f_indirect), 0, BLKSIZE);  
+		}
+		// Now we must have an indirect block.
+		uint32_t* block_bc = (uint32_t*)diskaddr(f->f_indirect);
+		*ppdiskbno = block_bc + (filebno - NDIRECT);
+		return 0;
+	}
+	else // filebno >= NDIRECT + NINDIRECT
+		return -E_INVAL;
 }
 
 // Set *blk to the address in memory where the filebno'th
@@ -149,8 +179,22 @@ file_block_walk(struct File *f, uint32_t filebno, uint32_t **ppdiskbno, bool all
 int
 file_get_block(struct File *f, uint32_t filebno, char **blk)
 {
-       // LAB 5: Your code here.
-       panic("file_get_block not implemented");
+    int r;
+	uint32_t *ppdiskbno;
+
+	r = file_block_walk(f, filebno, &ppdiskbno, 1);
+	if (r)	return r;
+
+	if (!*ppdiskbno) { // Allocate a block if there's not one.
+		int blk;
+		blk = alloc_block();
+		if (blk < 0)
+			return -E_NO_DISK;
+		*ppdiskbno = blk;
+	}
+
+	*blk = diskaddr(*ppdiskbno);
+	return 0;
 }
 
 // Try to find a file named "name" in dir.  If so, set *file to it.
