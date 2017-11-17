@@ -351,11 +351,12 @@ sys_ipc_try_send(envid_t envid, uint32_t value, void *srcva, unsigned perm)
 	// also render target not-receiving
 	target_env->env_ipc_recving = false;
 
-	if ((uintptr_t)srcva >= UTOP || // No page to map
-		(uintptr_t)target_env->env_ipc_dstva >= UTOP // or target will not receive page
-	)
-		target_env->env_ipc_value = value;
-	else {
+	// Set value to receive.
+	target_env->env_ipc_value = value;
+
+	if ((uintptr_t)srcva < UTOP && // Have a page to map
+		(uintptr_t)target_env->env_ipc_dstva < UTOP // and target will receive page
+	) {
 		// Below is basically a copy of 
 		// 'syscall_page_map', 
 		// but we cannot call it instead since it checks for permission.
