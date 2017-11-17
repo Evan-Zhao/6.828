@@ -228,7 +228,7 @@ trap_dispatch(struct Trapframe *tf)
 {
 	// Handle processor exceptions.
 	int32_t syscall_ret;
-	switch(tf->tf_trapno){
+	switch (tf->tf_trapno) {
 	case T_BRKPT:
 		print_trapframe(tf);
 		while (1) 
@@ -266,7 +266,13 @@ trap_dispatch(struct Trapframe *tf)
 
 	// Handle keyboard and serial interrupts.
 	if (tf->tf_trapno == IRQ_OFFSET + IRQ_KBD) {
-		
+		kbd_intr();
+		return;
+	}
+
+	if (tf->tf_trapno == IRQ_OFFSET + IRQ_SERIAL) {
+		serial_intr();
+		return; 
 	}
 
 	// Unexpected trap: The user process or the kernel has a bug.
